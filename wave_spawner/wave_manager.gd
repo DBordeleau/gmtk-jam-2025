@@ -1,0 +1,82 @@
+class_name WaveManager
+extends Node
+
+signal wave_completed
+signal wave_spawning_started
+signal wave_spawning_finished
+signal enemy_spawned
+signal enemy_killed
+
+@export var waves: Array[Wave] = []
+@export var spawn_interval: float = 0.5 # seconds between individual enemy spawns
+
+var current_wave_index: int = 0
+var active_enemies: Array = []
+var spawning: bool = false
+var enemies_to_spawn: int = 0
+var enemies_spawned: int = 0
+
+# starts spawning the wave and emits a signal when complete
+func start_wave(wave_index: int = 0) -> void:
+	current_wave_index = wave_index
+	if current_wave_index >= waves.size():
+		return
+	spawning = true
+	active_enemies.clear()
+	enemies_to_spawn = 0
+	enemies_spawned = 0
+	for sequence in waves[current_wave_index].enemy_sequences:
+		enemies_to_spawn += sequence.amount
+	emit_signal("wave_spawning_started")
+	await _spawn_wave(waves[current_wave_index])
+	emit_signal("wave_spawning_finished")
+
+# spawns enemy sequences and emits a signal for each enemy spawned so the wave ui can count up in realtime
+func _spawn_wave(wave: Wave) -> void:
+	for sequence in wave.enemy_sequences:
+		await get_tree().create_timer(sequence.time).timeout
+		for i in range(sequence.amount):
+			await get_tree().create_timer(spawn_interval).timeout
+			var enemy_instance = sequence.enemy.instantiate()
+			var spawn_pos = _get_random_edge_position()
+			enemy_instance.global_position = spawn_pos
+			add_child(enemy_instance)
+			active_enemies.append(enemy_instance)
+			enemies_spawned += 1
+			emit_signal("enemy_spawned")
+			enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
+
+# helper function for spawning enemies around the edge of the screen
+func _get_random_edge_position() -> Vector2:
+	var viewport_rect = get_viewport().get_visible_rect()
+	var edge = randi() % 4
+	var x = 0.0
+	var y = 0.0
+	match edge:
+		0: # top
+			x = randf_range(0, viewport_rect.size.x)
+			y = -50
+		1: # bottom
+			x = randf_range(0, viewport_rect.size.x)
+			y = viewport_rect.size.y + 50
+		2: # left
+			x = -50
+			y = randf_range(0, viewport_rect.size.y)
+		3: # right
+			x = viewport_rect.size.x + 50
+			y = randf_range(0, viewport_rect.size.y)
+	return Vector2(x, y)
+
+func _on_enemy_exited(enemy):
+	if enemy in active_enemies:
+		active_enemies.erase(enemy)
+		emit_signal("enemy_killed")
+	if spawning and active_enemies.is_empty() and enemies_spawned == enemies_to_spawn:
+		spawning = false
+		emit_signal("wave_completed")
+
+# getter function for wave_ui
+func get_next_wave_delay() -> float:
+	if current_wave_index + 1 < waves.size():
+		return waves[current_wave_index].time_to_next_wave
+	return 0.0

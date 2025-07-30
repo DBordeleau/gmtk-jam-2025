@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3 uid="uid://bdcdly0djodn7"]
+
+[ext_resource type="Script" uid="uid://km6176lmup32" path="res://structures/structure_types/gunship.gd" id="1_7kxgk"]
+[ext_resource type="Texture2D" uid="uid://pkm2mlm1xeq1" path="res://assets/structure_assets/test_ship.png" id="2_pbwok"]
+[ext_resource type="PackedScene" uid="uid://cckyy2ok8iyqt" path="res://vfx/particles/gunship_attack_particle.tscn" id="3_pbwok"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nl6ka"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(0, 0, 25, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uo7jn"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(25, 0, 25, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kw862"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(50, 0, 25, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yvanp"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(75, 0, 25, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2aeo"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(100, 0, 25, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2uxy"]
+atlas = ExtResource("2_pbwok")
+region = Rect2(125, 0, 25, 27)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_02bc8"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nl6ka")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uo7jn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kw862")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yvanp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2aeo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2uxy")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0vk70"]
+
+[node name="Gunship" type="Node2D"]
+script = ExtResource("1_7kxgk")
+attack_range = 200.0
+speed = 0.6
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_02bc8")
+autoplay = "default"
+frame = 3
+frame_progress = 0.935644
+
+[node name="Range" type="Area2D" parent="."]
+
+[node name="RangeCollider" type="CollisionShape2D" parent="Range"]
+shape = SubResource("CircleShape2D_0vk70")
+
+[node name="gunship_attack_vfx" parent="." instance=ExtResource("3_pbwok")]
+position = Vector2(-1, -36)

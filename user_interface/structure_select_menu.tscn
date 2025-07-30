@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://dfg7ai1lcj16x"]
+
+[ext_resource type="Script" uid="uid://cv64aijy47jeg" path="res://user_interface/structure_select_menu.gd" id="1_xd0mh"]
+[ext_resource type="Texture2D" uid="uid://rfdy8b4hu748" path="res://assets/ui_assets/gunship_normal.png" id="2_0rrrl"]
+[ext_resource type="Texture2D" uid="uid://jwxi6lvv315b" path="res://assets/ui_assets/gunship_selected.png" id="3_o0wgx"]
+[ext_resource type="Texture2D" uid="uid://dcslt8odkiu4r" path="res://assets/ui_assets/gunship_hovered.png" id="4_dpkj7"]
+[ext_resource type="Texture2D" uid="uid://bvloycl7upsha" path="res://assets/ui_assets/slow_trap_normal.png" id="5_uqmgx"]
+[ext_resource type="Texture2D" uid="uid://b61dpuvme65ik" path="res://assets/ui_assets/slow_trap_selected.png" id="6_lcl1m"]
+[ext_resource type="Texture2D" uid="uid://cgvpovokv62u4" path="res://assets/ui_assets/slow_trap_hovered.png" id="7_ps1ux"]
+
+[node name="StructureSelectMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_xd0mh")
+
+[node name="GunshipButton" type="TextureButton" parent="."]
+modulate = Color(1, 1, 1, 0.490196)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -181.0
+offset_top = -334.0
+offset_right = 19.0
+offset_bottom = -134.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_mode = 0
+texture_normal = ExtResource("2_0rrrl")
+texture_pressed = ExtResource("3_o0wgx")
+texture_hover = ExtResource("4_dpkj7")
+
+[node name="SlowAreaButton" type="TextureButton" parent="."]
+self_modulate = Color(1, 1, 1, 0.490196)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = -334.0
+offset_right = 244.0
+offset_bottom = -134.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_mode = 0
+texture_normal = ExtResource("5_uqmgx")
+texture_pressed = ExtResource("6_lcl1m")
+texture_hover = ExtResource("7_ps1ux")

@@ -1,0 +1,80 @@
+[gd_scene load_steps=15 format=3 uid="uid://c555fglxjvpj3"]
+
+[ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
+[ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
+[ext_resource type="Script" uid="uid://do6h34ao68sxk" path="res://structures/structure_manager.gd" id="2_f14q8"]
+[ext_resource type="PackedScene" uid="uid://dfg7ai1lcj16x" path="res://user_interface/structure_select_menu.tscn" id="4_l4p2h"]
+[ext_resource type="Script" uid="uid://c1v17ry0g2y7i" path="res://wave_spawner/wave_manager.gd" id="4_ny0yt"]
+[ext_resource type="Script" uid="uid://dtyeile0inn5h" path="res://wave_spawner/wave.gd" id="5_716vl"]
+[ext_resource type="PackedScene" uid="uid://wwtfyksvyhoa" path="res://enemies/scenes/asteroid.tscn" id="5_vmnpn"]
+[ext_resource type="Script" uid="uid://5vklweqpw355" path="res://wave_spawner/enemy_sequence.gd" id="6_jp05k"]
+[ext_resource type="PackedScene" uid="uid://b6n1uariimoo5" path="res://user_interface/wave_ui.tscn" id="9_716vl"]
+[ext_resource type="PackedScene" uid="uid://f6v8ljlsk4vw" path="res://structures/scenes/planet.tscn" id="10_jp05k"]
+
+[sub_resource type="Resource" id="Resource_dj236"]
+script = ExtResource("6_jp05k")
+enemy = ExtResource("5_vmnpn")
+amount = 5
+time = 2.0
+metadata/_custom_type_script = "uid://5vklweqpw355"
+
+[sub_resource type="Resource" id="Resource_atfu6"]
+script = ExtResource("5_716vl")
+enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_dj236")])
+time_to_next_wave = 10.0
+metadata/_custom_type_script = "uid://dtyeile0inn5h"
+
+[sub_resource type="Resource" id="Resource_716vl"]
+script = ExtResource("6_jp05k")
+enemy = ExtResource("5_vmnpn")
+amount = 5
+time = 2.0
+metadata/_custom_type_script = "uid://5vklweqpw355"
+
+[sub_resource type="Resource" id="Resource_jp05k"]
+script = ExtResource("5_716vl")
+enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_716vl")])
+time_to_next_wave = 0.0
+metadata/_custom_type_script = "uid://dtyeile0inn5h"
+
+[node name="TestScene" type="Node2D"]
+script = ExtResource("1_f14q8")
+
+[node name="OrbitManager" type="Node2D" parent="."]
+script = ExtResource("1_magnn")
+
+[node name="StructureManager" type="Node" parent="."]
+script = ExtResource("2_f14q8")
+metadata/_custom_type_script = "uid://do6h34ao68sxk"
+
+[node name="WaveManager" type="Node" parent="."]
+script = ExtResource("4_ny0yt")
+waves = Array[ExtResource("5_716vl")]([SubResource("Resource_atfu6"), SubResource("Resource_jp05k")])
+metadata/_custom_type_script = "uid://c1v17ry0g2y7i"
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="StructureSelectMenu" parent="UILayer" instance=ExtResource("4_l4p2h")]
+offset_left = -2.0
+offset_top = 132.0
+offset_right = -2.0
+offset_bottom = 132.0
+
+[node name="WaveUI" parent="UILayer" instance=ExtResource("9_716vl")]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -10
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Planet" parent="." instance=ExtResource("10_jp05k")]
+
+[node name="MainCamera" type="Camera2D" parent="."]
+position = Vector2(958, 540)
