@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwa6b6hm35i5n"]
+[gd_scene load_steps=11 format=3 uid="uid://cwa6b6hm35i5n"]
 
 [ext_resource type="Script" uid="uid://dt82mpyc2q05k" path="res://enemies/enemy_types/comet.gd" id="1_b77yq"]
+[ext_resource type="PackedScene" uid="uid://bk60q1a82a1w6" path="res://vfx/particles/comet_death_particle.tscn" id="2_csq7m"]
 [ext_resource type="Texture2D" uid="uid://c6lt0e0jwcyjt" path="res://assets/enemy_assets/comet_spritesheet.png" id="3_csq7m"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekrm3"]
@@ -51,13 +52,14 @@ animations = [{
 [node name="Comet" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_b77yq")
+death_particles = ExtResource("2_csq7m")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-22, 3)
 scale = Vector2(2.03269, 2.03269)
 sprite_frames = SubResource("SpriteFrames_ckbp3")
 autoplay = "default"
-frame_progress = 0.175071
+frame_progress = 0.347723
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(2.3, 2.3)
