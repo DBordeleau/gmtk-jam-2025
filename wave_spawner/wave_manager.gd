@@ -101,9 +101,9 @@ func start_wave(wave_index: int = 0) -> void:
 # spawns enemy sequences and emits a signal for each enemy spawned so the wave ui can count up in realtime
 func _spawn_wave(wave: Wave) -> void:
 	for sequence in wave.enemy_sequences:
-		await get_tree().create_timer(sequence.time).timeout
+		await safe_wait(sequence.time)
 		for i in range(sequence.amount):
-			await get_tree().create_timer(spawn_interval).timeout
+			await safe_wait(spawn_interval)
 			var enemy_instance = sequence.enemy.instantiate()
 			var spawn_pos = get_random_edge_position()
 			enemy_instance.global_position = spawn_pos
@@ -115,6 +115,8 @@ func _spawn_wave(wave: Wave) -> void:
 
 # helper function for spawning enemies around the edge of the screen
 func get_random_edge_position() -> Vector2:
+	if not get_tree():
+		return Vector2.ZERO
 	var camera_rect = get_camera_visible_rect()
 	var edge = randi() % 4
 	var x = 0.0
@@ -160,3 +162,8 @@ func get_next_wave_delay() -> float:
 	# Generate next wave to get its delay time
 		var next_wave = generate_wave(current_wave_index)
 		return next_wave.time_to_next_wave
+
+func safe_wait(time: float):
+	if not get_tree() or not is_inside_tree():
+		return
+	await get_tree().create_timer(time).timeout

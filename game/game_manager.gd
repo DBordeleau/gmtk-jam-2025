@@ -46,7 +46,7 @@ func _on_wave_completed():
 		current_orbit = current_orbit * 1.5
 		orbit_manager.add_orbit(current_orbit)
 	var delay = wave_manager.get_next_wave_delay()
-	await get_tree().create_timer(delay).timeout
+	await safe_wait(delay)
 	wave_manager.start_wave(wave_index)
 
 func _zoom_camera_smoothly(target_zoom: Vector2, duration: float) -> void:
@@ -68,12 +68,16 @@ func _show_victory_screen():
 	add_child(label)
 
 func _process(delta):
+	if not get_tree():
+		return
 	structure_manager.update_all(delta)
 	_update_preview_position()
 
 # On left click it places a structure, orbital structures are added to the orbit manager and snap to the path
 # SPACE = Reverse orbit direction
 func _unhandled_input(event):
+	if not get_tree():
+		return
 	if event.is_action_pressed("reverse_orbit"):
 		orbit_manager.reverse_orbit()
 		
@@ -125,14 +129,40 @@ func _unhandled_input(event):
 
 # called when planet health reaches 0
 # displays game over screen
+# called when planet health reaches 0
+# displays game over screen with play again button
 func _on_planet_destroyed():
+	var game_over_container = Control.new()
+	game_over_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	vbox.custom_minimum_size = Vector2(200, 100)
+	
 	var label = Label.new()
 	label.text = "GAME OVER"
 	label.modulate = Color(1, 0, 0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.position = get_viewport().get_visible_rect().size / 2
-	add_child(label)
+	
+	var play_again_button = Button.new()
+	play_again_button.text = "Play Again"
+	play_again_button.custom_minimum_size = Vector2(120, 40)
+	play_again_button.pressed.connect(_on_play_again_pressed)
+	
+	vbox.add_child(label)
+	vbox.add_child(play_again_button)
+	game_over_container.add_child(vbox)
+	
+	# Add to UILayer if it exists, otherwise add to self
+	if has_node("UILayer"):
+		$UILayer.add_child(game_over_container)
+	else:
+		add_child(game_over_container)
+
+# restarts the current scene when play again button is pressed
+func _on_play_again_pressed():
+	get_tree().call_deferred("reload_current_scene")
 
 # updates currency label and the structure select buttons
 func update_currency_ui():
@@ -190,3 +220,8 @@ func _remove_preview():
 # updates the gunship cost label in the structure select menu
 func _update_gunship_cost_label(cost: int) -> void:
 	structure_menu.gunship_cost_label.text = "-" + str(cost)
+
+func safe_wait(time: float):
+	if not get_tree() or not is_inside_tree():
+		return
+	await get_tree().create_timer(time).timeout

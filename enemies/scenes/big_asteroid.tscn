@@ -134,7 +134,7 @@ script = ExtResource("1_ak75m")
 damage_particles = ExtResource("2_e8qss")
 death_particles = ExtResource("2_vmogb")
 health = 20
-damage = 20
+damage = 100
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
