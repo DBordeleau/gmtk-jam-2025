@@ -70,7 +70,8 @@ func _get_random_edge_position() -> Vector2:
 func _on_enemy_exited(enemy):
 	if enemy in active_enemies:
 		active_enemies.erase(enemy)
-		emit_signal("enemy_killed")
+		if enemy.killed_by_player:
+			emit_signal("enemy_killed")
 	if spawning and active_enemies.is_empty() and enemies_spawned == enemies_to_spawn:
 		spawning = false
 		emit_signal("wave_completed")

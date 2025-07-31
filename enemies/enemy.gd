@@ -5,6 +5,7 @@ extends CharacterBody2D # needed for move_and_slide() and velocity but we can ch
 @export var health: int = 10
 @export var damage: int = 10
 @export var speed: float = 100.0
+var killed_by_player: bool = false
 
 func _ready():
 	# Add to "enemies" group for targeting
@@ -20,6 +21,7 @@ func move_enemy(delta: float) -> void:
 	move_and_slide()
 
 func take_damage(amount: int) -> void:
+	killed_by_player = true
 	health -= amount
 	if health <= 0:
 		die()

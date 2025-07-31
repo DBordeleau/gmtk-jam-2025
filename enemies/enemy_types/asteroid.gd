@@ -21,6 +21,7 @@ func move_enemy(delta: float) -> void:
 	velocity = direction * speed
 	move_and_slide()
 
+# killed_by_player = false -- we dont want to award currency when asteroids die by colliding into the planet
 func _check_collisions():
 	if has_collided:
 		return
@@ -31,6 +32,7 @@ func _check_collisions():
 			print("Asteroid dealing", damage, "damage to", collider)
 			collider.take_damage(damage)
 			has_collided = true
+			killed_by_player = false # Not killed by player!
 			die()
 			break
 
