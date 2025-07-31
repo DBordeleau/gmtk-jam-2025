@@ -13,6 +13,7 @@ var selected_structure_type: String = ""
 # We can enable/show them as we unlock them if we want some structures to be locked initially
 @onready var gunship_button: TextureButton = $GunshipButton
 @onready var slow_area_button: TextureButton = $SlowAreaButton
+@onready var laser_ship_button: TextureButton = $LaserShipButton
 
 # player cant place a slow area until first placing a gunship
 var slow_area_unlocked: bool = false
@@ -38,6 +39,7 @@ func _ready():
 
 	gunship_button.pressed.connect(_on_gunship_button_pressed)
 	slow_area_button.pressed.connect(_on_slow_area_button_pressed)
+	laser_ship_button.pressed.connect(_on_laser_ship_button_pressed)
 
 	slow_area_button.visible = false # Hide by default
 	await get_tree().process_frame
@@ -48,9 +50,11 @@ func _on_gunship_button_pressed():
 	if gunship_button.button_pressed:
 		selected_structure_type = "Gunship"
 		slow_area_button.button_pressed = false
+		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("Gunship")
 	else:
 		selected_structure_type = ""
+		gunship_button.button_pressed = false
 		structure_type_selected.emit("")
 		
 
@@ -58,9 +62,22 @@ func _on_slow_area_button_pressed():
 	if slow_area_button.button_pressed:
 		selected_structure_type = "SlowArea"
 		gunship_button.button_pressed = false
+		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("SlowArea")
 	else:
 		selected_structure_type = ""
+		slow_area_button.button_pressed = false
+		structure_type_selected.emit("")
+		
+func _on_laser_ship_button_pressed():
+	if laser_ship_button.button_pressed:
+		selected_structure_type = "LaserShip"
+		gunship_button.button_pressed = false
+		slow_area_button.button_pressed = false
+		structure_type_selected.emit("LaserShip")
+	else:
+		selected_structure_type = ""
+		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("")
 		
 # disables buttons if we cant afford associated structure

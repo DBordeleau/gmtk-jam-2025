@@ -11,7 +11,8 @@ var structures: Array = []
 
 var structure_costs = {
 	"Gunship": 20,
-	"SlowArea": 5
+	"SlowArea": 5,
+	"LaserShip": 30,
 }
 
 # Called by the GameManager if the user left clicks with a structure selected
@@ -27,6 +28,17 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 			# Prevent overlapping gunships
 			for existing in structures:
 				if existing is Gunship and temp_structure is Gunship and existing.is_orbital and existing.orbit_idx == orbit_idx:
+					var min_dist = existing.attack_range + temp_structure.attack_range
+					if position.distance_to(existing.position) < min_dist:
+						print("Cannot place Gunship: too close to another Gunship on the same orbit.")
+						return
+			structure = temp_structure
+		"LaserShip":
+			var structure_scene = preload("res://structures/scenes/laser_ship.tscn")
+			var temp_structure = structure_scene.instantiate()
+			# Prevent overlapping laser ships
+			for existing in structures:
+				if existing is LaserShip and temp_structure is LaserShip and existing.is_orbital and existing.orbit_idx == orbit_idx:
 					var min_dist = existing.attack_range + temp_structure.attack_range
 					if position.distance_to(existing.position) < min_dist:
 						print("Cannot place Gunship: too close to another Gunship on the same orbit.")

@@ -67,7 +67,7 @@ animations = [{
 [node name="Gunship" type="StaticBody2D"]
 collision_mask = 2
 script = ExtResource("1_7kxgk")
-attack_range = 200.0
+attack_range = 150.0
 death_particles = ExtResource("2_lialb")
 cost = 20
 speed = 0.6

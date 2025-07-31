@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://ce5olky2vsswt"]
+
+[ext_resource type="Script" uid="uid://m42vmgjal1ja" path="res://structures/structure_types/multitarget_laser_ship.gd" id="1_4ebf1"]
+[ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_4763s"]
+[ext_resource type="Texture2D" uid="uid://3nouc118l0lf" path="res://assets/structure_assets/laser_asset.png" id="3_ie8yp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6envv"]
+atlas = ExtResource("3_ie8yp")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4763s"]
+atlas = ExtResource("3_ie8yp")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i0w8m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6envv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4763s")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0vk70"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pbwok"]
+
+[node name="LaserShip" type="StaticBody2D"]
+collision_mask = 2
+script = ExtResource("1_4ebf1")
+laser_color = Color(0.702413, 0.27844, 1, 1)
+laser_width = 25.0
+laser_grow_time = 0.2
+laser_duration = 0.5
+attack_range = 200.0
+attack_cooldown = 2.0
+health = 20.0
+death_particles = ExtResource("2_4763s")
+cost = 30
+speed = 0.6
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_i0w8m")
+autoplay = "default"
+frame_progress = 0.761348
+
+[node name="Range" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="RangeCollider" type="CollisionShape2D" parent="Range"]
+visible = false
+shape = SubResource("CircleShape2D_0vk70")
+
+[node name="BodyCollider" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, 9)
+scale = Vector2(2.394, 2.394)
+shape = SubResource("CircleShape2D_pbwok")

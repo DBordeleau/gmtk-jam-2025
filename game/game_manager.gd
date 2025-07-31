@@ -13,7 +13,7 @@ signal game_over()
 @onready var camera: Camera2D = $MainCamera
 
 @onready var currency_ui: Control = $UILayer/CurrencyUI
-var currency: int = 20
+var currency: int = 30
 
 var wave_index: int = 0
 
@@ -114,7 +114,7 @@ func _unhandled_input(event):
 		var orbit_idx := 0 
 
 		# only snap to orbit if the selected structure is orbital
-		if structure_menu.selected_structure_type == "Gunship":
+		if structure_menu.selected_structure_type == "Gunship" or structure_menu.selected_structure_type == "LaserShip":
 			var center = orbit_manager.orbit_center
 			orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
 			var radius = orbit_manager.orbit_radii[orbit_idx]
@@ -230,6 +230,8 @@ func _create_preview(type: String) -> Node2D:
 	match type:
 		"Gunship":
 			preview = preload("res://structures/scenes/gunship.tscn").instantiate()
+		"LaserShip":
+			preview = preload("res://structures/scenes/laser_ship.tscn").instantiate()
 		"SlowArea":
 			preview = preload("res://structures/scenes/slow_area.tscn").instantiate()
 	if preview:
@@ -239,13 +241,15 @@ func _create_preview(type: String) -> Node2D:
 			preview.get_node("BodyCollider").disabled = true
 		if preview.has_node("RangeArea"):
 			preview.get_node("RangeArea").monitoring = false
+		if preview.has_node("Range"):
+			preview.get_node("Range").monitoring = false
 	return preview
 
 func _update_preview_position() -> void:
 	if not preview_instance or preview_type == "":
 		return
 	var mouse_pos = camera.get_global_mouse_position()
-	if preview_type == "Gunship":
+	if preview_type == "Gunship" or preview_type == "LaserShip":
 		var center = orbit_manager.orbit_center
 		var orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
 		var radius = orbit_manager.orbit_radii[orbit_idx]
