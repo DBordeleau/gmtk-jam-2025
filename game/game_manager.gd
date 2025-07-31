@@ -29,6 +29,7 @@ func _ready():
 	planet.planet_destroyed.connect(_on_planet_destroyed)
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	update_currency_ui()
+	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
 
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
@@ -82,13 +83,7 @@ func _unhandled_input(event):
 			return
 
 		# ensure player has enough currency to place structure
-		var structure_cost = 0
-		match structure_menu.selected_structure_type:
-			"Gunship":
-				structure_cost = preload("res://structures/scenes/gunship.tscn").instantiate().cost
-			"SlowArea":
-				structure_cost = preload("res://structures/scenes/slow_area.tscn").instantiate().cost
-
+		var structure_cost = structure_manager.get_structure_cost(structure_menu.selected_structure_type)
 		if currency < structure_cost:
 			print("Not enough currency to place structure!")
 			return
@@ -119,6 +114,11 @@ func _unhandled_input(event):
 		if new_structure:
 			currency -= structure_cost
 			update_currency_ui()
+			# increase gunship cost when placing a gunship
+			if structure_menu.selected_structure_type == "Gunship":
+				var new_cost = structure_cost + 10
+				structure_manager.set_structure_cost("Gunship", new_cost)
+				_update_gunship_cost_label(new_cost)
 			_remove_preview()
 
 # called when planet health reaches 0
@@ -180,3 +180,7 @@ func _remove_preview():
 		preview_instance.queue_free()
 		preview_instance = null
 		preview_type = ""
+
+# updates the gunship cost label in the structure select menu
+func _update_gunship_cost_label(cost: int) -> void:
+	structure_menu.gunship_cost_label.text = "-" + str(cost)

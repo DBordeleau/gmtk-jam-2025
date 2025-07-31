@@ -46,7 +46,8 @@ metadata/_custom_type_script = "uid://c1v17ry0g2y7i"
 
 [node name="WaveUI" parent="UILayer" instance=ExtResource("9_716vl")]
 
-[node name="StructureSelectMenu" parent="UILayer" instance=ExtResource("4_l4p2h")]
+[node name="StructureSelectMenu" parent="UILayer" node_paths=PackedStringArray("structure_manager") instance=ExtResource("4_l4p2h")]
+structure_manager = NodePath("../../StructureManager")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -10

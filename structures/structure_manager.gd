@@ -7,6 +7,11 @@ extends Node
 
 var structures: Array = []
 
+var structure_costs = {
+	"Gunship": 20,
+	"SlowArea": 5
+}
+
 # Called by the GameManager if the user left clicks with a structure selected
 # Adds the placed structure to the array, adds it to the structure group and then adds it to the scene
 # returns the placed structure
@@ -56,3 +61,9 @@ func update_all(delta: float) -> void:
 	for structure in structures:
 		if structure.has_method("update"):
 			structure.update(delta)
+
+func get_structure_cost(type: String) -> int:
+	return structure_costs.get(type, 0)
+
+func set_structure_cost(type: String, cost: int) -> void:
+	structure_costs[type] = cost

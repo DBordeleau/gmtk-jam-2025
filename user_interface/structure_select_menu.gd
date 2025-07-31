@@ -3,6 +3,8 @@ extends Control
 
 signal structure_type_selected(type: String)
 
+@export var structure_manager: StructureManager
+
 # string for now but we should use something better so we can more easily access properties of the selected structure type
 # like if it is orbital or not
 var selected_structure_type: String = ""
@@ -22,6 +24,9 @@ var is_visible_on_screen: bool = false
 # when retrieving menu width dynamically it is being set as 0
 # this is a temporary solution so we can modify the tween distance in one spot
 var menu_width: int = 400
+
+@onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
+
 
 # Sets the buttons to be in toggle mode, connects their signals, and makes them unpressed by default
 # hides the slow area button by default until the player places a gunship
@@ -60,8 +65,10 @@ func _on_slow_area_button_pressed():
 		
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
-	gunship_button.disabled = currency < 20
-	slow_area_button.disabled = currency < 5
+	var gunship_cost = structure_manager.get_structure_cost("Gunship")
+	var slow_area_cost = structure_manager.get_structure_cost("SlowArea")
+	gunship_button.disabled = currency < gunship_cost
+	slow_area_button.disabled = currency < slow_area_cost
 
 # called when a gunship is placed for the first time
 func unlock_slow_area():
