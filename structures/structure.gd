@@ -3,6 +3,7 @@
 class_name Structure
 extends Node2D
 
+@export var cost: int = 10
 @export var speed: float = 1.0
 var pos: Vector2 = Vector2.ZERO # pos because position is a default godot variable for Node2D
 var is_orbital: bool = true # defines whether or not the structure can be placed outside of the loop path

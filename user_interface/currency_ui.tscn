@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7l1b4j1o0jcm"]
+
+[ext_resource type="Script" uid="uid://hbb6k6p8o6fs" path="res://user_interface/currency_ui.gd" id="1_cmst1"]
+[ext_resource type="Texture2D" uid="uid://bbjjwydjgjilv" path="res://assets/ui_assets/currency_icon.png" id="2_ggs4e"]
+
+[node name="CurrencyUI" type="Control"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+script = ExtResource("1_cmst1")
+
+[node name="CurrencyIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_ggs4e")
+expand_mode = 3
+
+[node name="CurrencyCount" type="Label" parent="."]
+layout_mode = 0
+offset_left = 52.0
+offset_top = -1.0
+offset_right = 92.0
+offset_bottom = 41.0
+theme_override_font_sizes/font_size = 30
+text = "x0"

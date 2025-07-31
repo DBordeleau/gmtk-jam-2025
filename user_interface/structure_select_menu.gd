@@ -34,3 +34,8 @@ func _on_slow_area_button_pressed():
 		gunship_button.button_pressed = false
 	else:
 		selected_structure_type = ""
+
+# disables buttons if we cant afford associated structure
+func update_buttons(currency: int):
+	gunship_button.disabled = currency < 20
+	slow_area_button.disabled = currency < 5

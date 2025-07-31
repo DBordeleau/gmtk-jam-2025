@@ -10,22 +10,30 @@ extends Node2D
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
 
+@onready var currency_ui: Control = $UILayer/CurrencyUI
+var currency: int = 20
+
 var wave_index: int = 0
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
 	wave_manager.wave_completed.connect(_on_wave_completed)
+	wave_manager.enemy_killed.connect(_on_enemy_killed)
 	wave_manager.start_wave(wave_index)
 	planet.planet_destroyed.connect(_on_planet_destroyed)
+	update_currency_ui()
 
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
 # adds 2nd ring after wave 5
 func _on_wave_completed():
 	wave_index += 1
-	if wave_index == 1:
+	if wave_index == 5:
 		await _zoom_camera_smoothly(Vector2(0.7, 0.7), 1.0) # zoom camera out for new ring
-		orbit_manager.add_orbit(550.0) # add new ring fter wave 5
+		orbit_manager.add_orbit(550.0) # add 2nd ring after wave 5
+	if wave_index == 10:
+		await _zoom_camera_smoothly(Vector2(0.5, 0.5), 1.0) # zoom camera out for new ring
+		orbit_manager.add_orbit(800.0) # add 3rd ring after wave 10
 	if wave_index < wave_manager.waves.size():
 		var delay = wave_manager.waves[wave_index - 1].time_to_next_wave
 		await get_tree().create_timer(delay).timeout
@@ -64,6 +72,18 @@ func _unhandled_input(event):
 		if structure_menu.selected_structure_type == "":
 			return
 
+		# ensure player has enough currency to place structure
+		var structure_cost = 0
+		match structure_menu.selected_structure_type:
+			"Gunship":
+				structure_cost = preload("res://structures/scenes/gunship.tscn").instantiate().cost
+			"SlowArea":
+				structure_cost = preload("res://structures/scenes/slow_area.tscn").instantiate().cost
+
+		if currency < structure_cost:
+			print("Not enough currency to place structure!")
+			return
+
 		var mouse_pos = get_viewport().get_mouse_position()
 		var snapped_pos: Vector2
 		var is_orbital := false
@@ -85,6 +105,9 @@ func _unhandled_input(event):
 		var new_structure = structure_manager.place_structure(structure_menu.selected_structure_type, snapped_pos, is_orbital, orbit_idx)
 		if is_orbital and new_structure:
 			orbit_manager.add_structure(new_structure, orbit_idx)
+		if new_structure:
+			currency -= structure_cost
+			update_currency_ui()
 
 # called when planet health reaches 0
 # displays game over screen
@@ -96,3 +119,13 @@ func _on_planet_destroyed():
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.position = get_viewport().get_visible_rect().size / 2
 	add_child(label)
+
+# updates currency label and the structure select buttons
+func update_currency_ui():
+	currency_ui.currency_label.text = str(currency)
+	structure_menu.update_buttons(currency)
+	
+# called every time wave_manager emits the enemy_killed signal
+func _on_enemy_killed():
+	currency += 1
+	update_currency_ui()

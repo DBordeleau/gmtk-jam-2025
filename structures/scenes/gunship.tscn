@@ -64,6 +64,7 @@ animations = [{
 [node name="Gunship" type="Node2D"]
 script = ExtResource("1_7kxgk")
 attack_range = 200.0
+cost = 20
 speed = 0.6
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
