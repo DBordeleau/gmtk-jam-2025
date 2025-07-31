@@ -27,8 +27,10 @@ var enemies_spawned: int = 0
 
 func _ready() -> void:
 	if enemy_scenes.is_empty():
+		enemy_scenes.append(preload("res://enemies/scenes/big_asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/comet.tscn"))
+		
 		
 func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()

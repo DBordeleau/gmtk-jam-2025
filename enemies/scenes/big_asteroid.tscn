@@ -1,0 +1,147 @@
+[gd_scene load_steps=23 format=3 uid="uid://dmffx26wnx5hv"]
+
+[ext_resource type="Script" uid="uid://bdfctct8k6vxb" path="res://enemies/enemy_types/big_asteroid.gd" id="1_ak75m"]
+[ext_resource type="PackedScene" uid="uid://ckk2w6kcc2swe" path="res://vfx/particles/big_asteroid_damage_particle.tscn" id="2_e8qss"]
+[ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_vmogb"]
+[ext_resource type="Texture2D" uid="uid://cxmsprn3yoma" path="res://assets/enemy_assets/animated_asteroid.png" id="3_e8qss"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dwjfg"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(0, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crerq"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(60, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ahak"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(120, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4uox4"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(180, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e0rof"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(240, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4pdos"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(300, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5sk3"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(360, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d7fou"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(420, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5rmh7"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(480, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pquhk"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(540, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rvwu7"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(600, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ofo7b"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(660, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jq5fj"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(720, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ci83"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(780, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08iyr"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(840, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_401ft"]
+atlas = ExtResource("3_e8qss")
+region = Rect2(900, 0, 60, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dbp21"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dwjfg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crerq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ahak")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4uox4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e0rof")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4pdos")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5sk3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d7fou")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5rmh7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pquhk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rvwu7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ofo7b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jq5fj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0ci83")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_08iyr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_401ft")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e84k3"]
+
+[node name="BigAsteroid" type="CharacterBody2D"]
+z_index = 3
+collision_layer = 2
+script = ExtResource("1_ak75m")
+damage_particles = ExtResource("2_e8qss")
+death_particles = ExtResource("2_vmogb")
+health = 20
+damage = 20
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_dbp21")
+autoplay = "default"
+frame_progress = 0.211235
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(5.15809, 5.15809)
+shape = SubResource("CircleShape2D_e84k3")

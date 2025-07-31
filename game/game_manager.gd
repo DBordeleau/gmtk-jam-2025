@@ -39,7 +39,7 @@ func _on_wave_completed():
 	currency += 5 + wave_index
 	update_currency_ui()
 	# Add a ring and zoom out every 5 waves
-	if wave_index % 1 == 0:
+	if wave_index % 5 == 0:
 		current_zoom = current_zoom * 0.7
 		await _zoom_camera_smoothly(current_zoom, 1.0)
 		structure_menu.update_for_camera_zoom()

@@ -2,6 +2,9 @@
 extends Enemy
 class_name Asteroid
 
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var collider: CollisionShape2D = $CollisionShape2D
+
 @export var target_position: Vector2 = Vector2.ZERO
 var has_collided: bool = false # prevents double damage
 
