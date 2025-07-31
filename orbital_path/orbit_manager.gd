@@ -36,7 +36,7 @@ func add_orbit(radius: float) -> void:
 func get_closest_orbit(mouse_pos: Vector2) -> int:
 	var min_dist = INF
 	var closest_idx = 0
-	for i in orbit_radii.size():
+	for i in range(orbit_radii.size()):
 		var dist = abs(mouse_pos.distance_to(orbit_center) - orbit_radii[i])
 		if dist < min_dist:
 			min_dist = dist
