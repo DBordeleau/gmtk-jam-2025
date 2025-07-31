@@ -34,10 +34,10 @@ animations = [{
 [node name="LaserShip" type="StaticBody2D"]
 collision_mask = 2
 script = ExtResource("1_4ebf1")
-laser_color = Color(3, 0.25, 2, 1)
-laser_width = 16.0
+laser_color = Color(0.702413, 0.27844, 1, 1)
+laser_width = 25.0
 laser_grow_time = 0.2
-laser_duration = 0.4
+laser_duration = 0.5
 attack_range = 200.0
 attack_cooldown = 2.0
 health = 20.0
@@ -46,6 +46,7 @@ cost = 30
 speed = 0.6
 
 [node name="LaserSystem" parent="." instance=ExtResource("3_6envv")]
+line_width = 25.0
 
 [node name="Line2D" parent="LaserSystem" index="0"]
 visible = false
@@ -54,7 +55,7 @@ visible = false
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_i0w8m")
 autoplay = "default"
-frame_progress = 0.259774
+frame_progress = 0.283941
 
 [node name="Range" type="Area2D" parent="."]
 collision_mask = 2

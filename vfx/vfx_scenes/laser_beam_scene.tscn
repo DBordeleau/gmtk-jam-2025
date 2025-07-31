@@ -1,8 +1,64 @@
-[gd_scene load_steps=2 format=3 uid="uid://bl2u3r721kk5s"]
+[gd_scene load_steps=11 format=3 uid="uid://bl2u3r721kk5s"]
 
 [ext_resource type="Script" uid="uid://7uta7jt8tbue" path="res://vfx/scripts/laser_beam.gd" id="1_coccl"]
+[ext_resource type="Texture2D" uid="uid://b0nlsiq4rowij" path="res://assets/vfx_assets/textures/glowing_circle.png" id="2_icuvr"]
 
-[node name="RayCast2D" type="Node2D"]
+[sub_resource type="Curve" id="Curve_7gefj"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.469178, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ycij4"]
+curve = SubResource("Curve_7gefj")
+
+[sub_resource type="Curve" id="Curve_s7k0d"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.486301, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_mgi4j"]
+curve = SubResource("Curve_s7k0d")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rq3u5"]
+particle_flag_disable_z = true
+initial_velocity_min = 100.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.3
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_mgi4j")
+alpha_curve = SubResource("CurveTexture_ycij4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rjcwd"]
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 50.0
+initial_velocity_min = 300.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.3
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_mgi4j")
+alpha_curve = SubResource("CurveTexture_ycij4")
+
+[sub_resource type="CurveTexture" id="CurveTexture_op8i2"]
+curve = SubResource("Curve_s7k0d")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2c60w"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+direction = Vector3(-1, 0, 0)
+spread = 50.0
+initial_velocity_min = 300.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+tangential_accel_min = 100.0
+tangential_accel_max = 100.0
+scale_min = 0.2
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_op8i2")
+alpha_curve = SubResource("CurveTexture_ycij4")
+
+[node name="LaserBeam" type="Node2D"]
 script = ExtResource("1_coccl")
 
 [node name="Line2D" type="Line2D" parent="."]
@@ -10,3 +66,28 @@ unique_name_in_owner = true
 points = PackedVector2Array(0, 0, 50, 0)
 begin_cap_mode = 2
 end_cap_mode = 2
+
+[node name="CastingParticles" type="GPUParticles2D" parent="."]
+modulate = Color(0.784013, 0.325513, 1, 1)
+emitting = false
+texture = ExtResource("2_icuvr")
+lifetime = 0.45
+process_material = SubResource("ParticleProcessMaterial_rq3u5")
+
+[node name="CollisionParticles" type="GPUParticles2D" parent="."]
+modulate = Color(0.784013, 0.325513, 1, 1)
+position = Vector2(51, 0)
+emitting = false
+amount = 12
+texture = ExtResource("2_icuvr")
+lifetime = 0.3
+process_material = SubResource("ParticleProcessMaterial_rjcwd")
+
+[node name="BeamParticles" type="GPUParticles2D" parent="."]
+modulate = Color(0.784013, 0.325513, 1, 1)
+position = Vector2(22, 0)
+emitting = false
+amount = 12
+texture = ExtResource("2_icuvr")
+lifetime = 0.3
+process_material = SubResource("ParticleProcessMaterial_2c60w")

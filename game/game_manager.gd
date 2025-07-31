@@ -13,7 +13,7 @@ signal game_over()
 @onready var camera: Camera2D = $MainCamera
 
 @onready var currency_ui: Control = $UILayer/CurrencyUI
-var currency: int = 30
+var currency: int = 300
 
 var wave_index: int = 0
 
