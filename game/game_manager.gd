@@ -3,6 +3,8 @@
 class_name GameManager
 extends Node2D
 
+signal game_over()
+
 @onready var structure_manager = $StructureManager
 @onready var orbit_manager = $OrbitManager
 @onready var wave_manager: WaveManager = $WaveManager
@@ -21,8 +23,11 @@ var current_orbit: float = 350.0
 var preview_instance: Node2D = null
 var preview_type: String = ""
 
+var hiscore: int = 0
+
 # connects to wave manager signals and planet death signal for game over
 func _ready():
+	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
 	wave_manager.start_wave(wave_index)
@@ -64,8 +69,17 @@ func _show_victory_screen():
 	label.modulate = Color(0, 1, 0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.anchor_left = 0.5
+	label.anchor_top = 0.5
+	label.anchor_right = 0.5
+	label.anchor_bottom = 0.5
+	label.pivot_offset = Vector2(0, 0)
 	label.position = get_viewport().get_visible_rect().size / 2
+	label.scale = Vector2(0, 0)
 	add_child(label)
+
+	var tween = create_tween()
+	tween.tween_property(label, "scale", Vector2(1, 1), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func _process(delta):
 	if not get_tree():
@@ -132,12 +146,22 @@ func _unhandled_input(event):
 # called when planet health reaches 0
 # displays game over screen with play again button
 func _on_planet_destroyed():
+	wave_manager.remove_all_active_enemies()
+	game_over.emit()
 	var game_over_container = Control.new()
 	game_over_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	game_over_container.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	
 	var vbox = VBoxContainer.new()
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	vbox.custom_minimum_size = Vector2(200, 100)
+	
+	var waves_completed = wave_index
+	var is_new_hiscore: bool = false
+	if waves_completed > hiscore:
+		hiscore = waves_completed
+		save_hiscore(hiscore)
+		is_new_hiscore = true
 	
 	var label = Label.new()
 	label.text = "GAME OVER"
@@ -145,21 +169,40 @@ func _on_planet_destroyed():
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
+	var hiscore_label = Label.new()
+	hiscore_label.text = "Hiscore: " + str(hiscore)
+	hiscore_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hiscore_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hiscore_label.modulate = Color(0, 1, 0) if is_new_hiscore else Color(1, 1, 1)
+	
 	var play_again_button = Button.new()
 	play_again_button.text = "Play Again"
 	play_again_button.custom_minimum_size = Vector2(120, 40)
 	play_again_button.pressed.connect(_on_play_again_pressed)
 	
 	vbox.add_child(label)
+	vbox.add_child(hiscore_label)
 	vbox.add_child(play_again_button)
 	game_over_container.add_child(vbox)
 	
-	# Add to UILayer if it exists, otherwise add to self
 	if has_node("UILayer"):
 		$UILayer.add_child(game_over_container)
 	else:
 		add_child(game_over_container)
-
+	
+	# Set pivot to center of the screen and start at 0 scale
+	game_over_container.pivot_offset = get_viewport().get_visible_rect().size / 2
+	game_over_container.scale = Vector2(0, 0)
+	game_over_container.position.x -= vbox.size.x / 2
+	game_over_container.position.y -= vbox.size.y / 2
+	
+	# Tween the entire container
+	var tween = create_tween()
+	tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
+	tween.tween_property(game_over_container, "scale", Vector2(1, 1), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await get_tree().create_timer(0.5).timeout
+	get_tree().paused = true
+	
 # restarts the current scene when play again button is pressed
 func _on_play_again_pressed():
 	get_tree().call_deferred("reload_current_scene")
@@ -225,3 +268,16 @@ func safe_wait(time: float):
 	if not get_tree() or not is_inside_tree():
 		return
 	await get_tree().create_timer(time).timeout
+
+func save_hiscore(value: int) -> void:
+	var save = FileAccess.open("user://hiscore.save", FileAccess.WRITE)
+	save.store_32(value)
+	save.close()
+
+func load_hiscore() -> int:
+	if FileAccess.file_exists("user://hiscore.save"):
+		var save = FileAccess.open("user://hiscore.save", FileAccess.READ)
+		var value = save.get_32()
+		save.close()
+		return value
+	return 0

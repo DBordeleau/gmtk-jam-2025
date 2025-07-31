@@ -80,3 +80,5 @@ color = Color(0, 0, 0, 1)
 
 [node name="MainCamera" type="Camera2D" parent="."]
 position = Vector2(958, 540)
+
+[connection signal="game_over" from="." to="UILayer/WaveUI" method="_on_test_scene_game_over"]

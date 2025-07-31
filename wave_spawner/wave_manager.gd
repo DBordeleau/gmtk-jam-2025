@@ -167,3 +167,7 @@ func safe_wait(time: float):
 	if not get_tree() or not is_inside_tree():
 		return
 	await get_tree().create_timer(time).timeout
+
+func remove_all_active_enemies() -> void:
+	for enemy in active_enemies:
+		enemy.queue_free()

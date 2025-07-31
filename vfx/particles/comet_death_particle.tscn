@@ -30,6 +30,7 @@ scale_curve = SubResource("CurveTexture_2iwyp")
 color_ramp = SubResource("GradientTexture1D_kany1")
 
 [node name="ExplosionVFX" type="GPUParticles2D"]
+process_mode = 3
 self_modulate = Color(0.984314, 0.733333, 0, 1)
 position = Vector2(1, 0)
 emitting = false

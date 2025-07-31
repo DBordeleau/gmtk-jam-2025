@@ -82,3 +82,7 @@ func _update_wave_label_spawning():
 # hide the wave ui when the planet dies
 func _on_planet_destroyed():
 	wave_label.visible = false
+
+
+func _on_test_scene_game_over() -> void:
+	self.hide()
