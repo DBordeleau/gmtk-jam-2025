@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dfg7ai1lcj16x"]
+[gd_scene load_steps=11 format=3 uid="uid://dfg7ai1lcj16x"]
 
 [ext_resource type="Script" uid="uid://cv64aijy47jeg" path="res://user_interface/structure_select_menu.gd" id="1_xd0mh"]
 [ext_resource type="Texture2D" uid="uid://rfdy8b4hu748" path="res://assets/ui_assets/gunship_normal.png" id="2_0rrrl"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cst5d7nvccusr" path="res://assets/ui_assets/gunship_disabled.png" id="5_lcl1m"]
 [ext_resource type="Texture2D" uid="uid://bvloycl7upsha" path="res://assets/ui_assets/slow_trap_normal.png" id="5_uqmgx"]
 [ext_resource type="Texture2D" uid="uid://b61dpuvme65ik" path="res://assets/ui_assets/slow_trap_selected.png" id="6_lcl1m"]
+[ext_resource type="Texture2D" uid="uid://bbjjwydjgjilv" path="res://assets/ui_assets/currency_icon.png" id="6_nco57"]
 [ext_resource type="Texture2D" uid="uid://cgvpovokv62u4" path="res://assets/ui_assets/slow_trap_hovered.png" id="7_ps1ux"]
 [ext_resource type="Texture2D" uid="uid://bxwvw3ga8ya2s" path="res://assets/ui_assets/slow_trap_disabled.png" id="9_ps1ux"]
 
@@ -40,6 +41,26 @@ texture_pressed = ExtResource("3_o0wgx")
 texture_hover = ExtResource("4_dpkj7")
 texture_disabled = ExtResource("5_lcl1m")
 
+[node name="GunshipCoinIcon" type="TextureRect" parent="GunshipButton"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 105.0
+offset_right = 90.0
+offset_bottom = 155.0
+texture = ExtResource("6_nco57")
+expand_mode = 3
+
+[node name="GunshipCostLabel" type="Label" parent="GunshipButton"]
+layout_mode = 0
+offset_left = 101.0
+offset_top = 100.0
+offset_right = 176.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "-20"
+vertical_alignment = 1
+
 [node name="SlowAreaButton" type="TextureButton" parent="."]
 layout_mode = 1
 anchors_preset = 7
@@ -58,3 +79,23 @@ texture_normal = ExtResource("5_uqmgx")
 texture_pressed = ExtResource("6_lcl1m")
 texture_hover = ExtResource("7_ps1ux")
 texture_disabled = ExtResource("9_ps1ux")
+
+[node name="SlowAreaCoinIcon" type="TextureRect" parent="SlowAreaButton"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 105.0
+offset_right = 96.0
+offset_bottom = 155.0
+texture = ExtResource("6_nco57")
+expand_mode = 3
+
+[node name="SlowAreaCostLabel" type="Label" parent="SlowAreaButton"]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 100.0
+offset_right = 180.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "-5"
+vertical_alignment = 1
