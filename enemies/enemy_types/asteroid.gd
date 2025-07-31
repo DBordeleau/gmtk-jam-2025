@@ -1,5 +1,6 @@
 ## Controls behaviour of Asteroids.
 extends Enemy
+class_name Asteroid
 
 @export var target_position: Vector2 = Vector2.ZERO
 var has_collided: bool = false # prevents double damage

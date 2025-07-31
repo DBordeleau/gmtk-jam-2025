@@ -135,7 +135,7 @@ speed = 50.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_dbp21")
 autoplay = "default"
-frame_progress = 0.829833
+frame_progress = 0.211235
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(2.3, 2.3)
