@@ -68,7 +68,11 @@ func update_buttons(currency: int):
 	var gunship_cost = structure_manager.get_structure_cost("Gunship")
 	var slow_area_cost = structure_manager.get_structure_cost("SlowArea")
 	gunship_button.disabled = currency < gunship_cost
+	if gunship_button.disabled:
+		selected_structure_type = ""
 	slow_area_button.disabled = currency < slow_area_cost
+	if slow_area_button.disabled:
+		selected_structure_type = ""
 
 # called when a gunship is placed for the first time
 func unlock_slow_area():

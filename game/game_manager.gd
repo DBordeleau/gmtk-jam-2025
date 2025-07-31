@@ -162,6 +162,10 @@ func _create_preview(type: String) -> Node2D:
 	if preview:
 		if preview.has_node("Sprite"):
 			preview.get_node("Sprite").modulate.a = 0.5
+		if preview.has_node("BodyCollider"):
+			preview.get_node("BodyCollider").disabled = true
+		if preview.has_node("RangeArea"):
+			preview.get_node("RangeArea").monitoring = false
 	return preview
 
 func _update_preview_position() -> void:
