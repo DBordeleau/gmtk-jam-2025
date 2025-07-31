@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=64 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://b6n1uariimoo5" path="res://user_interface/wave_ui.tscn" id="9_716vl"]
 [ext_resource type="PackedScene" uid="uid://b7l1b4j1o0jcm" path="res://user_interface/currency_ui.tscn" id="10_dj236"]
 [ext_resource type="PackedScene" uid="uid://f6v8ljlsk4vw" path="res://structures/scenes/planet.tscn" id="10_jp05k"]
+[ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="11_heu4h"]
 
 [sub_resource type="Resource" id="Resource_heu4h"]
 script = ExtResource("6_jp05k")
@@ -256,6 +257,13 @@ amount = 15
 time = 2.0
 metadata/_custom_type_script = "uid://5vklweqpw355"
 
+[sub_resource type="Resource" id="Resource_7qcux"]
+script = ExtResource("6_jp05k")
+enemy = ExtResource("5_vmnpn")
+amount = 10
+time = 5.0
+metadata/_custom_type_script = "uid://5vklweqpw355"
+
 [sub_resource type="Resource" id="Resource_4t4ws"]
 script = ExtResource("6_jp05k")
 enemy = ExtResource("8_atfu6")
@@ -263,16 +271,9 @@ amount = 10
 time = 10.0
 metadata/_custom_type_script = "uid://5vklweqpw355"
 
-[sub_resource type="Resource" id="Resource_7qcux"]
-script = ExtResource("6_jp05k")
-enemy = ExtResource("5_vmnpn")
-amount = 10
-time = 10.0
-metadata/_custom_type_script = "uid://5vklweqpw355"
-
 [sub_resource type="Resource" id="Resource_avwrd"]
 script = ExtResource("5_716vl")
-enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_r5hm4"), SubResource("Resource_6hugx"), SubResource("Resource_4t4ws"), SubResource("Resource_7qcux")])
+enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_r5hm4"), SubResource("Resource_6hugx"), SubResource("Resource_7qcux"), SubResource("Resource_4t4ws")])
 time_to_next_wave = 10.0
 metadata/_custom_type_script = "uid://dtyeile0inn5h"
 
@@ -294,7 +295,7 @@ metadata/_custom_type_script = "uid://5vklweqpw355"
 script = ExtResource("6_jp05k")
 enemy = ExtResource("5_vmnpn")
 amount = 10
-time = 8.0
+time = 6.0
 metadata/_custom_type_script = "uid://5vklweqpw355"
 
 [sub_resource type="Resource" id="Resource_seti3"]
@@ -328,7 +329,7 @@ metadata/_custom_type_script = "uid://5vklweqpw355"
 script = ExtResource("6_jp05k")
 enemy = ExtResource("5_vmnpn")
 amount = 20
-time = 8.0
+time = 5.0
 metadata/_custom_type_script = "uid://5vklweqpw355"
 
 [sub_resource type="Resource" id="Resource_c46wv"]
@@ -343,6 +344,23 @@ script = ExtResource("5_716vl")
 enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_uc7bg"), SubResource("Resource_4khcg"), SubResource("Resource_qi7o7"), SubResource("Resource_c46wv")])
 time_to_next_wave = 10.0
 metadata/_custom_type_script = "uid://dtyeile0inn5h"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t6ilw"]
+shader = ExtResource("11_heu4h")
+shader_parameter/horizontalMovement = 0.1
+shader_parameter/verticalMovement = 0.1
+shader_parameter/frequencyStar = 0.01
+shader_parameter/sizeStar = 50.0
+shader_parameter/brightnessStar = 1.0
+shader_parameter/shineFrequencyStar = 4.0
+shader_parameter/transparencyStar = 0.0
+shader_parameter/starIterations = 2
+shader_parameter/frequencyBgStar = 0.996
+shader_parameter/shineFrequencyBgStar = 1.0
+shader_parameter/transparencyBgStar = 0.3
+shader_parameter/colorBackground = Color(0, 0, 0, 1)
+shader_parameter/transparencyBackground = 0.0
+shader_parameter/seed = 12.0
 
 [node name="TestScene" type="Node2D"]
 script = ExtResource("1_f14q8")
@@ -372,6 +390,7 @@ offset_bottom = 132.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -10
+material = SubResource("ShaderMaterial_t6ilw")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
