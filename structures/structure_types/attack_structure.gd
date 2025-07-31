@@ -23,6 +23,7 @@ func _process(delta):
 func _draw():
 	# Draw attack range as a red circle
 	draw_circle(Vector2.ZERO, attack_range, Color(1, 0, 0, 0.5))
+	#draw_arc(Vector2.ZERO, attack_range, 0, TAU, 64, Color(1, 0, 0, 0.5), 2.0)
 
 func take_damage(amount: float) -> void:
 	health -= amount

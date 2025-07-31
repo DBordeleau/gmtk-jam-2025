@@ -2832,6 +2832,7 @@ autoplay = "default"
 frame_progress = 0.151393
 
 [node name="Healthbar" type="ProgressBar" parent="."]
+z_index = 2
 offset_left = -142.0
 offset_top = 140.0
 offset_right = 158.0

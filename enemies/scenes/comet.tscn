@@ -50,6 +50,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_e84k3"]
 
 [node name="Comet" type="CharacterBody2D"]
+z_index = 3
 collision_layer = 2
 script = ExtResource("1_b77yq")
 death_particles = ExtResource("2_csq7m")
