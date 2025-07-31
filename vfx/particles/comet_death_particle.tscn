@@ -24,8 +24,8 @@ angular_velocity_max = 180.0
 radial_velocity_min = -2.23517e-05
 radial_velocity_max = 20.0
 gravity = Vector3(0, 0, 0)
-scale_min = 10.0
-scale_max = 10.0
+scale_min = 4.0
+scale_max = 4.0
 scale_curve = SubResource("CurveTexture_2iwyp")
 color_ramp = SubResource("GradientTexture1D_kany1")
 
