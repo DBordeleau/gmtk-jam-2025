@@ -193,13 +193,13 @@ func _on_planet_destroyed():
 	# Set pivot to center of the screen and start at 0 scale
 	game_over_container.pivot_offset = get_viewport().get_visible_rect().size / 2
 	game_over_container.scale = Vector2(0, 0)
-	game_over_container.position.x -= vbox.size.x / 2
-	game_over_container.position.y -= vbox.size.y / 2
+	game_over_container.position.x -= vbox.size.x
+	game_over_container.position.y -= vbox.size.y
 	
 	# Tween the entire container
 	var tween = create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
-	tween.tween_property(game_over_container, "scale", Vector2(1, 1), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(game_over_container, "scale", Vector2(2, 2), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(0.5).timeout
 	get_tree().paused = true
 	
