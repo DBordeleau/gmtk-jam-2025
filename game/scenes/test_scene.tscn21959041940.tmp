@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=15 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
@@ -14,14 +14,27 @@
 [sub_resource type="Resource" id="Resource_dj236"]
 script = ExtResource("6_jp05k")
 enemy = ExtResource("5_vmnpn")
-amount = 1
-time = 1.0
+amount = 5
+time = 2.0
 metadata/_custom_type_script = "uid://5vklweqpw355"
 
 [sub_resource type="Resource" id="Resource_atfu6"]
 script = ExtResource("5_716vl")
 enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_dj236")])
-time_to_next_wave = 2.0
+time_to_next_wave = 10.0
+metadata/_custom_type_script = "uid://dtyeile0inn5h"
+
+[sub_resource type="Resource" id="Resource_716vl"]
+script = ExtResource("6_jp05k")
+enemy = ExtResource("5_vmnpn")
+amount = 5
+time = 2.0
+metadata/_custom_type_script = "uid://5vklweqpw355"
+
+[sub_resource type="Resource" id="Resource_jp05k"]
+script = ExtResource("5_716vl")
+enemy_sequences = Array[ExtResource("6_jp05k")]([SubResource("Resource_716vl")])
+time_to_next_wave = 0.0
 metadata/_custom_type_script = "uid://dtyeile0inn5h"
 
 [node name="TestScene" type="Node2D"]
@@ -36,7 +49,7 @@ metadata/_custom_type_script = "uid://do6h34ao68sxk"
 
 [node name="WaveManager" type="Node" parent="."]
 script = ExtResource("4_ny0yt")
-waves = Array[ExtResource("5_716vl")]([SubResource("Resource_atfu6"), SubResource("Resource_atfu6"), SubResource("Resource_atfu6"), SubResource("Resource_atfu6"), SubResource("Resource_atfu6"), SubResource("Resource_atfu6")])
+waves = Array[ExtResource("5_716vl")]([SubResource("Resource_atfu6"), SubResource("Resource_jp05k")])
 metadata/_custom_type_script = "uid://c1v17ry0g2y7i"
 
 [node name="UILayer" type="CanvasLayer" parent="."]

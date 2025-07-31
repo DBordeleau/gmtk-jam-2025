@@ -4,32 +4,54 @@ extends Node2D
 
 var structures: Array = []
 var orbit_center: Vector2 = Vector2.ZERO
-var orbit_radius: float = 350.0 # should this be dynamic to match different display sizes or will it affect gameplay??
-var orbit_direction: int = 1 # 1 for clockwise, -1 for counter-clockwise
+
+# start with one ring with a radius of 350
+var orbit_radii: Array[float] = [350.0]
+var orbit_direction: int = 1
 
 # sets orbit to center of the screen
 func _ready():
 	var viewport = get_viewport()
 	orbit_center = viewport.get_visible_rect().size / 2
-	queue_redraw()  # Fixed: replaced update() with queue_redraw()
+	queue_redraw()
 	
 # adds a reference to the structure to the structures array
 # also calculates an initial angle for it based on its position
-func add_structure(structure: Structure) -> void:
+func add_structure(structure: Structure, orbit_idx: int) -> void:
 	if structure.is_orbital:
+		var radius = orbit_radii[orbit_idx]
 		var direction = (structure.position - orbit_center).normalized()
 		var angle = atan2(direction.y, direction.x)
 		structure.set("orbit_angle", angle)
+		structure.set("orbit_radius", radius)
+		structure.set("orbit_idx", orbit_idx)
 		structures.append(structure)
+
+# adds another orbital ring
+func add_orbit(radius: float) -> void:
+	orbit_radii.append(radius)
+	queue_redraw()
+
+# returns the orbit that is closest to the mouse
+func get_closest_orbit(mouse_pos: Vector2) -> int:
+	var min_dist = INF
+	var closest_idx = 0
+	for i in orbit_radii.size():
+		var dist = abs(mouse_pos.distance_to(orbit_center) - orbit_radii[i])
+		if dist < min_dist:
+			min_dist = dist
+			closest_idx = i
+	return closest_idx
 
 # called every frame to smoothly animate structures along the orbital path
 func _process(delta):
 	for structure in structures:
 		if structure.is_orbital:
 			var angle = structure.get("orbit_angle")
+			var radius = structure.get("orbit_radius")
 			angle += delta * structure.speed * orbit_direction
 			structure.set("orbit_angle", angle)
-			structure.position = orbit_center + Vector2(cos(angle), sin(angle)) * orbit_radius
+			structure.position = orbit_center + Vector2(cos(angle), sin(angle)) * radius
 			
 # moves all existing structures along the orbital path
 func update_positions() -> void:
@@ -38,7 +60,7 @@ func update_positions() -> void:
 		if structure.is_orbital:
 			# Evenly distribute structures around the orbit
 			var angle = (float(i) / structures.size()) * TAU
-			var pos = orbit_center + Vector2(cos(angle), sin(angle)) * orbit_radius
+			var pos = orbit_center + Vector2(cos(angle), sin(angle)) * orbit_radii[i]
 			structure.position = pos
 
 # called by game_manager when the player does the reverse_orbit input action
@@ -48,12 +70,13 @@ func reverse_orbit() -> void:
 # draw a grey circle to indicate path (temporary)
 func _draw():
 	var segments := 128
-	draw_arc(
-		orbit_center,
-		orbit_radius,
-		0,
-		TAU,
-		segments,
-		Color(1, 1, 1, 1),
-		2.0 # thickness
-	)
+	for radius in orbit_radii:
+		draw_arc(
+			orbit_center,
+			radius,
+			0,
+			TAU,
+			segments,
+			Color(1, 1, 1, 1),
+			2.0
+		)
