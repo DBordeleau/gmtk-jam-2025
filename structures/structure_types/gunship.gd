@@ -4,6 +4,8 @@ class_name Gunship
 
 var target_enemy: Enemy = null
 @onready var attack_particles: GPUParticles2D = $gunship_attack_vfx
+@onready var attack_sfx: AudioStreamPlayer = $AttackSFX
+@onready var death_sfx: AudioStreamPlayer = $DeathSFX
 
 func update(delta: float) -> void:
 	cooldown_timer -= delta
@@ -37,6 +39,7 @@ func attack() -> void:
 	if target_enemy and position.distance_to(target_enemy.position) <= attack_range:
 		if target_enemy.has_method("take_damage"):
 			attack_particles.emitting = true
+			attack_sfx.play()
 			target_enemy.take_damage(damage)
 
 func take_damage(amount: float) -> void:
@@ -47,6 +50,13 @@ func take_damage(amount: float) -> void:
 		particle.position = global_position
 		particle.rotation = global_rotation
 		particle.emitting = true
+		if death_sfx:
+			# Detach the audio player so it can finish playing
+			death_sfx.get_parent().remove_child(death_sfx)
+			get_tree().current_scene.add_child(death_sfx)
+			death_sfx.play()
+			# Optionally, queue_free the audio player after it finishes
+			death_sfx.finished.connect(func(): death_sfx.queue_free())
 		get_tree().current_scene.add_child(particle)
 		var parent = get_parent()
 		print(parent)

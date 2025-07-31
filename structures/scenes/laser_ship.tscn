@@ -1,9 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://ce5olky2vsswt"]
+[gd_scene load_steps=12 format=3 uid="uid://ce5olky2vsswt"]
 
 [ext_resource type="Script" uid="uid://m42vmgjal1ja" path="res://structures/structure_types/multitarget_laser_ship.gd" id="1_4ebf1"]
 [ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_4763s"]
 [ext_resource type="PackedScene" uid="uid://bl2u3r721kk5s" path="res://vfx/vfx_scenes/laser_beam_scene.tscn" id="3_6envv"]
 [ext_resource type="Texture2D" uid="uid://3nouc118l0lf" path="res://assets/structure_assets/laser_asset.png" id="3_ie8yp"]
+[ext_resource type="AudioStream" uid="uid://byhtpx5iwbec4" path="res://assets/sound/sfx/laser_buzz_sfx.ogg" id="5_i0w8m"]
+[ext_resource type="AudioStream" uid="uid://cx0it8g047dkk" path="res://assets/sound/sfx/retro_explode_sfx_1.wav" id="6_xv7uo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6envv"]
 atlas = ExtResource("3_ie8yp")
@@ -68,5 +70,13 @@ visible = false
 position = Vector2(0, 9)
 scale = Vector2(2.394, 2.394)
 shape = SubResource("CircleShape2D_pbwok")
+
+[node name="AttackSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_i0w8m")
+volume_db = -15.0
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_xv7uo")
+volume_db = -20.0
 
 [editable path="LaserSystem"]

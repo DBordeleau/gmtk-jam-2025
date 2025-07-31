@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dfg7ai1lcj16x"]
+[gd_scene load_steps=16 format=3 uid="uid://dfg7ai1lcj16x"]
 
 [ext_resource type="Script" uid="uid://cv64aijy47jeg" path="res://user_interface/structure_select_menu.gd" id="1_xd0mh"]
 [ext_resource type="Texture2D" uid="uid://rfdy8b4hu748" path="res://assets/ui_assets/gunship_normal.png" id="2_0rrrl"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bx6vwwsdpwux0" path="res://assets/ui_assets/laser_ship_selected.png" id="12_xr021"]
 [ext_resource type="Texture2D" uid="uid://ybhe3mvsfuve" path="res://assets/ui_assets/laser_ship_hovered.png" id="13_oajxv"]
 [ext_resource type="Texture2D" uid="uid://738jmjul5ody" path="res://assets/ui_assets/laser_ship_disabled.png" id="14_c00uv"]
+[ext_resource type="AudioStream" uid="uid://dbr4ol4k8xoqm" path="res://assets/sound/sfx/ui_click_sfx_2.wav" id="15_xr021"]
 
 [node name="StructureSelectMenu" type="Control"]
 layout_mode = 3
@@ -155,3 +156,7 @@ theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 40
 text = "-30"
 vertical_alignment = 1
+
+[node name="ToggleSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_xr021")
+volume_db = -20.0

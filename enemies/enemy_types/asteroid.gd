@@ -47,4 +47,5 @@ func die():
 	particle.rotation = global_rotation
 	particle.emitting = true
 	get_tree().current_scene.add_child(particle)
+	death_sfx.play()
 	super.die()

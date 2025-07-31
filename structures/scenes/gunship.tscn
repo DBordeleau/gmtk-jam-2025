@@ -1,9 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bdcdly0djodn7"]
+[gd_scene load_steps=16 format=3 uid="uid://bdcdly0djodn7"]
 
 [ext_resource type="Script" uid="uid://km6176lmup32" path="res://structures/structure_types/gunship.gd" id="1_7kxgk"]
 [ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_lialb"]
 [ext_resource type="Texture2D" uid="uid://pkm2mlm1xeq1" path="res://assets/structure_assets/test_ship.png" id="2_pbwok"]
 [ext_resource type="PackedScene" uid="uid://cckyy2ok8iyqt" path="res://vfx/particles/gunship_attack_particle.tscn" id="3_pbwok"]
+[ext_resource type="AudioStream" uid="uid://bcx0kchvh3846" path="res://assets/sound/sfx/laser_shot_sfx_1.wav" id="5_o0aor"]
+[ext_resource type="AudioStream" uid="uid://cx0it8g047dkk" path="res://assets/sound/sfx/retro_explode_sfx_1.wav" id="6_0n36y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nl6ka"]
 atlas = ExtResource("2_pbwok")
@@ -91,3 +93,11 @@ position = Vector2(-1, -36)
 position = Vector2(0, 1)
 scale = Vector2(2.14563, 2.14563)
 shape = SubResource("CircleShape2D_pbwok")
+
+[node name="AttackSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_o0aor")
+volume_db = -30.0
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_0n36y")
+volume_db = -20.0

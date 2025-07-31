@@ -134,6 +134,7 @@ func _unhandled_input(event):
 		if new_structure:
 			currency -= structure_cost
 			update_currency_ui()
+			structure_menu.unpress_buttons()
 			# increase gunship cost when placing a gunship
 			if structure_menu.selected_structure_type == "Gunship":
 				var new_cost = structure_cost + 10

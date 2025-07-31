@@ -27,15 +27,16 @@ var is_visible_on_screen: bool = false
 var menu_width: int = 400
 
 @onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
-
+@onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
 
 # Sets the buttons to be in toggle mode, connects their signals, and makes them unpressed by default
 # hides the slow area button by default until the player places a gunship
 func _ready():
 	var children = get_children()
-	for child: TextureButton in children:
-		child.toggle_mode = true
-		child.button_pressed = false
+	for child in children:
+		if child is TextureButton:
+			child.toggle_mode = true
+			child.button_pressed = false
 
 	gunship_button.pressed.connect(_on_gunship_button_pressed)
 	slow_area_button.pressed.connect(_on_slow_area_button_pressed)
@@ -152,6 +153,7 @@ func animate_menu_out():
 
 func toggle_menu():
 	print("Toggle menu called. Currently visible: ", is_visible_on_screen)
+	toggle_sfx.play()
 	if is_visible_on_screen:
 		print("Animating menu off screen")
 		animate_menu_out()
@@ -167,3 +169,9 @@ func update_for_camera_zoom():
 		var menu_width = size.x
 		position = Vector2(viewport_size.x - menu_width - 10, position.y)
 	# If menu is off-screen, it will be positioned correctly when animated in
+
+# called by GameManager to deselect all buttons
+func unpress_buttons():
+	gunship_button.button_pressed = false
+	laser_ship_button.button_pressed = false
+	slow_area_button.button_pressed = false

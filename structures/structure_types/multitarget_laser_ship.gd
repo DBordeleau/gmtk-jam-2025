@@ -16,6 +16,9 @@ var ready_to_fire: bool = true
 @onready var range_area: Area2D = $Range
 @onready var laser_system: LaserSystem = $LaserSystem
 
+@onready var attack_sfx: AudioStreamPlayer = $AttackSFX
+@onready var death_sfx: AudioStreamPlayer = $DeathSFX
+
 func _ready() -> void:
 	super._ready()
 	
@@ -71,6 +74,8 @@ func fire_at_all_targets() -> void:
 	# Use LaserSystem to create lasers with particles
 	laser_system.target_enemies(enemies_in_range)
 	
+	attack_sfx.play()
+	
 	# Deal damage to all enemies
 	for enemy in enemies_in_range:
 		if is_instance_valid(enemy):
@@ -97,7 +102,6 @@ func deal_damage_to_enemy(enemy: Node2D) -> void:
 
 # Override the base attack method - we handle our own timing now
 func attack() -> void:
-	# This method is no longer used since we handle timing differently
 	pass
 
 func take_damage(amount: float) -> void:
@@ -109,6 +113,13 @@ func take_damage(amount: float) -> void:
 		particle.rotation = global_rotation
 		particle.emitting = true
 		get_tree().current_scene.add_child(particle)
+		if death_sfx:
+			# Detach the audio player so it can finish playing
+			death_sfx.get_parent().remove_child(death_sfx)
+			get_tree().current_scene.add_child(death_sfx)
+			death_sfx.play()
+			# Optionally, queue_free the audio player after it finishes
+			death_sfx.finished.connect(func(): death_sfx.queue_free())
 		var parent = get_parent()
 		print(parent)
 		if parent and parent.has_method("remove_structure"):

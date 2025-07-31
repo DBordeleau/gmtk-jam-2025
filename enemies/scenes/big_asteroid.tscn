@@ -1,9 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://dmffx26wnx5hv"]
+[gd_scene load_steps=24 format=3 uid="uid://dmffx26wnx5hv"]
 
 [ext_resource type="Script" uid="uid://bdfctct8k6vxb" path="res://enemies/enemy_types/big_asteroid.gd" id="1_ak75m"]
 [ext_resource type="PackedScene" uid="uid://ckk2w6kcc2swe" path="res://vfx/particles/big_asteroid_damage_particle.tscn" id="2_e8qss"]
 [ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_vmogb"]
 [ext_resource type="Texture2D" uid="uid://cxmsprn3yoma" path="res://assets/enemy_assets/animated_asteroid.png" id="3_e8qss"]
+[ext_resource type="AudioStream" uid="uid://cglplt55i88sa" path="res://assets/sound/sfx/rock_explode_sfx.wav" id="5_e8qss"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dwjfg"]
 atlas = ExtResource("3_e8qss")
@@ -146,3 +147,7 @@ frame_progress = 0.211235
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(5.15809, 5.15809)
 shape = SubResource("CircleShape2D_e84k3")
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_e8qss")
+volume_db = -20.0

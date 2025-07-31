@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cwa6b6hm35i5n"]
+[gd_scene load_steps=12 format=3 uid="uid://cwa6b6hm35i5n"]
 
 [ext_resource type="Script" uid="uid://dt82mpyc2q05k" path="res://enemies/enemy_types/comet.gd" id="1_b77yq"]
 [ext_resource type="PackedScene" uid="uid://bk60q1a82a1w6" path="res://vfx/particles/comet_death_particle.tscn" id="2_csq7m"]
 [ext_resource type="Texture2D" uid="uid://c6lt0e0jwcyjt" path="res://assets/enemy_assets/comet_spritesheet.png" id="3_csq7m"]
+[ext_resource type="AudioStream" uid="uid://cglplt55i88sa" path="res://assets/sound/sfx/rock_explode_sfx.wav" id="4_ekrm3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekrm3"]
 atlas = ExtResource("3_csq7m")
@@ -65,3 +66,7 @@ frame_progress = 0.246593
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(2.3, 2.3)
 shape = SubResource("CircleShape2D_e84k3")
+
+[node name="DeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ekrm3")
+volume_db = -20.0
