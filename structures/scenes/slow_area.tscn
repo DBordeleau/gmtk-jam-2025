@@ -9,7 +9,7 @@
 script = ExtResource("1_5d1ou")
 cost = 5
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 rotation = 0.0170087
 scale = Vector2(0.832232, 0.832232)
 texture = ExtResource("2_v78ej")

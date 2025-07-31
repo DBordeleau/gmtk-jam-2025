@@ -1,6 +1,8 @@
 ## Control node that manages toggle buttons for placing structures
 extends Control
 
+signal structure_type_selected(type: String)
+
 # string for now but we should use something better so we can more easily access properties of the selected structure type
 # like if it is orbital or not
 var selected_structure_type: String = ""
@@ -25,25 +27,32 @@ func _ready():
 	slow_area_button.pressed.connect(_on_slow_area_button_pressed)
 
 	slow_area_button.visible = false # Hide by default
+	#gunship_button.button_pressed = true
+	#structure_type_selected.emit("Gunship")
 
 # Every pressed function should set the selected struct type and disable all other buttons
 func _on_gunship_button_pressed():
 	if gunship_button.button_pressed:
 		selected_structure_type = "Gunship"
 		slow_area_button.button_pressed = false
+		structure_type_selected.emit("Gunship")
 	else:
 		selected_structure_type = ""
+		structure_type_selected.emit("")
+		
 
 func _on_slow_area_button_pressed():
 	if slow_area_button.button_pressed:
 		selected_structure_type = "SlowArea"
 		gunship_button.button_pressed = false
+		structure_type_selected.emit("SlowArea")
 	else:
 		selected_structure_type = ""
-
+		structure_type_selected.emit("")
+		
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
-	gunship_button.disabled = currency < 1
+	gunship_button.disabled = currency < 20
 	slow_area_button.disabled = currency < 5
 
 # called when a gunship is placed for the first time

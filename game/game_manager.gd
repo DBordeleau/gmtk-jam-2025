@@ -18,12 +18,16 @@ var wave_index: int = 0
 var current_zoom: Vector2 = Vector2(1.0, 1.0)
 var current_orbit: float = 350.0
 
+var preview_instance: Node2D = null
+var preview_type: String = ""
+
 # connects to wave manager signals and planet death signal for game over
 func _ready():
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
 	wave_manager.start_wave(wave_index)
 	planet.planet_destroyed.connect(_on_planet_destroyed)
+	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	update_currency_ui()
 
 # starts the delay timer before starting the next wave
@@ -61,6 +65,7 @@ func _show_victory_screen():
 
 func _process(delta):
 	structure_manager.update_all(delta)
+	_update_preview_position()
 
 # On left click it places a structure, orbital structures are added to the orbit manager and snap to the path
 # SPACE = Reverse orbit direction
@@ -110,6 +115,7 @@ func _unhandled_input(event):
 		if new_structure:
 			currency -= structure_cost
 			update_currency_ui()
+			_remove_preview()
 
 # called when planet health reaches 0
 # displays game over screen
@@ -131,3 +137,42 @@ func update_currency_ui():
 func _on_enemy_killed():
 	currency += 1
 	update_currency_ui()
+
+func _on_structure_type_selected(type: String) -> void:
+	_remove_preview()
+	if type == "":
+		return
+	preview_type = type
+	preview_instance = _create_preview(type)
+	add_child(preview_instance)
+	
+func _create_preview(type: String) -> Node2D:
+	var preview: Node2D = null
+	match type:
+		"Gunship":
+			preview = preload("res://structures/scenes/gunship.tscn").instantiate()
+		"SlowArea":
+			preview = preload("res://structures/scenes/slow_area.tscn").instantiate()
+	if preview:
+		if preview.has_node("Sprite"):
+			preview.get_node("Sprite").modulate.a = 0.5
+	return preview
+
+func _update_preview_position() -> void:
+	if not preview_instance or preview_type == "":
+		return
+	var mouse_pos = camera.get_global_mouse_position()
+	if preview_type == "Gunship":
+		var center = orbit_manager.orbit_center
+		var orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
+		var radius = orbit_manager.orbit_radii[orbit_idx]
+		var direction = (mouse_pos - center).normalized()
+		preview_instance.position = center + direction * radius
+	elif preview_type == "SlowArea":
+		preview_instance.position = mouse_pos
+
+func _remove_preview():
+	if preview_instance:
+		preview_instance.queue_free()
+		preview_instance = null
+		preview_type = ""
