@@ -7,7 +7,6 @@ signal wave_spawning_finished
 signal enemy_spawned
 signal enemy_killed
 
-@export var waves: Array[Wave] = []
 @export var spawn_interval: float = 0.5 # seconds between individual enemy spawns
 @export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 
