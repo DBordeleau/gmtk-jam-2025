@@ -10,7 +10,11 @@ var selected_structure_type: String = ""
 @onready var gunship_button: TextureButton = $GunshipButton
 @onready var slow_area_button: TextureButton = $SlowAreaButton
 
+# player cant place a slow area until first placing a gunship
+var slow_area_unlocked: bool = false
+
 # Sets the buttons to be in toggle mode, connects their signals, and makes them unpressed by default
+# hides the slow area button by default until the player places a gunship
 func _ready():
 	var children = get_children()
 	for child: TextureButton in children:
@@ -19,6 +23,8 @@ func _ready():
 
 	gunship_button.pressed.connect(_on_gunship_button_pressed)
 	slow_area_button.pressed.connect(_on_slow_area_button_pressed)
+
+	slow_area_button.visible = false # Hide by default
 
 # Every pressed function should set the selected struct type and disable all other buttons
 func _on_gunship_button_pressed():
@@ -39,3 +45,8 @@ func _on_slow_area_button_pressed():
 func update_buttons(currency: int):
 	gunship_button.disabled = currency < 20
 	slow_area_button.disabled = currency < 5
+
+# called when a gunship is placed for the first time
+func unlock_slow_area():
+	slow_area_button.visible = true
+	slow_area_unlocked = true

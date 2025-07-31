@@ -105,6 +105,8 @@ func _unhandled_input(event):
 		var new_structure = structure_manager.place_structure(structure_menu.selected_structure_type, snapped_pos, is_orbital, orbit_idx)
 		if is_orbital and new_structure:
 			orbit_manager.add_structure(new_structure, orbit_idx)
+			if not structure_menu.slow_area_unlocked:
+				structure_menu.unlock_slow_area()
 		if new_structure:
 			currency -= structure_cost
 			update_currency_ui()
