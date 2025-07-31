@@ -43,7 +43,7 @@ func _on_slow_area_button_pressed():
 
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
-	gunship_button.disabled = currency < 20
+	gunship_button.disabled = currency < 1
 	slow_area_button.disabled = currency < 5
 
 # called when a gunship is placed for the first time

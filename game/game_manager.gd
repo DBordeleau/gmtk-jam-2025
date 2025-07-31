@@ -15,6 +15,9 @@ var currency: int = 20
 
 var wave_index: int = 0
 
+var current_zoom: Vector2 = Vector2(1.0, 1.0)
+var current_orbit: float = 350.0
+
 # connects to wave manager signals and planet death signal for game over
 func _ready():
 	wave_manager.wave_completed.connect(_on_wave_completed)
@@ -28,18 +31,15 @@ func _ready():
 # adds 2nd ring after wave 5
 func _on_wave_completed():
 	wave_index += 1
-	if wave_index == 5:
-		await _zoom_camera_smoothly(Vector2(0.7, 0.7), 1.0) # zoom camera out for new ring
-		orbit_manager.add_orbit(550.0) # add 2nd ring after wave 5
-	if wave_index == 10:
-		await _zoom_camera_smoothly(Vector2(0.5, 0.5), 1.0) # zoom camera out for new ring
-		orbit_manager.add_orbit(800.0) # add 3rd ring after wave 10
-	if wave_index < wave_manager.waves.size():
-		var delay = wave_manager.waves[wave_index - 1].time_to_next_wave
-		await get_tree().create_timer(delay).timeout
-		wave_manager.start_wave(wave_index)
-	else:
-		_show_victory_screen()
+	# Add a ring and zoom out every 5 waves
+	if wave_index % 5 == 0:
+		current_zoom = current_zoom * 0.7
+		await _zoom_camera_smoothly(current_zoom, 1.0)
+		current_orbit = current_orbit * 1.5
+		orbit_manager.add_orbit(current_orbit)
+	var delay = wave_manager.get_next_wave_delay()
+	await get_tree().create_timer(delay).timeout
+	wave_manager.start_wave(wave_index)
 
 func _zoom_camera_smoothly(target_zoom: Vector2, duration: float) -> void:
 	var start_zoom = camera.zoom
