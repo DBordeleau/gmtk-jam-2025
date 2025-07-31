@@ -39,6 +39,7 @@ func _on_wave_completed():
 	if wave_index % 5 == 0:
 		current_zoom = current_zoom * 0.7
 		await _zoom_camera_smoothly(current_zoom, 1.0)
+		structure_menu.update_for_camera_zoom()
 		current_orbit = current_orbit * 1.5
 		orbit_manager.add_orbit(current_orbit)
 	var delay = wave_manager.get_next_wave_delay()
@@ -72,6 +73,9 @@ func _process(delta):
 func _unhandled_input(event):
 	if event.is_action_pressed("reverse_orbit"):
 		orbit_manager.reverse_orbit()
+		
+	if event.is_action_pressed("toggle_structure_select_menu"):
+		structure_menu.toggle_menu()
 		
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if structure_menu.selected_structure_type == "":
