@@ -37,7 +37,7 @@ func attack() -> void:
 	if target_enemy and position.distance_to(target_enemy.position) <= attack_range:
 		if target_enemy.has_method("take_damage"):
 			attack_particles.emitting = true
-			#target_enemy.take_damage(damage)
+			target_enemy.take_damage(damage)
 
 func take_damage(amount: float) -> void:
 	health -= amount

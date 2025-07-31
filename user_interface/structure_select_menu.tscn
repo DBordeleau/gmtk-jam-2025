@@ -23,6 +23,7 @@ offset_top = -1080.0
 offset_right = 2420.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 script = ExtResource("1_xd0mh")
 
 [node name="GunshipButton" type="TextureButton" parent="."]
@@ -50,6 +51,7 @@ offset_left = 215.0
 offset_top = 23.0
 offset_right = 265.0
 offset_bottom = 73.0
+mouse_filter = 2
 texture = ExtResource("6_nco57")
 expand_mode = 3
 
@@ -91,6 +93,7 @@ offset_left = 215.0
 offset_top = 26.0
 offset_right = 265.0
 offset_bottom = 76.0
+mouse_filter = 2
 texture = ExtResource("6_nco57")
 expand_mode = 3
 

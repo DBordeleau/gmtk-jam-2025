@@ -36,6 +36,8 @@ func _ready():
 # adds 2nd ring after wave 5
 func _on_wave_completed():
 	wave_index += 1
+	currency += 5 + wave_index
+	update_currency_ui()
 	# Add a ring and zoom out every 5 waves
 	if wave_index % 5 == 0:
 		current_zoom = current_zoom * 0.7
