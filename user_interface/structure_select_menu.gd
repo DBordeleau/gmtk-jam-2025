@@ -42,6 +42,7 @@ func _ready():
 	laser_ship_button.pressed.connect(_on_laser_ship_button_pressed)
 
 	slow_area_button.visible = false # Hide by default
+	laser_ship_button.visible = false # Hide by default
 	await get_tree().process_frame
 	_update_menu_position(true)
 
@@ -94,6 +95,7 @@ func update_buttons(currency: int):
 # called when a gunship is placed for the first time
 func unlock_slow_area():
 	slow_area_button.visible = true
+	laser_ship_button.visible = true
 	slow_area_unlocked = true
 
 func _update_menu_position(off_screen: bool):

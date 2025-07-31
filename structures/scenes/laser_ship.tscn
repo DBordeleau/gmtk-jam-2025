@@ -48,7 +48,7 @@ speed = 0.6
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_i0w8m")
 autoplay = "default"
-frame_progress = 0.761348
+frame_progress = 0.449491
 
 [node name="Range" type="Area2D" parent="."]
 collision_mask = 2
