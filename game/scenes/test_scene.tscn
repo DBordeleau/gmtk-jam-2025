@@ -370,12 +370,6 @@ offset_bottom = 132.0
 
 [node name="WaveUI" parent="UILayer" instance=ExtResource("9_716vl")]
 
-[node name="CurrencyUI" parent="UILayer" instance=ExtResource("10_dj236")]
-offset_left = -1001.0
-offset_top = 331.0
-offset_right = -1001.0
-offset_bottom = 331.0
-
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -10
 anchors_preset = 15
@@ -392,6 +386,12 @@ mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
 [node name="Planet" parent="." instance=ExtResource("10_jp05k")]
+
+[node name="CurrencyUI" parent="Planet" instance=ExtResource("10_dj236")]
+offset_left = -29.0
+offset_top = -234.0
+offset_right = -29.0
+offset_bottom = -234.0
 
 [node name="MainCamera" type="Camera2D" parent="."]
 position = Vector2(958, 540)

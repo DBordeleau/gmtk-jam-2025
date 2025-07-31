@@ -10,7 +10,7 @@ extends Node2D
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
 
-@onready var currency_ui: Control = $UILayer/CurrencyUI
+@onready var currency_ui: Control = $Planet/CurrencyUI
 var currency: int = 20
 
 var wave_index: int = 0
