@@ -10,7 +10,7 @@ var structures: Array = []
 # Called by the GameManager if the user left clicks with a structure selected
 # Adds the placed structure to the array, adds it to the structure group and then adds it to the scene
 # returns the placed structure
-func place_structure(type: String, position: Vector2, is_orbital: bool) -> Structure:
+func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_idx: int = 0) -> Structure:
 	var structure: Structure = null
 
 	match type:
@@ -19,10 +19,10 @@ func place_structure(type: String, position: Vector2, is_orbital: bool) -> Struc
 			var temp_structure = structure_scene.instantiate()
 			# Prevent overlapping gunships
 			for existing in structures:
-				if existing is Gunship and temp_structure is Gunship:
+				if existing is Gunship and temp_structure is Gunship and existing.is_orbital and existing.orbit_idx == orbit_idx:
 					var min_dist = existing.attack_range + temp_structure.attack_range
 					if position.distance_to(existing.position) < min_dist:
-						print("Cannot place Gunship: too close to another Gunship.")
+						print("Cannot place Gunship: too close to another Gunship on the same orbit.")
 						return
 			structure = temp_structure
 		"SlowArea":
@@ -39,6 +39,7 @@ func place_structure(type: String, position: Vector2, is_orbital: bool) -> Struc
 	if structure:
 		structure.position = position
 		structure.is_orbital = is_orbital
+		structure.orbit_idx = orbit_idx
 		structures.append(structure)
 		add_child(structure)
 		return structure

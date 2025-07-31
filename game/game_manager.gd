@@ -23,9 +23,9 @@ func _ready():
 # adds 2nd ring after wave 5
 func _on_wave_completed():
 	wave_index += 1
-	if wave_index == 5:
+	if wave_index == 1:
 		await _zoom_camera_smoothly(Vector2(0.7, 0.7), 1.0) # zoom camera out for new ring
-		orbit_manager.add_orbit(500.0) # add new ring fter wave 5
+		orbit_manager.add_orbit(550.0) # add new ring fter wave 5
 	if wave_index < wave_manager.waves.size():
 		var delay = wave_manager.waves[wave_index - 1].time_to_next_wave
 		await get_tree().create_timer(delay).timeout
@@ -56,7 +56,7 @@ func _process(delta):
 
 # On left click it places a structure, orbital structures are added to the orbit manager and snap to the path
 # SPACE = Reverse orbit direction
-func _unhandled_input(event):  # _unhandled_input automatically ignores input into the selection menu for us
+func _unhandled_input(event):
 	if event.is_action_pressed("reverse_orbit"):
 		orbit_manager.reverse_orbit()
 		
@@ -67,12 +67,12 @@ func _unhandled_input(event):  # _unhandled_input automatically ignores input in
 		var mouse_pos = get_viewport().get_mouse_position()
 		var snapped_pos: Vector2
 		var is_orbital := false
+		var orbit_idx := 0 
 
-		# Only snap to orbit if the selected structure is orbital
+		# only snap to orbit if the selected structure is orbital
 		if structure_menu.selected_structure_type == "Gunship":
 			var center = orbit_manager.orbit_center
-			var mouse_dist = mouse_pos.distance_to(center)
-			var orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
+			orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
 			var radius = orbit_manager.orbit_radii[orbit_idx]
 			var direction = (mouse_pos - center).normalized()
 			snapped_pos = center + direction * radius
@@ -80,10 +80,11 @@ func _unhandled_input(event):  # _unhandled_input automatically ignores input in
 		else:
 			snapped_pos = mouse_pos
 			is_orbital = false
+			orbit_idx = 0 # default for non-orbital
 
-		var new_structure = structure_manager.place_structure(structure_menu.selected_structure_type, snapped_pos, is_orbital)
+		var new_structure = structure_manager.place_structure(structure_menu.selected_structure_type, snapped_pos, is_orbital, orbit_idx)
 		if is_orbital and new_structure:
-			orbit_manager.add_structure(new_structure, new_structure.orbit_idx)
+			orbit_manager.add_structure(new_structure, orbit_idx)
 
 # called when planet health reaches 0
 # displays game over screen
