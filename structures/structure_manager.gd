@@ -5,6 +5,8 @@
 class_name StructureManager
 extends Node
 
+@export var orbit_manager: OrbitManager
+
 var structures: Array = []
 
 var structure_costs = {
@@ -52,9 +54,13 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 
 # called when structures are destroyed
 func remove_structure(structure: Structure) -> void:
+	print("Removing " + structure.name)
 	if structure in structures:
+		print("Removing " + structure.name)
 		structures.erase(structure)
 		structure.queue_free()
+	if structure.is_orbital:
+		orbit_manager.remove_structure(structure)
 
 # updates every structure in the scene
 func update_all(delta: float) -> void:

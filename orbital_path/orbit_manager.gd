@@ -28,6 +28,9 @@ func add_structure(structure: Structure, orbit_idx: int) -> void:
 		structure.set("orbit_radius", radius)
 		structure.set("orbit_idx", orbit_idx)
 		structures.append(structure)
+		
+func remove_structure(structure: Structure) -> void:
+	structures.erase(structure)
 
 # adds another orbital ring
 func add_orbit(radius: float) -> void:

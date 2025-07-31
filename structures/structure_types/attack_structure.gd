@@ -10,6 +10,8 @@ extends Structure
 
 @onready var range_collider: CollisionShape2D = $Range/RangeCollider
 
+@export var death_particles: PackedScene
+
 func _ready():
 	queue_redraw()
 	if range_collider:
@@ -24,10 +26,15 @@ func _draw():
 
 func take_damage(amount: float) -> void:
 	health -= amount
+	print("New health: " + str(health))
 	if health <= 0:
+		var particle = death_particles.instantiate()
+		particle.position = global_position
+		particle.rotation = global_rotation
+		particle.emitting = true
+		get_tree().current_scene.add_child(particle)
 		if owner and owner.has_method("remove_structure"):
 			owner.remove_structure(self)
-		queue_free()
 		
 # Reduce CD every frame (not used rn)
 func update(delta: float) -> void:

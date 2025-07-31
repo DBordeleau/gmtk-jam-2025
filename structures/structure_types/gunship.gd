@@ -37,4 +37,18 @@ func attack() -> void:
 	if target_enemy and position.distance_to(target_enemy.position) <= attack_range:
 		if target_enemy.has_method("take_damage"):
 			attack_particles.emitting = true
-			target_enemy.take_damage(damage)
+			#target_enemy.take_damage(damage)
+
+func take_damage(amount: float) -> void:
+	health -= amount
+	print("New health: " + str(health))
+	if health <= 0:
+		var particle = death_particles.instantiate()
+		particle.position = global_position
+		particle.rotation = global_rotation
+		particle.emitting = true
+		get_tree().current_scene.add_child(particle)
+		var parent = get_parent()
+		print(parent)
+		if parent and parent.has_method("remove_structure"):
+			parent.remove_structure(self)

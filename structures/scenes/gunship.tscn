@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bdcdly0djodn7"]
+[gd_scene load_steps=14 format=3 uid="uid://bdcdly0djodn7"]
 
 [ext_resource type="Script" uid="uid://km6176lmup32" path="res://structures/structure_types/gunship.gd" id="1_7kxgk"]
+[ext_resource type="PackedScene" uid="uid://dej5a0gly4uc" path="res://vfx/particles/asteroid_death_particle.tscn" id="2_lialb"]
 [ext_resource type="Texture2D" uid="uid://pkm2mlm1xeq1" path="res://assets/structure_assets/test_ship.png" id="2_pbwok"]
 [ext_resource type="PackedScene" uid="uid://cckyy2ok8iyqt" path="res://vfx/particles/gunship_attack_particle.tscn" id="3_pbwok"]
 
@@ -61,9 +62,13 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0vk70"]
 
-[node name="Gunship" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_pbwok"]
+
+[node name="Gunship" type="StaticBody2D"]
+collision_mask = 2
 script = ExtResource("1_7kxgk")
 attack_range = 200.0
+death_particles = ExtResource("2_lialb")
 cost = 20
 speed = 0.6
 
@@ -81,3 +86,8 @@ shape = SubResource("CircleShape2D_0vk70")
 
 [node name="gunship_attack_vfx" parent="." instance=ExtResource("3_pbwok")]
 position = Vector2(-1, -36)
+
+[node name="BodyCollider" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(2.14563, 2.14563)
+shape = SubResource("CircleShape2D_pbwok")

@@ -33,8 +33,9 @@ script = ExtResource("1_f14q8")
 [node name="OrbitManager" type="Node2D" parent="."]
 script = ExtResource("1_magnn")
 
-[node name="StructureManager" type="Node" parent="."]
+[node name="StructureManager" type="Node" parent="." node_paths=PackedStringArray("orbit_manager")]
 script = ExtResource("2_f14q8")
+orbit_manager = NodePath("../OrbitManager")
 metadata/_custom_type_script = "uid://do6h34ao68sxk"
 
 [node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("camera")]
