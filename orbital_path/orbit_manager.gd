@@ -9,6 +9,8 @@ var orbit_center: Vector2 = Vector2.ZERO
 var orbit_radii: Array[float] = [350.0]
 var orbit_direction: int = 1
 
+var orbit_speed_multipliers: Array[float] = [1.0]
+
 # sets orbit to center of the screen
 func _ready():
 	var viewport = get_viewport()
@@ -30,6 +32,8 @@ func add_structure(structure: Structure, orbit_idx: int) -> void:
 # adds another orbital ring
 func add_orbit(radius: float) -> void:
 	orbit_radii.append(radius)
+	var last_multiplier = orbit_speed_multipliers[-1]
+	orbit_speed_multipliers.append(last_multiplier * 0.85)
 	queue_redraw()
 
 # returns the orbit that is closest to the mouse
@@ -49,7 +53,9 @@ func _process(delta):
 		if structure.is_orbital:
 			var angle = structure.get("orbit_angle")
 			var radius = structure.get("orbit_radius")
-			angle += delta * structure.speed * orbit_direction
+			var orbit_idx = structure.get("orbit_idx")
+			var multiplier = orbit_speed_multipliers[orbit_idx]
+			angle += delta * structure.speed * multiplier * orbit_direction
 			structure.set("orbit_angle", angle)
 			structure.position = orbit_center + Vector2(cos(angle), sin(angle)) * radius
 			
