@@ -84,7 +84,7 @@ func _unhandled_input(event):
 			print("Not enough currency to place structure!")
 			return
 
-		var mouse_pos = get_viewport().get_mouse_position()
+		var mouse_pos = camera.get_global_mouse_position()
 		var snapped_pos: Vector2
 		var is_orbital := false
 		var orbit_idx := 0 
