@@ -354,9 +354,10 @@ script = ExtResource("1_magnn")
 script = ExtResource("2_f14q8")
 metadata/_custom_type_script = "uid://do6h34ao68sxk"
 
-[node name="WaveManager" type="Node" parent="."]
+[node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("4_ny0yt")
 waves = Array[ExtResource("5_716vl")]([SubResource("Resource_6ixe2"), SubResource("Resource_emb83"), SubResource("Resource_vppyi"), SubResource("Resource_m4f7c"), SubResource("Resource_2c3h1"), SubResource("Resource_atfu6"), SubResource("Resource_4ay6k"), SubResource("Resource_x5x1x"), SubResource("Resource_iglmx"), SubResource("Resource_avwrd"), SubResource("Resource_hn2vx"), SubResource("Resource_wvpgs")])
+camera = NodePath("../MainCamera")
 metadata/_custom_type_script = "uid://c1v17ry0g2y7i"
 
 [node name="UILayer" type="CanvasLayer" parent="."]

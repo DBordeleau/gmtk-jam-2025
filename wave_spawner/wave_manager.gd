@@ -9,6 +9,7 @@ signal enemy_killed
 
 @export var waves: Array[Wave] = []
 @export var spawn_interval: float = 0.5 # seconds between individual enemy spawns
+@export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 
 var current_wave_index: int = 0
 var active_enemies: Array = []
@@ -38,7 +39,7 @@ func _spawn_wave(wave: Wave) -> void:
 		for i in range(sequence.amount):
 			await get_tree().create_timer(spawn_interval).timeout
 			var enemy_instance = sequence.enemy.instantiate()
-			var spawn_pos = _get_random_edge_position()
+			var spawn_pos = get_random_edge_position()
 			enemy_instance.global_position = spawn_pos
 			add_child(enemy_instance)
 			active_enemies.append(enemy_instance)
@@ -47,25 +48,37 @@ func _spawn_wave(wave: Wave) -> void:
 			enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
 
 # helper function for spawning enemies around the edge of the screen
-func _get_random_edge_position() -> Vector2:
-	var viewport_rect = get_viewport().get_visible_rect()
+func get_random_edge_position() -> Vector2:
+	var camera_rect = get_camera_visible_rect()
 	var edge = randi() % 4
 	var x = 0.0
 	var y = 0.0
 	match edge:
 		0: # top
-			x = randf_range(0, viewport_rect.size.x)
-			y = -50
+			x = randf_range(camera_rect.position.x, camera_rect.position.x + camera_rect.size.x)
+			y = camera_rect.position.y - 50
 		1: # bottom
-			x = randf_range(0, viewport_rect.size.x)
-			y = viewport_rect.size.y + 50
+			x = randf_range(camera_rect.position.x, camera_rect.position.x + camera_rect.size.x)
+			y = camera_rect.position.y + camera_rect.size.y + 50
 		2: # left
-			x = -50
-			y = randf_range(0, viewport_rect.size.y)
+			x = camera_rect.position.x - 50
+			y = randf_range(camera_rect.position.y, camera_rect.position.y + camera_rect.size.y)
 		3: # right
-			x = viewport_rect.size.x + 50
-			y = randf_range(0, viewport_rect.size.y)
+			x = camera_rect.position.x + camera_rect.size.x + 50
+			y = randf_range(camera_rect.position.y, camera_rect.position.y + camera_rect.size.y)
 	return Vector2(x, y)
+
+# helper function to calculate viewport edges after the camera has zoomed out
+func get_camera_visible_rect() -> Rect2:
+	var viewport_size = get_viewport().get_visible_rect().size
+	var camera_center = camera.get_screen_center_position()
+	var zoom = camera.zoom
+	
+	# Calculate the visible area in world coordinates
+	var visible_size = viewport_size / zoom
+	var top_left = camera_center - visible_size / 2
+	
+	return Rect2(top_left, visible_size)
 
 func _on_enemy_exited(enemy):
 	if enemy in active_enemies:
