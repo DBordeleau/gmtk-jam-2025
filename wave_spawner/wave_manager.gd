@@ -14,7 +14,6 @@ signal enemy_killed
 @export var base_enemy_count: int = 2
 @export var enemy_count_scaling: float = 1.3
 @export var base_wave_delay: float = 5.0
-@export var max_enemy_types_per_wave: int = 3
 @export var sequence_time_variance: float = 2.0
 
 # Enemy scene references for random generation
@@ -39,7 +38,7 @@ func generate_wave(wave_number: int) -> Wave:
 	var total_enemies = int(base_enemy_count * difficulty_multiplier)
 	
 	# Determine number of enemy sequences (1-3 based on wave number)
-	var num_sequences = min(1 + (wave_number / 3), max_enemy_types_per_wave)
+	var num_sequences = 1 + (wave_number / 3.0)
 	
 	# Create enemy sequences
 	var sequences: Array[EnemySequence] = []
