@@ -17,7 +17,6 @@ func _on_back_button_pressed() -> void:
 	how_to_play_screen.visible = false
 	options_screen.visible = false
 
-
 func _on_options_button_pressed() -> void:
 	main_menu_screen.visible = false 
 	options_screen.visible = true

@@ -10,6 +10,8 @@ var applied_upgrades: Array[Upgrade] = []
 
 @onready var upgrade_ui: Control = null
 
+#@export var structure_manager: StructureManager
+
 func _ready():
 	_initialize_upgrades()
 
@@ -131,6 +133,8 @@ func apply_upgrade(upgrade: Upgrade):
 			game_manager._update_gunship_cost_label(new_cost)
 		elif upgrade.target_structure_type == "LaserShip":
 			game_manager._update_lasership_cost_label(new_cost)
+			
+		game_manager.structure_menu.update_buttons(game_manager.currency)
 		return
 	
 	# Apply to existing structures
