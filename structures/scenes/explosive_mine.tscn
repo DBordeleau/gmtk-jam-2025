@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://cwa3p1gx7qjmo"]
+
+[ext_resource type="Script" uid="uid://3bbge4sjepv4" path="res://structures/structure_types/explosive_mine.gd" id="1_3qd6x"]
+[ext_resource type="Texture2D" uid="uid://smccjvctj8jm" path="res://assets/structure_assets/Mine-0001.png" id="1_seoml"]
+[ext_resource type="PackedScene" uid="uid://p66u5scroujg" path="res://vfx/particles/explosion_particles.tscn" id="2_a38ug"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3qd6x"]
+atlas = ExtResource("1_seoml")
+region = Rect2(52, 126, 52, 42)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a38ug"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3qd6x")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5d1ou"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_64oom"]
+
+[node name="ExplosiveMine" type="StaticBody2D"]
+collision_mask = 2
+script = ExtResource("1_3qd6x")
+explosion_particles = ExtResource("2_a38ug")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(-1, 1)
+rotation = 0.0170087
+scale = Vector2(1, 1)
+sprite_frames = SubResource("SpriteFrames_a38ug")
+autoplay = "default"
+
+[node name="RangeArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="RangeCollider" type="CollisionShape2D" parent="RangeArea"]
+position = Vector2(1, 0)
+shape = SubResource("CircleShape2D_5d1ou")
+
+[node name="BodyCollider" type="CollisionShape2D" parent="."]
+position = Vector2(1, -2)
+scale = Vector2(1.78701, 1.78701)
+shape = SubResource("CircleShape2D_64oom")

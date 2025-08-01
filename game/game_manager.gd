@@ -39,6 +39,8 @@ func _ready():
 	update_currency_ui()
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
 	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
+	_update_slowarea_cost_label(structure_manager.get_structure_cost("SlowArea"))
+	_update_explosive_mine_cost_label(structure_manager.get_structure_cost("ExplosiveMine"))
 
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
@@ -135,9 +137,10 @@ func _unhandled_input(event):
 			snapped_pos = center + direction * radius
 			is_orbital = true
 		else:
+			# Non-orbital structures (SlowArea, ExplosiveMine)
 			snapped_pos = mouse_pos
 			is_orbital = false
-			orbit_idx = 0 # default for non-orbital
+			orbit_idx = 0
 
 		var new_structure = structure_manager.place_structure(structure_menu.selected_structure_type, snapped_pos, is_orbital, orbit_idx)
 		if is_orbital and new_structure:
@@ -161,6 +164,10 @@ func _unhandled_input(event):
 				var new_slowarea_cost = structure_cost + 5
 				structure_manager.set_structure_cost("SlowArea", new_slowarea_cost)
 				_update_slowarea_cost_label(new_slowarea_cost)
+			elif placed_type == "ExplosiveMine":
+				var new_mine_cost = structure_cost + 10
+				structure_manager.set_structure_cost("ExplosiveMine", new_mine_cost)
+				_update_explosive_mine_cost_label(new_mine_cost)
 			structure_menu.clear_selection()
 			_remove_preview()
 
@@ -258,6 +265,8 @@ func _create_preview(type: String) -> Node2D:
 			preview = preload("res://structures/scenes/laser_ship.tscn").instantiate()
 		"SlowArea":
 			preview = preload("res://structures/scenes/slow_area.tscn").instantiate()
+		"ExplosiveMine":
+			preview = preload("res://structures/scenes/explosive_mine.tscn").instantiate()
 	if preview:
 		if preview.has_node("Sprite"):
 			preview.get_node("Sprite").modulate.a = 0.5
@@ -265,6 +274,8 @@ func _create_preview(type: String) -> Node2D:
 			preview.get_node("BodyCollider").disabled = true
 		if preview.has_node("RangeArea"):
 			preview.get_node("RangeArea").monitoring = false
+		if preview.has_node("TriggerArea"):
+			preview.get_node("TriggerArea").monitoring = false
 		if preview.has_node("Range"):
 			preview.get_node("Range").monitoring = false
 	return preview
@@ -279,7 +290,7 @@ func _update_preview_position() -> void:
 		var radius = orbit_manager.orbit_radii[orbit_idx]
 		var direction = (mouse_pos - center).normalized()
 		preview_instance.position = center + direction * radius
-	elif preview_type == "SlowArea":
+	elif preview_type == "SlowArea" or preview_type == "ExplosiveMine":
 		preview_instance.position = mouse_pos
 
 func _remove_preview():
@@ -331,3 +342,6 @@ func _on_upgrade_choice_finished():
 	get_tree().paused = false
 	# Handle ring expansion after upgrade is finished
 	await _handle_ring_expansion_and_start_wave()
+
+func _update_explosive_mine_cost_label(cost: int) -> void:
+	structure_menu.explosive_mine_cost_label.text = "-" + str(cost)

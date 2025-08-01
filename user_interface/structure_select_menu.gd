@@ -15,6 +15,7 @@ var selected_structure_type: String = ""
 @onready var gunship_button: TextureButton = $GunshipButton
 @onready var slow_area_button: TextureButton = $SlowAreaButton
 @onready var laser_ship_button: TextureButton = $LaserShipButton
+@onready var explosive_mine_button: TextureButton = $ExplosiveMineButon
 
 # player cant place a slow area until first placing a gunship
 var slow_area_unlocked: bool = false
@@ -30,6 +31,7 @@ var menu_width: int = 400
 @onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
 @onready var laser_ship_cost_label: Label = $LaserShipButton/LaserShipCostLabel
 @onready var slow_area_cost_label: Label = $SlowAreaButton/SlowAreaCostLabel
+@onready var explosive_mine_cost_label: Label = $ExplosiveMineButon/ExplosiveMineCostLabel
 
 @onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
 
@@ -54,9 +56,13 @@ func _ready():
 	slow_area_button.mouse_exited.connect(_on_structure_button_mouse_exited)
 	laser_ship_button.mouse_entered.connect(_on_laser_ship_button_mouse_entered)
 	laser_ship_button.mouse_exited.connect(_on_structure_button_mouse_exited)
+	explosive_mine_button.pressed.connect(_on_explosive_mine_button_pressed)
+	explosive_mine_button.mouse_entered.connect(_on_explosive_mine_button_mouse_entered)
+	explosive_mine_button.mouse_exited.connect(_on_structure_button_mouse_exited)
 
 	slow_area_button.visible = false # Hide by default
 	laser_ship_button.visible = false # Hide by default
+	explosive_mine_button.visible = false # Hide by default
 	await get_tree().process_frame
 	_update_menu_position(true)
 
@@ -67,6 +73,9 @@ func _on_gunship_button_pressed():
 		slow_area_button.button_pressed = false
 		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("Gunship")
+	else:
+		selected_structure_type = ""
+		structure_type_selected.emit("")
 
 func _on_slow_area_button_pressed():
 	if slow_area_button.button_pressed:
@@ -74,6 +83,9 @@ func _on_slow_area_button_pressed():
 		gunship_button.button_pressed = false
 		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("SlowArea")
+	else:
+		selected_structure_type = ""
+		structure_type_selected.emit("")
 		
 func _on_laser_ship_button_pressed():
 	if laser_ship_button.button_pressed:
@@ -81,6 +93,20 @@ func _on_laser_ship_button_pressed():
 		gunship_button.button_pressed = false
 		slow_area_button.button_pressed = false
 		structure_type_selected.emit("LaserShip")
+	else:
+		selected_structure_type = ""
+		structure_type_selected.emit("")
+		
+func _on_explosive_mine_button_pressed():
+	if explosive_mine_button.button_pressed:
+		selected_structure_type = "ExplosiveMine"
+		gunship_button.button_pressed = false
+		slow_area_button.button_pressed = false
+		laser_ship_button.button_pressed = false
+		structure_type_selected.emit("ExplosiveMine")
+	else:
+		selected_structure_type = ""
+		structure_type_selected.emit("")
 		
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
@@ -102,11 +128,17 @@ func update_buttons(currency: int):
 	if laser_ship_button.disabled and selected_structure_type == "LaserShip":
 		selected_structure_type = ""
 		laser_ship_button.button_pressed = false
+		
+	explosive_mine_button.disabled = currency < structure_manager.get_structure_cost("ExplosiveMine")
+	if explosive_mine_button.disabled and selected_structure_type == "ExplosiveMine":
+		selected_structure_type = ""
+		explosive_mine_button.button_pressed = false
 
 # called when a gunship is placed for the first time
 func unlock_slow_area():
 	slow_area_button.visible = true
 	laser_ship_button.visible = true
+	explosive_mine_button.visible = true
 	slow_area_unlocked = true
 	first_gunship_placed.emit()
 	
@@ -186,6 +218,7 @@ func unpress_buttons():
 	gunship_button.button_pressed = false
 	laser_ship_button.button_pressed = false
 	slow_area_button.button_pressed = false
+	explosive_mine_button.button_pressed = false
 
 func _on_gunship_button_mouse_entered():
 	print("Hovered Gunship button")
@@ -202,6 +235,10 @@ func _on_laser_ship_button_mouse_entered():
 func _on_structure_button_mouse_exited():
 	print("Mouse exited structure button")
 	_hide_structure_tooltip()
+	
+func _on_explosive_mine_button_mouse_entered():
+	print("Hovered ExplosiveMine button")
+	_show_structure_tooltip("ExplosiveMine")
 	
 func _show_structure_tooltip(type: String):
 	print("Attempting to show tooltip for type:", type)

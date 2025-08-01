@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dfg7ai1lcj16x"]
+[gd_scene load_steps=20 format=3 uid="uid://dfg7ai1lcj16x"]
 
 [ext_resource type="Script" uid="uid://cv64aijy47jeg" path="res://user_interface/structure_select_menu.gd" id="1_xd0mh"]
 [ext_resource type="Texture2D" uid="uid://rfdy8b4hu748" path="res://assets/ui_assets/gunship_normal.png" id="2_0rrrl"]
@@ -14,7 +14,11 @@
 [ext_resource type="Texture2D" uid="uid://bx6vwwsdpwux0" path="res://assets/ui_assets/laser_ship_selected.png" id="12_xr021"]
 [ext_resource type="Texture2D" uid="uid://ybhe3mvsfuve" path="res://assets/ui_assets/laser_ship_hovered.png" id="13_oajxv"]
 [ext_resource type="Texture2D" uid="uid://738jmjul5ody" path="res://assets/ui_assets/laser_ship_disabled.png" id="14_c00uv"]
+[ext_resource type="Texture2D" uid="uid://dv6y32t1g1h7s" path="res://user_interface/mine_normal.png" id="15_f8q06"]
 [ext_resource type="AudioStream" uid="uid://dbr4ol4k8xoqm" path="res://assets/sound/sfx/ui_click_sfx_2.wav" id="15_xr021"]
+[ext_resource type="Texture2D" uid="uid://7huke4137i5y" path="res://user_interface/mine_selected.png" id="16_rwhu0"]
+[ext_resource type="Texture2D" uid="uid://c01aqefda76gk" path="res://user_interface/mine_hovered.png" id="17_pegb1"]
+[ext_resource type="Texture2D" uid="uid://dffe4hqe7b6m4" path="res://user_interface/mine_disabled.png" id="18_oycxd"]
 
 [node name="StructureSelectMenu" type="Control"]
 layout_mode = 3
@@ -158,6 +162,49 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 40
 text = "-30"
+vertical_alignment = 1
+
+[node name="ExplosiveMineButon" type="TextureButton" parent="."]
+z_index = 3
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -740.0
+offset_right = -50.0
+offset_bottom = -640.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_mode = 0
+texture_normal = ExtResource("15_f8q06")
+texture_pressed = ExtResource("16_rwhu0")
+texture_hover = ExtResource("17_pegb1")
+texture_disabled = ExtResource("18_oycxd")
+
+[node name="ExplosiveMineCoinIcon" type="TextureRect" parent="ExplosiveMineButon"]
+layout_mode = 0
+offset_left = 215.0
+offset_top = 26.0
+offset_right = 265.0
+offset_bottom = 76.0
+mouse_filter = 2
+texture = ExtResource("6_nco57")
+expand_mode = 3
+
+[node name="ExplosiveMineCostLabel" type="Label" parent="ExplosiveMineButon"]
+layout_mode = 0
+offset_left = 275.0
+offset_top = 21.0
+offset_right = 350.0
+offset_bottom = 81.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "-10"
 vertical_alignment = 1
 
 [node name="ToggleSFX" type="AudioStreamPlayer" parent="."]

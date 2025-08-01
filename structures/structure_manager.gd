@@ -13,12 +13,14 @@ var structure_costs = {
 	"Gunship": 20,
 	"SlowArea": 5,
 	"LaserShip": 30,
+	"ExplosiveMine": 10,  # Add this line
 }
 
 var structure_map = {
 	"Gunship": preload("res://structures/scenes/gunship.tscn"),
 	"SlowArea": preload("res://structures/scenes/slow_area.tscn"),
-	"LaserShip": preload("res://structures/scenes/laser_ship.tscn")
+	"LaserShip": preload("res://structures/scenes/laser_ship.tscn"),
+	"ExplosiveMine": preload("res://structures/scenes/explosive_mine.tscn")
 }
 
 # Called by the GameManager if the user left clicks with a structure selected
@@ -59,6 +61,16 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 					var min_dist = existing.slow_range + structure.slow_range
 					if position.distance_to(existing.position) < min_dist:
 						print("Cannot place SlowArea: too close to another SlowArea.")
+						return
+		"ExplosiveMine":  # Add this case
+			var mine_scene = preload("res://structures/scenes/explosive_mine.tscn")
+			structure = mine_scene.instantiate()
+			# Prevent overlapping mines
+			for existing in structures:
+				if existing is ExplosiveMine and structure is ExplosiveMine:
+					var min_dist = 50  # Minimum distance between mines
+					if position.distance_to(existing.position) < min_dist:
+						print("Cannot place ExplosiveMine: too close to another mine.")
 						return
 
 	if structure:
