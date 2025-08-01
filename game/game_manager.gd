@@ -30,8 +30,8 @@ func _ready():
 	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
-	wave_manager.start_wave(wave_index)
 	planet.planet_destroyed.connect(_on_planet_destroyed)
+	structure_menu.first_gunship_placed.connect(_on_first_gunship_placed)
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	update_currency_ui()
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
@@ -286,3 +286,6 @@ func load_hiscore() -> int:
 		save.close()
 		return value
 	return 0
+
+func _on_first_gunship_placed():
+	wave_manager.start_first_wave.emit()

@@ -22,11 +22,12 @@ func _ready():
 	if planet:
 		planet.planet_destroyed.connect(_on_planet_destroyed)
 		
-	_update_wave_label_spawning()
-
+	show_start_message()
+	
 # display red spawning label until all enemies are spawned
 func _on_wave_spawning_started():
 	is_spawning = true
+	reset_wave_label_size()
 	wave_label.text = "[color=red]Wave %d - Spawning![/color]" % (wave_index + 1)
 
 func _on_wave_spawning_finished():
@@ -83,6 +84,14 @@ func _update_wave_label_spawning():
 func _on_planet_destroyed():
 	wave_label.visible = false
 
-
 func _on_test_scene_game_over() -> void:
 	self.hide()
+
+func show_start_message():
+	wave_label.text = "[center][color=yellow]Press B to open the shop.\nPlace a Gunship to start the game![/color][/center]"
+	wave_label.visible = true
+	wave_label.add_theme_font_size_override("normal_font_size", 48)
+
+# return label to smaller size once we are spawning waves
+func reset_wave_label_size():
+	wave_label.remove_theme_font_size_override("normal_font_size")

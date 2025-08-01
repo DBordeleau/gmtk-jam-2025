@@ -2,6 +2,7 @@
 extends Control
 
 signal structure_type_selected(type: String)
+signal first_gunship_placed # tells the wave manager to start spawning the first wave
 
 @export var structure_manager: StructureManager
 
@@ -107,7 +108,8 @@ func unlock_slow_area():
 	slow_area_button.visible = true
 	laser_ship_button.visible = true
 	slow_area_unlocked = true
-
+	first_gunship_placed.emit()
+	
 func _update_menu_position(off_screen: bool):
 	var viewport_size = get_viewport().get_visible_rect().size
 	

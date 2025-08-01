@@ -1,6 +1,7 @@
 class_name WaveManager
 extends Node
 
+signal start_first_wave
 signal wave_completed
 signal wave_spawning_started
 signal wave_spawning_finished
@@ -30,7 +31,7 @@ func _ready() -> void:
 		enemy_scenes.append(preload("res://enemies/scenes/big_asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/comet.tscn"))
-		
+	start_first_wave.connect(_on_start_first_wave)
 		
 func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()
@@ -171,3 +172,6 @@ func safe_wait(time: float):
 func remove_all_active_enemies() -> void:
 	for enemy in active_enemies:
 		enemy.queue_free()
+
+func _on_start_first_wave():
+	start_wave(0)
