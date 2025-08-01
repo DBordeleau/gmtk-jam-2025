@@ -96,11 +96,15 @@ func _on_laser_ship_button_pressed():
 func update_buttons(currency: int):
 	var gunship_cost = structure_manager.get_structure_cost("Gunship")
 	var slow_area_cost = structure_manager.get_structure_cost("SlowArea")
+	var laser_ship_cost = structure_manager.get_structure_cost("LaserShip")
 	gunship_button.disabled = currency < gunship_cost
 	if gunship_button.disabled:
 		selected_structure_type = ""
 	slow_area_button.disabled = currency < slow_area_cost
 	if slow_area_button.disabled:
+		selected_structure_type = ""
+	laser_ship_button.disabled = currency < laser_ship_cost
+	if laser_ship_button.disabled:
 		selected_structure_type = ""
 
 # called when a gunship is placed for the first time
