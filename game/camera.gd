@@ -15,8 +15,7 @@ func _process(delta):
 	if shake_timer > 0.0:
 		shake_timer -= delta
 		var t = shake_timer / shake_duration
-		# Dampen the shake over time (ease out)
-		var current_amount = shake_amount * t * t
+		var current_amount = shake_amount * t * t * t * 2.0
 		shake_offset = Vector2(
 			randf_range(-1, 1),
 			randf_range(-1, 1)
