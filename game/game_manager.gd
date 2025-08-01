@@ -31,6 +31,7 @@ var hiscore: int = 0
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
+	_warm_up_particles_and_audio()
 	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
@@ -391,3 +392,66 @@ func _on_pause_menu_volume_changed(value: float) -> void:
 	Settings.master_volume = value
 	Settings.save_settings()
 	AudioServer.set_bus_volume_db(0, linear_to_db(value))
+
+func _warm_up_particles_and_audio():
+	# Warm up asteroid death particles
+	var asteroid_particles_scene = preload("res://vfx/particles/asteroid_death_particle.tscn")
+	var asteroid_particles = asteroid_particles_scene.instantiate()
+	add_child(asteroid_particles)
+	asteroid_particles.emitting = true
+	await get_tree().process_frame
+	asteroid_particles.queue_free()
+
+	# Warm up comet death particles
+	var comet_particles_scene = preload("res://vfx/particles/comet_death_particle.tscn")
+	var comet_particles = comet_particles_scene.instantiate()
+	add_child(comet_particles)
+	comet_particles.emitting = true
+	await get_tree().process_frame
+	comet_particles.queue_free()
+
+	# Warm up mine explosion particles
+	var mine_particles_scene = preload("res://vfx/particles/explosion_particles.tscn")
+	var mine_particles = mine_particles_scene.instantiate()
+	add_child(mine_particles)
+	mine_particles.emitting = true
+	await get_tree().process_frame
+	mine_particles.queue_free()
+
+	# Warm up asteroid death SFX
+	var asteroid_sfx = AudioStreamPlayer.new()
+	asteroid_sfx.stream = preload("res://assets/sound/sfx/rock_explode_sfx.wav")
+	add_child(asteroid_sfx)
+	asteroid_sfx.volume_db = -80  # Mute
+	asteroid_sfx.play()
+	await get_tree().create_timer(0.1).timeout
+	asteroid_sfx.stop()
+	asteroid_sfx.queue_free()
+
+	# Warm up mine explosion SFX
+	var mine_sfx = AudioStreamPlayer.new()
+	mine_sfx.stream = preload("res://assets/sound/sfx/retro_explode_sfx_1.wav")
+	add_child(mine_sfx)
+	mine_sfx.volume_db = -80
+	mine_sfx.play()
+	await get_tree().create_timer(0.1).timeout
+	mine_sfx.stop()
+	mine_sfx.queue_free()
+
+	var shoot_sfx = AudioStreamPlayer.new()
+	shoot_sfx.stream = preload("res://assets/sound/sfx/laser_shot_sfx_1.wav")
+	add_child(shoot_sfx)
+	shoot_sfx.volume_db = -80
+	shoot_sfx.play()
+	await get_tree().create_timer(0.1).timeout
+	shoot_sfx.stop()
+	shoot_sfx.queue_free()
+
+	var laser_sfx = AudioStreamPlayer.new()
+	laser_sfx.stream = preload("res://assets/sound/sfx/laser_buzz_sfx.ogg")
+	add_child(laser_sfx)
+	laser_sfx.volume_db = -80
+	laser_sfx.play()
+	await get_tree().create_timer(0.1).timeout
+	laser_sfx.stop()
+	laser_sfx.queue_free()
