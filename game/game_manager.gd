@@ -54,6 +54,9 @@ func _on_wave_completed():
 		upgrade_manager.start_upgrade_choice()
 		return # don't start next wave until upgrade is chosen
 	
+	await _handle_ring_expansion_and_start_wave()
+
+func _handle_ring_expansion_and_start_wave():
 	# Add a ring and zoom out every 10 waves
 	if wave_index % 10 == 0 and wave_index <= 50:
 		current_zoom = current_zoom * 0.7
@@ -319,4 +322,5 @@ func _on_upgrade_choice_started():
 
 func _on_upgrade_choice_finished():
 	get_tree().paused = false
-	_start_next_wave()
+	# Handle ring expansion after upgrade is finished
+	await _handle_ring_expansion_and_start_wave()
