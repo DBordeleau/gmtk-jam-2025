@@ -5,11 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://jwxi6lvv315b" path="res://assets/ui_assets/gunship_selected.png" id="3_o0wgx"]
 [ext_resource type="Texture2D" uid="uid://dcslt8odkiu4r" path="res://assets/ui_assets/gunship_hovered.png" id="4_dpkj7"]
 [ext_resource type="Texture2D" uid="uid://cst5d7nvccusr" path="res://assets/ui_assets/gunship_disabled.png" id="5_lcl1m"]
-[ext_resource type="Texture2D" uid="uid://bvloycl7upsha" path="res://assets/ui_assets/slow_trap_normal.png" id="5_uqmgx"]
-[ext_resource type="Texture2D" uid="uid://b61dpuvme65ik" path="res://assets/ui_assets/slow_trap_selected.png" id="6_lcl1m"]
 [ext_resource type="Texture2D" uid="uid://bbjjwydjgjilv" path="res://assets/ui_assets/currency_icon.png" id="6_nco57"]
-[ext_resource type="Texture2D" uid="uid://cgvpovokv62u4" path="res://assets/ui_assets/slow_trap_hovered.png" id="7_ps1ux"]
-[ext_resource type="Texture2D" uid="uid://bxwvw3ga8ya2s" path="res://assets/ui_assets/slow_trap_disabled.png" id="9_ps1ux"]
+[ext_resource type="Texture2D" uid="uid://dei2o8wmujuwk" path="res://assets/ui_assets/gravity_well_normal.png" id="7_xr021"]
+[ext_resource type="Texture2D" uid="uid://dk18i350j0m8u" path="res://assets/ui_assets/gravity_well_selected.png" id="8_oajxv"]
+[ext_resource type="Texture2D" uid="uid://c8lbjv8db6anr" path="res://assets/ui_assets/gravity_well_hovered.png" id="9_xr021"]
+[ext_resource type="Texture2D" uid="uid://gntnq00608iq" path="res://assets/ui_assets/gravity_well_disabled.png" id="10_c00uv"]
 [ext_resource type="Texture2D" uid="uid://by6n2vmlfaqvh" path="res://assets/ui_assets/laser_ship_normal.png" id="11_8qfkv"]
 [ext_resource type="Texture2D" uid="uid://bx6vwwsdpwux0" path="res://assets/ui_assets/laser_ship_selected.png" id="12_xr021"]
 [ext_resource type="Texture2D" uid="uid://ybhe3mvsfuve" path="res://assets/ui_assets/laser_ship_hovered.png" id="13_oajxv"]
@@ -89,10 +89,10 @@ offset_bottom = -870.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
-texture_normal = ExtResource("5_uqmgx")
-texture_pressed = ExtResource("6_lcl1m")
-texture_hover = ExtResource("7_ps1ux")
-texture_disabled = ExtResource("9_ps1ux")
+texture_normal = ExtResource("7_xr021")
+texture_pressed = ExtResource("8_oajxv")
+texture_hover = ExtResource("9_xr021")
+texture_disabled = ExtResource("10_c00uv")
 
 [node name="SlowAreaCoinIcon" type="TextureRect" parent="SlowAreaButton"]
 layout_mode = 0
