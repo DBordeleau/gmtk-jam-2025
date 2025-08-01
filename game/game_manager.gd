@@ -8,6 +8,7 @@ signal game_over()
 @onready var structure_manager = $StructureManager
 @onready var orbit_manager = $OrbitManager
 @onready var wave_manager: WaveManager = $WaveManager
+@onready var upgrade_manager: Node = $UpgradeManager
 @onready var structure_menu: Control = $UILayer/StructureSelectMenu
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
@@ -33,6 +34,8 @@ func _ready():
 	planet.planet_destroyed.connect(_on_planet_destroyed)
 	structure_menu.first_gunship_placed.connect(_on_first_gunship_placed)
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
+	upgrade_manager.upgrade_choice_started.connect(_on_upgrade_choice_started)
+	upgrade_manager.upgrade_choice_finished.connect(_on_upgrade_choice_finished)
 	update_currency_ui()
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
 	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
@@ -44,16 +47,22 @@ func _on_wave_completed():
 	wave_index += 1
 	currency += wave_index
 	update_currency_ui()
-	# Add a ring and zoom out every 5 waves
+	
+	# Check for upgrade every 5th wave
+	if wave_index % 1 == 0:  
+		await safe_wait(1.0)
+		upgrade_manager.start_upgrade_choice()
+		return # don't start next wave until upgrade is chosen
+	
+	# Add a ring and zoom out every 10 waves
 	if wave_index % 10 == 0 and wave_index <= 50:
 		current_zoom = current_zoom * 0.7
 		await _zoom_camera_smoothly(current_zoom, 1.0)
 		structure_menu.update_for_camera_zoom()
 		current_orbit = current_orbit * 1.5
 		orbit_manager.add_orbit(current_orbit)
-	var delay = wave_manager.get_next_wave_delay()
-	await safe_wait(delay)
-	wave_manager.start_wave(wave_index)
+	
+	_start_next_wave()
 
 func _zoom_camera_smoothly(target_zoom: Vector2, duration: float) -> void:
 	var start_zoom = camera.zoom
@@ -136,6 +145,7 @@ func _unhandled_input(event):
 			var placed_type = structure_menu.selected_structure_type # Store before clearing!
 			currency -= structure_cost
 			update_currency_ui()
+			upgrade_manager.apply_upgrades_to_new_structure(new_structure)
 			if placed_type == "Gunship":
 				var new_gunship_cost = structure_cost + 10
 				structure_manager.set_structure_cost("Gunship", new_gunship_cost)
@@ -298,3 +308,15 @@ func load_hiscore() -> int:
 
 func _on_first_gunship_placed():
 	wave_manager.start_first_wave.emit()
+
+func _start_next_wave():
+	var delay = wave_manager.get_next_wave_delay()
+	await safe_wait(delay)
+	wave_manager.start_wave(wave_index)
+
+func _on_upgrade_choice_started():
+	get_tree().paused = true
+
+func _on_upgrade_choice_finished():
+	get_tree().paused = false
+	_start_next_wave()

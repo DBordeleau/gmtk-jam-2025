@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://pbw6u7ylbd1b"]
+
+[ext_resource type="Script" uid="uid://mqmvlafyo7uj" path="res://upgrades/upgrade_choice_ui.gd" id="1_nxjrr"]
+
+[node name="UpgradeChoiceUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nxjrr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Choose an Upgrade"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="UpgradeCard1" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="UpgradeCard2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="UpgradeCard3" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2

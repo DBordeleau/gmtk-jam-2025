@@ -51,3 +51,16 @@ func attack() -> void:
 		if position.distance_to(enemy.position) <= attack_range:
 			if enemy.has_method("take_damage"):
 				enemy.take_damage(damage)
+
+# Add this method to update the range indicator when attack_range changes
+func update_range_display():
+	if has_node("RangeIndicator"):
+		var range_indicator = $RangeIndicator
+		var circle_shape = range_indicator.get_child(0).shape as CircleShape2D
+		if circle_shape:
+			circle_shape.radius = attack_range
+	elif has_node("Range"):
+		var range_area = $Range
+		var circle_shape = range_area.get_child(0).shape as CircleShape2D
+		if circle_shape:
+			circle_shape.radius = attack_range
