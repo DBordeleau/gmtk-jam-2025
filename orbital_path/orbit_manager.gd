@@ -11,6 +11,9 @@ var orbit_direction: int = 1
 
 var orbit_speed_multipliers: Array[float] = [1.0]
 
+@onready var camera: Camera2D = get_tree().get_root().get_node("GameManager/MainCamera")
+var last_zoom: Vector2 = Vector2.ONE
+
 # sets orbit to center of the screen
 func _ready():
 	var viewport = get_viewport()
@@ -52,6 +55,9 @@ func get_closest_orbit(mouse_pos: Vector2) -> int:
 
 # called every frame to smoothly animate structures along the orbital path
 func _process(delta):
+	if camera and camera.zoom != last_zoom:
+		last_zoom = camera.zoom
+		queue_redraw()
 	for structure in structures:
 		if structure.is_orbital:
 			var angle = structure.get("orbit_angle")
@@ -79,6 +85,12 @@ func reverse_orbit() -> void:
 # draw a grey circle to indicate path (temporary)
 func _draw():
 	var segments := 128
+	var base_width = 4.0
+	var zoom_scale = 1.0
+	if camera:
+		zoom_scale = (camera.zoom.x + camera.zoom.y) * 0.5
+	var line_width = base_width * zoom_scale * 2.0 
+	line_width = clamp(line_width, 4.0, 32.0) # prevents lines from getting too thin or too thick
 	for radius in orbit_radii:
 		draw_arc(
 			orbit_center,
@@ -87,5 +99,5 @@ func _draw():
 			TAU,
 			segments,
 			Color(1, 1, 1, 1),
-			2.0
+			line_width
 		)
