@@ -28,8 +28,8 @@ var enemies_spawned: int = 0
 
 func _ready() -> void:
 	if enemy_scenes.is_empty():
-		enemy_scenes.append(preload("res://enemies/scenes/big_asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/asteroid.tscn"))
+		enemy_scenes.append(preload("res://enemies/scenes/big_asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/comet.tscn"))
 	start_first_wave.connect(_on_start_first_wave)
 		
@@ -41,11 +41,11 @@ func generate_wave(wave_number: int) -> Wave:
 	var total_enemies = int(base_enemy_count * difficulty_multiplier)
 	
 	# Determine number of enemy sequences (1-3 based on wave number)
-	var num_sequences = 1 + (wave_number / 3.0)
+	var num_sequences = 1 + int(wave_number / 3)
 	
 	# Create enemy sequences
 	var sequences: Array[EnemySequence] = []
-	var enemies_per_sequence = max(1, total_enemies / num_sequences)
+	var enemies_per_sequence = max(1, int(total_enemies / num_sequences))
 	var remaining_enemies = total_enemies
 	
 	for i in range(num_sequences):
@@ -64,7 +64,6 @@ func generate_wave(wave_number: int) -> Wave:
 		
 		# Distribute enemies across sequences
 		if i == num_sequences - 1:
-			# Last sequence gets remaining enemies
 			sequence.amount = remaining_enemies
 		else:
 			sequence.amount = min(enemies_per_sequence, remaining_enemies)
