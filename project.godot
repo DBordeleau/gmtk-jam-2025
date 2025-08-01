@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="GMTK-jam-2025"
-run/main_scene="uid://c555fglxjvpj3"
+run/main_scene="uid://dykyaug6bg5bt"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Settings="*res://game/settings.gd"
 
 [display]
 

@@ -1,0 +1,109 @@
+[gd_scene load_steps=10 format=3 uid="uid://cl2l3iwaj7g4r"]
+
+[ext_resource type="Script" uid="uid://ff7eex8bqplw" path="res://user_interface/main_menu.gd" id="1_s6vtf"]
+[ext_resource type="Texture2D" uid="uid://li0pvynp72kc" path="res://assets/ui_assets/main_menu/play_normal.png" id="2_xyiyx"]
+[ext_resource type="Texture2D" uid="uid://qk1fqav10dds" path="res://assets/ui_assets/main_menu/play_hovered.png" id="3_1kwwd"]
+[ext_resource type="Texture2D" uid="uid://cbqg18rabtn14" path="res://assets/ui_assets/main_menu/how_to_play_normal.png" id="4_6kiq6"]
+[ext_resource type="Texture2D" uid="uid://br1s2wuy287x" path="res://assets/ui_assets/main_menu/how_to_play_hovered.png" id="5_nkmnu"]
+[ext_resource type="Texture2D" uid="uid://dyjad534l60n4" path="res://assets/ui_assets/main_menu/options_normal.png" id="6_bl8ps"]
+[ext_resource type="Texture2D" uid="uid://msl3t0y60k0t" path="res://assets/ui_assets/main_menu/options_hovered.png" id="7_yjulm"]
+[ext_resource type="Texture2D" uid="uid://cvlyicv82e4h3" path="res://assets/ui_assets/main_menu/quit_normal.png" id="8_vb486"]
+[ext_resource type="Texture2D" uid="uid://cpaa28moyotuo" path="res://assets/ui_assets/main_menu/quit_hovered.png" id="9_ifpq3"]
+
+[node name="MainMenuScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s6vtf")
+
+[node name="PlayButton" type="TextureButton" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -195.0
+offset_right = 240.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("2_xyiyx")
+texture_pressed = ExtResource("2_xyiyx")
+texture_hover = ExtResource("3_1kwwd")
+
+[node name="HowToPlayButton" type="TextureButton" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -65.0
+offset_right = 240.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("4_6kiq6")
+texture_pressed = ExtResource("4_6kiq6")
+texture_hover = ExtResource("5_nkmnu")
+
+[node name="OptionsButton" type="TextureButton" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = 65.0
+offset_right = 240.0
+offset_bottom = 185.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("6_bl8ps")
+texture_pressed = ExtResource("6_bl8ps")
+texture_hover = ExtResource("7_yjulm")
+
+[node name="QuitButton" type="TextureButton" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = 195.0
+offset_right = 240.0
+offset_bottom = 315.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("8_vb486")
+texture_pressed = ExtResource("8_vb486")
+texture_hover = ExtResource("9_ifpq3")
+
+[node name="FadeRect" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+z_index = 4096
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="HowToPlayButton" to="." method="_on_how_to_play_button_pressed"]
+[connection signal="pressed" from="OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]

@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://dykyaug6bg5bt"]
+
+[ext_resource type="PackedScene" uid="uid://cl2l3iwaj7g4r" path="res://user_interface/main_menu_scene.tscn" id="1_70r8b"]
+[ext_resource type="Script" uid="uid://uahg8rnv66dd" path="res://user_interface/parent_main_menu.gd" id="1_q6olu"]
+[ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="2_sexwk"]
+[ext_resource type="PackedScene" uid="uid://7kyfjpiw3xuv" path="res://user_interface/how_to_play_screen.tscn" id="3_0eyd2"]
+[ext_resource type="PackedScene" uid="uid://dm65ue5ytbo7a" path="res://user_interface/options_screen.tscn" id="4_ra6h2"]
+[ext_resource type="Texture2D" uid="uid://do838qf1glrc6" path="res://assets/ui_assets/main_menu/back_button_normal.png" id="5_0eqmr"]
+[ext_resource type="Texture2D" uid="uid://hb3yp2vjn1ii" path="res://assets/ui_assets/main_menu/back_button_hover.png" id="6_ra6h2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q6olu"]
+shader = ExtResource("2_sexwk")
+shader_parameter/horizontalMovement = 0.1
+shader_parameter/verticalMovement = 0.1
+shader_parameter/frequencyStar = 0.01
+shader_parameter/sizeStar = 50.0
+shader_parameter/brightnessStar = 1.0
+shader_parameter/shineFrequencyStar = 4.0
+shader_parameter/transparencyStar = 0.0
+shader_parameter/starIterations = 2
+shader_parameter/frequencyBgStar = 0.996
+shader_parameter/shineFrequencyBgStar = 1.0
+shader_parameter/transparencyBgStar = 0.3
+shader_parameter/colorBackground = Color(0, 0, 0, 1)
+shader_parameter/transparencyBackground = 0.0
+shader_parameter/seed = 12.0
+
+[node name="ParentMainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q6olu")
+
+[node name="MainMenuScene" parent="." instance=ExtResource("1_70r8b")]
+layout_mode = 1
+
+[node name="HowToPlayScreen" parent="." instance=ExtResource("3_0eyd2")]
+layout_mode = 1
+
+[node name="OptionsScreen" parent="." instance=ExtResource("4_ra6h2")]
+layout_mode = 1
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -5
+material = SubResource("ShaderMaterial_q6olu")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BackButton" type="TextureButton" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 19.0
+offset_top = -86.0
+offset_right = 219.0
+offset_bottom = -6.0
+grow_vertical = 0
+texture_normal = ExtResource("5_0eqmr")
+texture_pressed = ExtResource("5_0eqmr")
+texture_hover = ExtResource("6_ra6h2")
+
+[connection signal="pressed" from="MainMenuScene/HowToPlayButton" to="." method="_on_how_to_play_button_pressed"]
+[connection signal="pressed" from="MainMenuScene/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+
+[editable path="MainMenuScene"]
