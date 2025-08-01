@@ -11,7 +11,8 @@ func _init():
 	damage = 10
 	attack_range = 120
 	attack_cooldown = 1.0
-	tooltip_desc = "Deals " + str(damage) + " damage to the closest enemy within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds."
+	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range for " + str(damage) + " damage every " + str(attack_cooldown) + " seconds."
+
 	super._init()
 
 func update(delta: float) -> void:

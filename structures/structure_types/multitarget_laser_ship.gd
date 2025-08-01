@@ -23,7 +23,7 @@ func _init():
 	damage = 10
 	attack_range = 200
 	attack_cooldown = 2.0
-	tooltip_desc = "Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds."
+	tooltip_desc = "A resilient ship that fires laser beams, attacking multiple enemies simultaneously. Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds."
 	super._init()
 
 func _ready() -> void:

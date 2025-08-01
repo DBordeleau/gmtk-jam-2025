@@ -8,7 +8,7 @@ extends Structure
 var slowed_enemies: Array = []
 
 func _init():
-	tooltip_desc = "Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
+	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
 	super._init()
 
 # sets the collider size to match the range and connects the area2D signals
