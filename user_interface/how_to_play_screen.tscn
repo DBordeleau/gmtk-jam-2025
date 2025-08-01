@@ -45,7 +45,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
-text = "Orbital Defender is an arcade style wave survival game. Defend your home planet from incoming threats by purchasing and placing structures to defend it. Structures become more expensive the more you buy so make your purchases strategically! You earn money by eliminating threats and surviving a wave.
+text = "Orbital Defender is an arcade style wave survival game. Defend your home planet from incoming threats by purchasing and placing structures in its orbit. Structures become more expensive the more you buy so make your purchases strategically! You earn money by eliminating threats and surviving a wave.
 
 Every 5 waves you will get to select 1 of 3 random upgrades and every 10 waves the playing area will get larger and a new orbital path will be drawn around your home planet."
 
