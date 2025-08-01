@@ -29,6 +29,7 @@ var menu_width: int = 400
 
 @onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
 @onready var laser_ship_cost_label: Label = $LaserShipButton/LaserShipCostLabel
+@onready var slow_area_cost_label: Label = $SlowAreaButton/SlowAreaCostLabel
 
 @onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
 

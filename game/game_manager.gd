@@ -157,6 +157,10 @@ func _unhandled_input(event):
 				var new_lasership_cost = structure_cost + 10
 				structure_manager.set_structure_cost("LaserShip", new_lasership_cost)
 				_update_lasership_cost_label(new_lasership_cost)
+			elif placed_type == "SlowArea":
+				var new_slowarea_cost = structure_cost + 5
+				structure_manager.set_structure_cost("SlowArea", new_slowarea_cost)
+				_update_slowarea_cost_label(new_slowarea_cost)
 			structure_menu.clear_selection()
 			_remove_preview()
 
@@ -290,6 +294,9 @@ func _update_gunship_cost_label(cost: int) -> void:
 
 func _update_lasership_cost_label(cost: int) -> void:
 	structure_menu.laser_ship_cost_label.text = "-" + str(cost)
+
+func _update_slowarea_cost_label(cost: int) -> void:
+	structure_menu.slow_area_cost_label.text = "-" + str(cost)
 
 func safe_wait(time: float):
 	if not get_tree() or not is_inside_tree():
