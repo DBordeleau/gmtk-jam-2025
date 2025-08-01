@@ -29,6 +29,9 @@ var menu_width: int = 400
 @onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
 @onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
 
+@onready var tooltip_scene = preload("res://user_interface/structure_tooltip.tscn")
+var tooltip_instance: Control = null
+
 # Sets the buttons to be in toggle mode, connects their signals, and makes them unpressed by default
 # hides the slow area button by default until the player places a gunship
 func _ready():
@@ -41,6 +44,12 @@ func _ready():
 	gunship_button.pressed.connect(_on_gunship_button_pressed)
 	slow_area_button.pressed.connect(_on_slow_area_button_pressed)
 	laser_ship_button.pressed.connect(_on_laser_ship_button_pressed)
+	gunship_button.mouse_entered.connect(_on_gunship_button_mouse_entered)
+	gunship_button.mouse_exited.connect(_on_structure_button_mouse_exited)
+	slow_area_button.mouse_entered.connect(_on_slow_area_button_mouse_entered)
+	slow_area_button.mouse_exited.connect(_on_structure_button_mouse_exited)
+	laser_ship_button.mouse_entered.connect(_on_laser_ship_button_mouse_entered)
+	laser_ship_button.mouse_exited.connect(_on_structure_button_mouse_exited)
 
 	slow_area_button.visible = false # Hide by default
 	laser_ship_button.visible = false # Hide by default
@@ -175,3 +184,76 @@ func unpress_buttons():
 	gunship_button.button_pressed = false
 	laser_ship_button.button_pressed = false
 	slow_area_button.button_pressed = false
+
+func _on_gunship_button_mouse_entered():
+	print("Hovered Gunship button")
+	_show_structure_tooltip("Gunship")
+	
+func _on_slow_area_button_mouse_entered():
+	print("Hovered SlowArea button")
+	_show_structure_tooltip("SlowArea")
+	
+func _on_laser_ship_button_mouse_entered():
+	print("Hovered LaserShip button")
+	_show_structure_tooltip("LaserShip")
+	
+func _on_structure_button_mouse_exited():
+	print("Mouse exited structure button")
+	_hide_structure_tooltip()
+	
+func _show_structure_tooltip(type: String):
+	print("Attempting to show tooltip for type:", type)
+	_hide_structure_tooltip()
+	var structure_scene = structure_manager.structure_map.get(type)
+	if not structure_scene:
+		print("No structure scene found for type:", type)
+		return
+	var structure = structure_scene.instantiate()
+	print("Instantiated structure for tooltip:", structure)
+	var name_text = structure.tooltip_name
+	var desc_text = structure.tooltip_desc
+	print("Tooltip name:", name_text, "Tooltip desc:", desc_text)
+
+	tooltip_instance = tooltip_scene.instantiate()
+	print("Instantiated tooltip scene:", tooltip_instance)
+	if not tooltip_instance:
+		print("Failed to instantiate tooltip scene!")
+		return
+
+	if not tooltip_instance.has_node("name_label") or not tooltip_instance.has_node("description_label"):
+		print("Tooltip instance missing expected label nodes!")
+	else:
+		print("Tooltip instance has expected label nodes.")
+
+	tooltip_instance.get_node("TextureRect/NameLabel").text = name_text
+	tooltip_instance.get_node("TextureRect/DescriptionLabel").text = desc_text
+	tooltip_instance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	tooltip_instance.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	# Dynamically resize font to fit label
+	tooltip_instance.get_node("TextureRect/NameLabel").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tooltip_instance.get_node("TextureRect/DescriptionLabel").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+	get_parent().add_child(tooltip_instance)
+	tooltip_instance.z_index = 1000 # Ensure on top
+	print("Tooltip added to menu.")
+	await get_tree().process_frame
+	_update_tooltip_position()
+
+func _hide_structure_tooltip():
+	if tooltip_instance:
+		print("Hiding tooltip.")
+		tooltip_instance.queue_free()
+		tooltip_instance = null
+
+func _process(delta):
+	if tooltip_instance:
+		var mouse_pos = get_global_mouse_position()
+		var tooltip_size = tooltip_instance.size
+		tooltip_instance.global_position = mouse_pos - Vector2(tooltip_size.x + 100, 1)
+
+func _update_tooltip_position():
+	if tooltip_instance:
+		var mouse_pos = get_global_mouse_position()
+		var tooltip_size = tooltip_instance.size
+		tooltip_instance.global_position = mouse_pos - Vector2(tooltip_size.x + 100, 1)

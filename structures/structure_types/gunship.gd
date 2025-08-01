@@ -7,6 +7,13 @@ var target_enemy: Enemy = null
 @onready var attack_sfx: AudioStreamPlayer = $AttackSFX
 @onready var death_sfx: AudioStreamPlayer = $DeathSFX
 
+func _init():
+	damage = 10
+	attack_range = 120
+	attack_cooldown = 1.0
+	tooltip_desc = "Deals " + str(damage) + " damage to the closest enemy within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds."
+	super._init()
+
 func update(delta: float) -> void:
 	cooldown_timer -= delta
 	_find_target()

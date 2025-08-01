@@ -15,6 +15,12 @@ var structure_costs = {
 	"LaserShip": 30,
 }
 
+var structure_map = {
+	"Gunship": preload("res://structures/scenes/gunship.tscn"),
+	"SlowArea": preload("res://structures/scenes/slow_area.tscn"),
+	"LaserShip": preload("res://structures/scenes/laser_ship.tscn")
+}
+
 # Called by the GameManager if the user left clicks with a structure selected
 # Adds the placed structure to the array, adds it to the structure group and then adds it to the scene
 # returns the placed structure

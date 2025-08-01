@@ -1,11 +1,15 @@
 class_name SlowArea
 extends Structure
 
-@export var slow_range: float = 120.0
+@export var slow_range: float = 200.0
 @onready var range_area: Area2D = $RangeArea
 @onready var range_collider: CollisionShape2D = $RangeArea/RangeCollider
 
 var slowed_enemies: Array = []
+
+func _init():
+	tooltip_desc = "Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
+	super._init()
 
 # sets the collider size to match the range and connects the area2D signals
 func _ready():

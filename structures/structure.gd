@@ -11,6 +11,9 @@ var is_orbital: bool = true # defines whether or not the structure can be placed
 @export var orbit_radius: float = 0.0
 @export var orbit_idx: int = 0
 
+@export var tooltip_name: String
+@export var tooltip_desc: String
+
 # position will be determined by GameManager and set by the StructureManager
 func _init():
 	position = Vector2.ZERO

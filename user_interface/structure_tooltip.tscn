@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd14kv4kivf2w"]
+
+[ext_resource type="Texture2D" uid="uid://btco1ttcdojfx" path="res://assets/ui_assets/tooltip_panel.png" id="1_j32eh"]
+[ext_resource type="Script" uid="uid://donsgqfe7aeyu" path="res://user_interface/structure_tooltip.gd" id="1_v2oqb"]
+
+[node name="StructureTooltip" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1595.0
+offset_bottom = -880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_v2oqb")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.398)
+layout_mode = 0
+offset_right = 325.0
+offset_bottom = 200.0
+texture = ExtResource("1_j32eh")
+expand_mode = 3
+
+[node name="NameLabel" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_top = 5.0
+offset_right = 325.0
+offset_bottom = 35.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 40.0
+offset_right = 301.0
+offset_bottom = 190.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "Name"

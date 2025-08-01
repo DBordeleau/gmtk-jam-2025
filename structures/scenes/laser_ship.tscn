@@ -46,6 +46,7 @@ health = 20.0
 death_particles = ExtResource("2_4763s")
 cost = 30
 speed = 0.6
+tooltip_name = "Laser Ship"
 
 [node name="LaserSystem" parent="." instance=ExtResource("3_6envv")]
 

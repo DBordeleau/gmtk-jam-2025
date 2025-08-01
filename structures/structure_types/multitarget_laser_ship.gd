@@ -19,6 +19,13 @@ var ready_to_fire: bool = true
 @onready var attack_sfx: AudioStreamPlayer = $AttackSFX
 @onready var death_sfx: AudioStreamPlayer = $DeathSFX
 
+func _init():
+	damage = 10
+	attack_range = 200
+	attack_cooldown = 2.0
+	tooltip_desc = "Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds."
+	super._init()
+
 func _ready() -> void:
 	super._ready()
 	
