@@ -13,6 +13,9 @@ signal game_over()
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
 
+@export var pause_menu: PackedScene
+var pause_menu_instance: Control = null
+
 @onready var currency_ui: Control = $UILayer/CurrencyUI
 var currency: int = 20
 
@@ -107,6 +110,11 @@ func _process(delta):
 func _unhandled_input(event):
 	if not get_tree():
 		return
+		
+	if event.is_action_pressed("pause"):
+		_toggle_pause_menu()
+		return
+		
 	if event.is_action_pressed("reverse_orbit"):
 		orbit_manager.reverse_orbit()
 		
@@ -345,3 +353,41 @@ func _on_upgrade_choice_finished():
 
 func _update_explosive_mine_cost_label(cost: int) -> void:
 	structure_menu.explosive_mine_cost_label.text = "-" + str(cost)
+
+func _toggle_pause_menu():
+	if pause_menu_instance:
+		_resume_game()
+	else:
+		_show_pause_menu()
+
+func _show_pause_menu():
+	if pause_menu_instance:
+		return
+	pause_menu_instance = pause_menu.instantiate()
+	pause_menu_instance.get_node("VolumeHbox/VolumeHslider").value = Settings.master_volume
+	pause_menu_instance.get_node("VolumeHbox/VolumeHslider").value_changed.connect(_on_pause_menu_volume_changed)
+	pause_menu_instance.get_node("ResumeButton").pressed.connect(_on_pause_menu_resume)
+	pause_menu_instance.get_node("QuitButton").pressed.connect(_on_pause_menu_quit)
+	
+	if has_node("UILayer"):
+		$UILayer.add_child(pause_menu_instance)
+	else:
+		add_child(pause_menu_instance)
+	get_tree().paused = true
+
+func _resume_game():
+	if pause_menu_instance:
+		pause_menu_instance.queue_free()
+		pause_menu_instance = null
+	get_tree().paused = false
+
+func _on_pause_menu_resume():
+	_resume_game()
+
+func _on_pause_menu_quit():
+	get_tree().quit()
+
+func _on_pause_menu_volume_changed(value: float) -> void:
+	Settings.master_volume = value
+	Settings.save_settings()
+	AudioServer.set_bus_volume_db(0, linear_to_db(value))

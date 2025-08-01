@@ -1,0 +1,129 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlbexb8yyr0di"]
+
+[ext_resource type="Script" uid="uid://cvqop0hewrqs8" path="res://user_interface/pause_menu.gd" id="1_6s2r0"]
+[ext_resource type="Texture2D" uid="uid://csqwmmrch6fjs" path="res://user_interface/resume_normal.png" id="1_vbv2j"]
+[ext_resource type="Texture2D" uid="uid://v480ryfk002s" path="res://user_interface/resume_hovered.png" id="2_6s2r0"]
+[ext_resource type="Texture2D" uid="uid://da8iwpbs6k710" path="res://user_interface/quit_normal.png" id="3_pa2yc"]
+[ext_resource type="Texture2D" uid="uid://cr6y321sy5pkq" path="res://user_interface/quit_hovered.png" id="4_0id6p"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_436lk"]
+thickness = 10
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_hyrwy"]
+color = Color(0, 1, 0.8, 1)
+thickness = 10
+
+[node name="PauseMenu" type="Control"]
+z_index = 1000
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 650.0
+offset_top = 239.0
+offset_right = -670.0
+offset_bottom = -241.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6s2r0")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -56.0
+offset_right = 56.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 80
+text = "GAME PAUSED"
+
+[node name="ResumeButton" type="TextureButton" parent="."]
+z_index = 5
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -12.0
+offset_right = 200.0
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+action_mode = 0
+texture_normal = ExtResource("1_vbv2j")
+texture_pressed = ExtResource("2_6s2r0")
+texture_hover = ExtResource("2_6s2r0")
+
+[node name="QuitButton" type="TextureButton" parent="."]
+z_index = 5
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = 107.0
+offset_right = 200.0
+offset_bottom = 207.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("3_pa2yc")
+texture_pressed = ExtResource("4_0id6p")
+texture_hover = ExtResource("4_0id6p")
+
+[node name="VolumeHbox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -228.0
+offset_top = -139.0
+offset_right = 237.0
+offset_bottom = -76.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="VolumeLabel" type="Label" parent="VolumeHbox"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 45
+text = "VOLUME:"
+
+[node name="VolumeHslider" type="HSlider" parent="VolumeHbox"]
+z_index = 5
+custom_minimum_size = Vector2(250, 30)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/slider = SubResource("StyleBoxLine_436lk")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_hyrwy")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_hyrwy")
+max_value = 1.0
+step = 0.01
+value = 1.0
+tick_count = 10
+ticks_on_borders = true
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="pressed" from="ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]

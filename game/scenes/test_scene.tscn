@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=15 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
+[ext_resource type="PackedScene" uid="uid://dlbexb8yyr0di" path="res://user_interface/pause_menu.tscn" id="2_atfu6"]
 [ext_resource type="Script" uid="uid://do6h34ao68sxk" path="res://structures/structure_manager.gd" id="2_f14q8"]
 [ext_resource type="PackedScene" uid="uid://dfg7ai1lcj16x" path="res://user_interface/structure_select_menu.tscn" id="4_l4p2h"]
 [ext_resource type="Script" uid="uid://c1v17ry0g2y7i" path="res://wave_spawner/wave_manager.gd" id="4_ny0yt"]
@@ -37,6 +38,7 @@ glow_blend_mode = 1
 
 [node name="GameManager" type="Node2D"]
 script = ExtResource("1_f14q8")
+pause_menu = ExtResource("2_atfu6")
 
 [node name="OrbitManager" type="Node2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("1_magnn")
