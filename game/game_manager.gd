@@ -211,6 +211,7 @@ func _on_planet_destroyed():
 	
 # restarts the current scene when play again button is pressed
 func _on_play_again_pressed():
+	get_tree().paused = false
 	get_tree().call_deferred("reload_current_scene")
 
 # updates currency label and the structure select buttons
