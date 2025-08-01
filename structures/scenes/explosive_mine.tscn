@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwa3p1gx7qjmo"]
+[gd_scene load_steps=9 format=3 uid="uid://cwa3p1gx7qjmo"]
 
 [ext_resource type="Script" uid="uid://3bbge4sjepv4" path="res://structures/structure_types/explosive_mine.gd" id="1_3qd6x"]
 [ext_resource type="Texture2D" uid="uid://smccjvctj8jm" path="res://assets/structure_assets/Mine-0001.png" id="1_seoml"]
 [ext_resource type="PackedScene" uid="uid://p66u5scroujg" path="res://vfx/particles/explosion_particles.tscn" id="2_a38ug"]
+[ext_resource type="AudioStream" uid="uid://cx0it8g047dkk" path="res://assets/sound/sfx/retro_explode_sfx_1.wav" id="4_64oom"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3qd6x"]
 atlas = ExtResource("1_seoml")
@@ -31,7 +32,6 @@ explosion_particles = ExtResource("2_a38ug")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(-1, 1)
 rotation = 0.0170087
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_a38ug")
 autoplay = "default"
 
@@ -46,3 +46,7 @@ shape = SubResource("CircleShape2D_5d1ou")
 position = Vector2(1, -2)
 scale = Vector2(1.78701, 1.78701)
 shape = SubResource("CircleShape2D_64oom")
+
+[node name="ExplodeSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_64oom")
+volume_db = -10.0

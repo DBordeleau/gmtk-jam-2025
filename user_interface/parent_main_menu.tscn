@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dykyaug6bg5bt"]
+[gd_scene load_steps=10 format=3 uid="uid://dykyaug6bg5bt"]
 
 [ext_resource type="PackedScene" uid="uid://cl2l3iwaj7g4r" path="res://user_interface/main_menu_scene.tscn" id="1_70r8b"]
 [ext_resource type="Script" uid="uid://uahg8rnv66dd" path="res://user_interface/parent_main_menu.gd" id="1_q6olu"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dm65ue5ytbo7a" path="res://user_interface/options_screen.tscn" id="4_ra6h2"]
 [ext_resource type="Texture2D" uid="uid://do838qf1glrc6" path="res://assets/ui_assets/main_menu/back_button_normal.png" id="5_0eqmr"]
 [ext_resource type="Texture2D" uid="uid://hb3yp2vjn1ii" path="res://assets/ui_assets/main_menu/back_button_hover.png" id="6_ra6h2"]
+[ext_resource type="AudioStream" uid="uid://w2xfrk1o3ovo" path="res://assets/sound/bgm/menu_bgm_loop.mp3" id="8_s6g0h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q6olu"]
 shader = ExtResource("2_sexwk")
@@ -68,6 +69,11 @@ grow_vertical = 0
 texture_normal = ExtResource("5_0eqmr")
 texture_pressed = ExtResource("5_0eqmr")
 texture_hover = ExtResource("6_ra6h2")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_s6g0h")
+volume_db = -15.0
+autoplay = true
 
 [connection signal="pressed" from="MainMenuScene/HowToPlayButton" to="." method="_on_how_to_play_button_pressed"]
 [connection signal="pressed" from="MainMenuScene/OptionsButton" to="." method="_on_options_button_pressed"]

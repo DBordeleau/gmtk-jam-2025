@@ -6,6 +6,7 @@ extends Structure
 @export var damage: int = 50
 @onready var range_area: Area2D = $RangeArea
 @export var explosion_particles: PackedScene
+@onready var explode_sfx: AudioStreamPlayer = $ExplodeSFX
 var health: int
 
 func _init():
@@ -53,6 +54,14 @@ func explode():
 		particles.global_position = global_position
 		particles.emitting = true
 		get_tree().current_scene.add_child(particles)
+	
+		if explode_sfx:
+			# Detach the audio player so it can finish playing
+			explode_sfx.get_parent().remove_child(explode_sfx)
+			get_tree().current_scene.add_child(explode_sfx)
+			explode_sfx.play()
+			# Optionally, queue_free the audio player after it finishes
+			explode_sfx.finished.connect(func(): explode_sfx.queue_free())
 	
 	camera.shake(20.0, 0.5)
 	

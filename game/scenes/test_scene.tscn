@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=16 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://b7l1b4j1o0jcm" path="res://user_interface/currency_ui.tscn" id="10_dj236"]
 [ext_resource type="PackedScene" uid="uid://f6v8ljlsk4vw" path="res://structures/scenes/planet.tscn" id="10_jp05k"]
 [ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="11_heu4h"]
+[ext_resource type="AudioStream" uid="uid://bki8teegycfxb" path="res://assets/sound/bgm/suspenseful_bgm_loop.mp3" id="13_heu4h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t6ilw"]
 shader = ExtResource("11_heu4h")
@@ -100,5 +101,10 @@ script = ExtResource("10_atfu6")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_716vl")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_heu4h")
+volume_db = -30.0
+autoplay = true
 
 [connection signal="game_over" from="." to="UILayer/WaveUI" method="_on_test_scene_game_over"]
