@@ -37,8 +37,9 @@ glow_blend_mode = 1
 [node name="TestScene" type="Node2D"]
 script = ExtResource("1_f14q8")
 
-[node name="OrbitManager" type="Node2D" parent="."]
+[node name="OrbitManager" type="Node2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("1_magnn")
+camera = NodePath("../MainCamera")
 
 [node name="StructureManager" type="Node" parent="." node_paths=PackedStringArray("orbit_manager")]
 script = ExtResource("2_f14q8")
@@ -52,7 +53,8 @@ metadata/_custom_type_script = "uid://c1v17ry0g2y7i"
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
-[node name="WaveUI" parent="UILayer" instance=ExtResource("9_716vl")]
+[node name="WaveUI" parent="UILayer" node_paths=PackedStringArray("planet") instance=ExtResource("9_716vl")]
+planet = NodePath("../../Planet")
 
 [node name="StructureSelectMenu" parent="UILayer" node_paths=PackedStringArray("structure_manager") instance=ExtResource("4_l4p2h")]
 structure_manager = NodePath("../../StructureManager")

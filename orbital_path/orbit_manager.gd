@@ -11,7 +11,7 @@ var orbit_direction: int = 1
 
 var orbit_speed_multipliers: Array[float] = [1.0]
 
-@onready var camera: Camera2D = get_tree().get_root().get_node("GameManager/MainCamera")
+@export var camera: Camera2D
 var last_zoom: Vector2 = Vector2.ONE
 
 # sets orbit to center of the screen

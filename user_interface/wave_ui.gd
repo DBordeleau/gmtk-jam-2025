@@ -1,5 +1,6 @@
 extends Control
 
+@export var planet: Planet
 @onready var wave_label: RichTextLabel = $WaveLabel
 @onready var wave_manager: WaveManager = $"../../WaveManager"
 
@@ -18,7 +19,6 @@ func _ready():
 	wave_manager.connect("wave_spawning_finished", Callable(self, "_on_wave_spawning_finished"))
 	_update_wave_label_spawning()
 	
-	var planet = get_tree().get_root().get_node("Planet") # Adjust path if needed
 	if planet:
 		planet.planet_destroyed.connect(_on_planet_destroyed)
 		
