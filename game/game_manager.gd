@@ -409,94 +409,185 @@ func _warm_up_everything():
 	print("WARMUP: Loading screen shown")
 	await get_tree().process_frame
 
-	var old_volume = AudioServer.get_bus_volume_db(0)
-	AudioServer.set_bus_volume_db(0, -80)
-	print("WARMUP: Master bus muted")
+	# Position particles in the center of screen (behind loading screen)
+	var center = get_viewport().get_visible_rect().size / 2
 
-	var offscreen = Vector2(-10000, -10000)
-
-	# --- Gunship ---
-	print("WARMUP: Gunship")
+	# --- Warm up Gunship effects ---
+	print("WARMUP: Gunship effects")
 	var gunship_scene = preload("res://structures/scenes/gunship.tscn")
-	var gunship = gunship_scene.instantiate()
-	gunship.position = offscreen
-	add_child(gunship)
+	var temp_gunship = gunship_scene.instantiate()
+	temp_gunship.position = center
+	temp_gunship.visible = true  # Make visible so GPU renders it
+	add_child(temp_gunship)
 	await get_tree().process_frame
-	if gunship.has_method("shoot"):
-		print("WARMUP: Gunship shoot()")
-		gunship.shoot()
+	
+	# Warm up attack particles (GPUParticles2D node)
+	if temp_gunship.has_node("gunship_attack_vfx"):
+		temp_gunship.get_node("gunship_attack_vfx").emitting = true
 		await get_tree().process_frame
-	if gunship.has_method("take_damage"):
-		print("WARMUP: Gunship take_damage()")
-		gunship.take_damage(9999)
+		await get_tree().process_frame  # Extra frame for shader compilation
+		temp_gunship.get_node("gunship_attack_vfx").emitting = false
+	
+	# Warm up attack audio
+	if temp_gunship.has_node("AttackSFX"):
+		temp_gunship.get_node("AttackSFX").play()
+		await get_tree().create_timer(0.01).timeout
+		temp_gunship.get_node("AttackSFX").stop()
+	
+	# Warm up death particles (PackedScene) - RENDER ONSCREEN
+	if temp_gunship.death_particles:
+		var death_vfx = temp_gunship.death_particles.instantiate()
+		death_vfx.position = center
+		death_vfx.visible = true  # Make visible so GPU renders it
+		add_child(death_vfx)
+		death_vfx.emitting = true
 		await get_tree().process_frame
-	print("WARMUP: Gunship queue_free()")
-	gunship.queue_free()
+		await get_tree().process_frame  # Extra frame for shader compilation
+		death_vfx.queue_free()
+	
+	# Warm up death audio
+	if temp_gunship.has_node("DeathSFX"):
+		temp_gunship.get_node("DeathSFX").play()
+		await get_tree().create_timer(0.01).timeout
+		temp_gunship.get_node("DeathSFX").stop()
+	
+	temp_gunship.queue_free()
 	await get_tree().process_frame
 
-	# --- LaserShip (simplified - just warm up audio/effects) ---
-	print("WARMUP: LaserShip")
-	var laser_ship_scene = preload("res://structures/scenes/laser_ship.tscn")
-	var laser_ship = laser_ship_scene.instantiate()
-	laser_ship.position = offscreen
-	add_child(laser_ship)
+	# --- Warm up LaserShip effects ---
+	print("WARMUP: LaserShip effects")
+	var lasership_scene = preload("res://structures/scenes/laser_ship.tscn")
+	var temp_lasership = lasership_scene.instantiate()
+	temp_lasership.position = center
+	temp_lasership.visible = true
+	add_child(temp_lasership)
 	await get_tree().process_frame
 	
-	# Just warm up the audio and laser system without full firing sequence
-	if laser_ship.has_node("AttackSFX"):
-		print("WARMUP: LaserShip attack audio")
-		laser_ship.get_node("AttackSFX").play()
-		await get_tree().process_frame
+	# Warm up attack audio
+	if temp_lasership.has_node("AttackSFX"):
+		temp_lasership.get_node("AttackSFX").play()
+		await get_tree().create_timer(0.01).timeout
+		temp_lasership.get_node("AttackSFX").stop()
 	
-	# Warm up laser system with empty target array (safe)
-	if laser_ship.has_node("LaserSystem"):
-		print("WARMUP: LaserShip laser system")
-		var empty_enemies: Array[Node2D] = []
-		laser_ship.get_node("LaserSystem").target_enemies(empty_enemies)
+	# Warm up death particles - RENDER ONSCREEN
+	if temp_lasership.death_particles:
+		var death_vfx = temp_lasership.death_particles.instantiate()
+		death_vfx.position = center
+		death_vfx.visible = true
+		add_child(death_vfx)
+		death_vfx.emitting = true
 		await get_tree().process_frame
+		await get_tree().process_frame
+		death_vfx.queue_free()
 	
-	if laser_ship.has_method("take_damage"):
-		print("WARMUP: LaserShip take_damage()")
-		laser_ship.take_damage(9999)
-		await get_tree().process_frame
-	print("WARMUP: LaserShip queue_free()")
-	laser_ship.queue_free()
+	# Warm up death audio
+	if temp_lasership.has_node("DeathSFX"):
+		temp_lasership.get_node("DeathSFX").play()
+		await get_tree().create_timer(0.01).timeout
+		temp_lasership.get_node("DeathSFX").stop()
+	
+	temp_lasership.queue_free()
 	await get_tree().process_frame
 
-	# --- ExplosiveMine ---
-	print("WARMUP: ExplosiveMine")
+	# --- Warm up ExplosiveMine effects ---
+	print("WARMUP: Mine explosion effects")
 	var mine_scene = preload("res://structures/scenes/explosive_mine.tscn")
-	var mine = mine_scene.instantiate()
-	mine.position = offscreen
-	add_child(mine)
+	var temp_mine = mine_scene.instantiate()
+	temp_mine.position = center
+	temp_mine.visible = true
+	add_child(temp_mine)
 	await get_tree().process_frame
-	if mine.has_method("explode"):
-		print("WARMUP: Mine explode()")
-		mine.explode()
+	
+	# Warm up explosion particles - RENDER ONSCREEN
+	if temp_mine.explosion_particles:
+		var explosion_vfx = temp_mine.explosion_particles.instantiate()
+		explosion_vfx.position = center
+		explosion_vfx.visible = true
+		add_child(explosion_vfx)
+		explosion_vfx.emitting = true
 		await get_tree().process_frame
-
-	# --- Enemies ---
-	var enemy_scenes = [
-		preload("res://enemies/scenes/asteroid.tscn"),
-		preload("res://enemies/scenes/big_asteroid.tscn"),
-		preload("res://enemies/scenes/comet.tscn")
-	]
-	for scene in enemy_scenes:
-		print("WARMUP: Enemy ", scene)
-		var enemy = scene.instantiate()
-		enemy.position = offscreen
-		add_child(enemy)
 		await get_tree().process_frame
-		if enemy.has_method("take_damage"):
-			print("WARMUP: Enemy take_damage()")
-			enemy.take_damage(9999)
-			await get_tree().process_frame
+		explosion_vfx.queue_free()
+	
+	temp_mine.queue_free()
+	await get_tree().process_frame
 
-	print("WARMUP: Waiting before restoring volume")
-	await get_tree().create_timer(1.5).timeout
-	print("WARMUP: Restoring master volume")
-	AudioServer.set_bus_volume_db(0, old_volume)
+	# --- Warm up Enemy death effects ---
+	print("WARMUP: Enemy death effects")
+	
+	# Asteroid death effects
+	var asteroid_scene = preload("res://enemies/scenes/asteroid.tscn")
+	var temp_asteroid = asteroid_scene.instantiate()
+	temp_asteroid.position = center
+	temp_asteroid.visible = true
+	add_child(temp_asteroid)
+	await get_tree().process_frame
+	
+	# Warm up death particles - RENDER ONSCREEN
+	if temp_asteroid.death_particles:
+		var death_vfx = temp_asteroid.death_particles.instantiate()
+		death_vfx.position = center
+		death_vfx.visible = true
+		add_child(death_vfx)
+		death_vfx.emitting = true
+		await get_tree().process_frame
+		await get_tree().process_frame
+		death_vfx.queue_free()
+	
+	# Warm up death audio
+	if temp_asteroid.has_node("DeathSFX"):
+		temp_asteroid.get_node("DeathSFX").play()
+		await get_tree().create_timer(0.05).timeout
+		temp_asteroid.get_node("DeathSFX").stop()
+	
+	temp_asteroid.queue_free()
+	await get_tree().process_frame
+	
+	# Big asteroid
+	var big_asteroid_scene = preload("res://enemies/scenes/big_asteroid.tscn")
+	var temp_big_asteroid = big_asteroid_scene.instantiate()
+	temp_big_asteroid.position = center
+	temp_big_asteroid.visible = true
+	add_child(temp_big_asteroid)
+	await get_tree().process_frame
+	
+	if temp_big_asteroid.death_particles:
+		var death_vfx = temp_big_asteroid.death_particles.instantiate()
+		death_vfx.position = center
+		death_vfx.visible = true
+		add_child(death_vfx)
+		death_vfx.emitting = true
+		await get_tree().process_frame
+		await get_tree().process_frame
+		death_vfx.queue_free()
+	
+	temp_big_asteroid.queue_free()
+	await get_tree().process_frame
 
+	# Comet (if different from asteroid)
+	var comet_scene = preload("res://enemies/scenes/comet.tscn")
+	var temp_comet = comet_scene.instantiate()
+	temp_comet.position = center
+	temp_comet.visible = true
+	add_child(temp_comet)
+	await get_tree().process_frame
+	
+	if temp_comet.death_particles:
+		var death_vfx = temp_comet.death_particles.instantiate()
+		death_vfx.position = center
+		death_vfx.visible = true
+		add_child(death_vfx)
+		death_vfx.emitting = true
+		await get_tree().process_frame
+		await get_tree().process_frame
+		death_vfx.queue_free()
+	
+	temp_comet.queue_free()
+	await get_tree().process_frame
+
+	print("WARMUP: Waiting for effects to finish")
+	await get_tree().create_timer(0.3).timeout
+	
 	print("WARMUP: Hiding loading screen")
 	loading_screen_instance.queue_free()
 	loading_screen_instance = null
