@@ -42,7 +42,7 @@ func _ready():
 # adds new rings every 10 waves up to 5 rings
 func _on_wave_completed():
 	wave_index += 1
-	currency += 5 + wave_index
+	currency += wave_index
 	update_currency_ui()
 	# Add a ring and zoom out every 5 waves
 	if wave_index % 10 == 0 and wave_index <= 50:

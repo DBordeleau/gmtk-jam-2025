@@ -52,14 +52,15 @@ func generate_wave(wave_number: int) -> Wave:
 		var sequence = EnemySequence.new()
 		
 		# Choose random enemy type, with preference for stronger enemies in later waves
-		var enemy_index = 0
-		if wave_number >= 5 and enemy_scenes.size() > 1:
-			# After wave 5, introduce variety and stronger enemies
-			enemy_index = randi() % enemy_scenes.size()
-		else:
-			# Early waves use basic enemies
-			enemy_index = 0
-		
+		var available_indices = [0] # Always include basic asteroid
+
+		if wave_number >= 5:
+			available_indices.append(2) # Add comet after wave 5
+
+		if wave_number >= 10:
+			available_indices.append(1) # Add big asteroid after wave 10
+
+		var enemy_index = available_indices[randi() % available_indices.size()]
 		sequence.enemy = enemy_scenes[enemy_index]
 		
 		# Distribute enemies across sequences
