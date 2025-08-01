@@ -259,3 +259,7 @@ func _update_tooltip_position():
 		var mouse_pos = get_global_mouse_position()
 		var tooltip_size = tooltip_instance.size
 		tooltip_instance.global_position = mouse_pos - Vector2(tooltip_size.x + 100, 1)
+
+func clear_selection():
+	selected_structure_type = ""
+	unpress_buttons()
