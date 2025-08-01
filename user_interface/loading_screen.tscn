@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://8ko50etvu8py"]
+
+[ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="1_yly58"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sp35x"]
+shader = ExtResource("1_yly58")
+shader_parameter/horizontalMovement = 0.1
+shader_parameter/verticalMovement = 0.1
+shader_parameter/frequencyStar = 0.01
+shader_parameter/sizeStar = 50.0
+shader_parameter/brightnessStar = 1.0
+shader_parameter/shineFrequencyStar = 4.0
+shader_parameter/transparencyStar = 0.0
+shader_parameter/starIterations = 2
+shader_parameter/frequencyBgStar = 0.996
+shader_parameter/shineFrequencyBgStar = 1.0
+shader_parameter/transparencyBgStar = 0.3
+shader_parameter/colorBackground = Color(0, 0, 0, 1)
+shader_parameter/transparencyBackground = 0.0
+shader_parameter/seed = 12.0
+
+[node name="LoadingScreen" type="Control"]
+z_index = 4096
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 69
+text = "Loading..."
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -5
+material = SubResource("ShaderMaterial_sp35x")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

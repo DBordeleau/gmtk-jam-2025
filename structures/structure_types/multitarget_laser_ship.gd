@@ -12,6 +12,7 @@ extends AttackStructure
 var enemies_in_range: Array[Node2D] = []
 # Track if the ship is ready to fire (cooldown expired)
 var ready_to_fire: bool = true
+var cleanup_timer: SceneTreeTimer = null
 
 @onready var range_area: Area2D = $Range
 @onready var laser_system: LaserSystem = $LaserSystem
@@ -94,11 +95,25 @@ func fire_at_all_targets() -> void:
 	cooldown_timer = attack_cooldown
 	print("LaserShip on cooldown for ", attack_cooldown, " seconds")
 	
-	# Schedule laser cleanup after laser_duration
-	var cleanup_timer = get_tree().create_timer(laser_duration)
-	cleanup_timer.timeout.connect(cleanup_all_lasers)
+	# Cancel any existing cleanup timer
+	if cleanup_timer:
+		cleanup_timer = null
+	
+	# Schedule laser cleanup after laser_duration - store the timer reference
+	cleanup_timer = get_tree().create_timer(laser_duration)
+	cleanup_timer.timeout.connect(_safe_cleanup_all_lasers)
 
+func _safe_cleanup_all_lasers() -> void:
+	# Only cleanup if we're still valid and in the tree
+	if is_inside_tree() and not is_queued_for_deletion():
+		cleanup_all_lasers()
+	cleanup_timer = null
+	
 func cleanup_all_lasers() -> void:
+	# Cancel any pending cleanup timer
+	if cleanup_timer:
+		cleanup_timer = null
+	
 	if laser_system:
 		# Remove all lasers by passing empty array
 		laser_system.target_enemies([])
@@ -139,3 +154,10 @@ func take_damage(amount: float) -> void:
 # Clean up when destroyed
 func _exit_tree() -> void:
 	cleanup_all_lasers()
+
+# used by game_manager to warm up attack effects
+func shoot():
+	if laser_system:
+		laser_system.target_enemies([])
+	if attack_sfx:
+		attack_sfx.play()

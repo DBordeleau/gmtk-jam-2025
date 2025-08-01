@@ -75,3 +75,10 @@ func take_damage(amount: float) -> void:
 		print(parent)
 		if parent and parent.has_method("remove_structure"):
 			parent.remove_structure(self)
+			
+# used by game_manager to warm up attack effects
+func shoot():
+	if attack_particles:
+		attack_particles.emitting = true
+	if attack_sfx:
+		attack_sfx.play()

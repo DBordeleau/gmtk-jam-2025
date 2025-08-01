@@ -1,9 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=17 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
 [ext_resource type="PackedScene" uid="uid://dlbexb8yyr0di" path="res://user_interface/pause_menu.tscn" id="2_atfu6"]
 [ext_resource type="Script" uid="uid://do6h34ao68sxk" path="res://structures/structure_manager.gd" id="2_f14q8"]
+[ext_resource type="PackedScene" uid="uid://8ko50etvu8py" path="res://user_interface/loading_screen.tscn" id="2_t6ilw"]
 [ext_resource type="PackedScene" uid="uid://dfg7ai1lcj16x" path="res://user_interface/structure_select_menu.tscn" id="4_l4p2h"]
 [ext_resource type="Script" uid="uid://c1v17ry0g2y7i" path="res://wave_spawner/wave_manager.gd" id="4_ny0yt"]
 [ext_resource type="Script" uid="uid://dfxvdlrol5mp" path="res://upgrades/upgrade_manager.gd" id="5_dj236"]
@@ -39,6 +40,7 @@ glow_blend_mode = 1
 
 [node name="GameManager" type="Node2D"]
 script = ExtResource("1_f14q8")
+loading_screen = ExtResource("2_t6ilw")
 pause_menu = ExtResource("2_atfu6")
 
 [node name="OrbitManager" type="Node2D" parent="." node_paths=PackedStringArray("camera")]
@@ -102,9 +104,8 @@ script = ExtResource("10_atfu6")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_716vl")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("13_heu4h")
 volume_db = -35.0
-autoplay = true
 
 [connection signal="game_over" from="." to="UILayer/WaveUI" method="_on_test_scene_game_over"]

@@ -5,6 +5,11 @@ extends Node2D
 
 signal game_over()
 
+@onready var music: AudioStreamPlayer = $Music
+
+@export var loading_screen: PackedScene
+var loading_screen_instance: Control = null
+
 @onready var structure_manager = $StructureManager
 @onready var orbit_manager = $OrbitManager
 @onready var wave_manager: WaveManager = $WaveManager
@@ -31,8 +36,8 @@ var hiscore: int = 0
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
-	await _warm_up_particles_and_audio()
-	await _warm_up_scenes()
+	await _warm_up_everything()
+	music.play()
 	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
@@ -394,89 +399,106 @@ func _on_pause_menu_volume_changed(value: float) -> void:
 	Settings.save_settings()
 	AudioServer.set_bus_volume_db(0, linear_to_db(value))
 
-func _warm_up_particles_and_audio():
-	# Warm up asteroid death particles
-	var asteroid_particles_scene = preload("res://vfx/particles/asteroid_death_particle.tscn")
-	var asteroid_particles = asteroid_particles_scene.instantiate()
-	add_child(asteroid_particles)
-	asteroid_particles.emitting = true
+func _warm_up_everything():
+	print("WARMUP: Start")
+	loading_screen_instance = loading_screen.instantiate()
+	if has_node("UILayer"):
+		$UILayer.add_child(loading_screen_instance)
+	else:
+		add_child(loading_screen_instance)
+	print("WARMUP: Loading screen shown")
 	await get_tree().process_frame
-	asteroid_particles.queue_free()
 
-	# Warm up comet death particles
-	var comet_particles_scene = preload("res://vfx/particles/comet_death_particle.tscn")
-	var comet_particles = comet_particles_scene.instantiate()
-	add_child(comet_particles)
-	comet_particles.emitting = true
+	var old_volume = AudioServer.get_bus_volume_db(0)
+	AudioServer.set_bus_volume_db(0, -80)
+	print("WARMUP: Master bus muted")
+
+	var offscreen = Vector2(-10000, -10000)
+
+	# --- Gunship ---
+	print("WARMUP: Gunship")
+	var gunship_scene = preload("res://structures/scenes/gunship.tscn")
+	var gunship = gunship_scene.instantiate()
+	gunship.position = offscreen
+	add_child(gunship)
 	await get_tree().process_frame
-	comet_particles.queue_free()
-
-	# Warm up mine explosion particles
-	var mine_particles_scene = preload("res://vfx/particles/explosion_particles.tscn")
-	var mine_particles = mine_particles_scene.instantiate()
-	add_child(mine_particles)
-	mine_particles.emitting = true
+	if gunship.has_method("shoot"):
+		print("WARMUP: Gunship shoot()")
+		gunship.shoot()
+		await get_tree().process_frame
+	if gunship.has_method("take_damage"):
+		print("WARMUP: Gunship take_damage()")
+		gunship.take_damage(9999)
+		await get_tree().process_frame
+	print("WARMUP: Gunship queue_free()")
+	gunship.queue_free()
 	await get_tree().process_frame
-	mine_particles.queue_free()
 
-	# Warm up asteroid death SFX
-	var asteroid_sfx = AudioStreamPlayer.new()
-	asteroid_sfx.stream = preload("res://assets/sound/sfx/rock_explode_sfx.wav")
-	add_child(asteroid_sfx)
-	asteroid_sfx.volume_db = -80  # Mute
-	asteroid_sfx.play()
-	await get_tree().create_timer(0.1).timeout
-	asteroid_sfx.stop()
-	asteroid_sfx.queue_free()
+	# --- LaserShip (simplified - just warm up audio/effects) ---
+	print("WARMUP: LaserShip")
+	var laser_ship_scene = preload("res://structures/scenes/laser_ship.tscn")
+	var laser_ship = laser_ship_scene.instantiate()
+	laser_ship.position = offscreen
+	add_child(laser_ship)
+	await get_tree().process_frame
+	
+	# Just warm up the audio and laser system without full firing sequence
+	if laser_ship.has_node("AttackSFX"):
+		print("WARMUP: LaserShip attack audio")
+		laser_ship.get_node("AttackSFX").play()
+		await get_tree().process_frame
+	
+	# Warm up laser system with empty target array (safe)
+	if laser_ship.has_node("LaserSystem"):
+		print("WARMUP: LaserShip laser system")
+		var empty_enemies: Array[Node2D] = []
+		laser_ship.get_node("LaserSystem").target_enemies(empty_enemies)
+		await get_tree().process_frame
+	
+	if laser_ship.has_method("take_damage"):
+		print("WARMUP: LaserShip take_damage()")
+		laser_ship.take_damage(9999)
+		await get_tree().process_frame
+	print("WARMUP: LaserShip queue_free()")
+	laser_ship.queue_free()
+	await get_tree().process_frame
 
-	# Warm up mine explosion SFX
-	var mine_sfx = AudioStreamPlayer.new()
-	mine_sfx.stream = preload("res://assets/sound/sfx/retro_explode_sfx_1.wav")
-	add_child(mine_sfx)
-	mine_sfx.volume_db = -80
-	mine_sfx.play()
-	await get_tree().create_timer(0.1).timeout
-	mine_sfx.stop()
-	mine_sfx.queue_free()
+	# --- ExplosiveMine ---
+	print("WARMUP: ExplosiveMine")
+	var mine_scene = preload("res://structures/scenes/explosive_mine.tscn")
+	var mine = mine_scene.instantiate()
+	mine.position = offscreen
+	add_child(mine)
+	await get_tree().process_frame
+	if mine.has_method("explode"):
+		print("WARMUP: Mine explode()")
+		mine.explode()
+		await get_tree().process_frame
 
-	var shoot_sfx = AudioStreamPlayer.new()
-	shoot_sfx.stream = preload("res://assets/sound/sfx/laser_shot_sfx_1.wav")
-	add_child(shoot_sfx)
-	shoot_sfx.volume_db = -80
-	shoot_sfx.play()
-	await get_tree().create_timer(0.1).timeout
-	shoot_sfx.stop()
-	shoot_sfx.queue_free()
-
-	var laser_sfx = AudioStreamPlayer.new()
-	laser_sfx.stream = preload("res://assets/sound/sfx/laser_buzz_sfx.ogg")
-	add_child(laser_sfx)
-	laser_sfx.volume_db = -80
-	laser_sfx.play()
-	await get_tree().create_timer(0.1).timeout
-	laser_sfx.stop()
-	laser_sfx.queue_free()
-
-func _warm_up_scenes():
+	# --- Enemies ---
 	var enemy_scenes = [
 		preload("res://enemies/scenes/asteroid.tscn"),
 		preload("res://enemies/scenes/big_asteroid.tscn"),
 		preload("res://enemies/scenes/comet.tscn")
 	]
 	for scene in enemy_scenes:
-		var inst = scene.instantiate()
-		add_child(inst)
+		print("WARMUP: Enemy ", scene)
+		var enemy = scene.instantiate()
+		enemy.position = offscreen
+		add_child(enemy)
 		await get_tree().process_frame
-		inst.queue_free()
+		if enemy.has_method("take_damage"):
+			print("WARMUP: Enemy take_damage()")
+			enemy.take_damage(9999)
+			await get_tree().process_frame
 
-	var structure_scenes = [
-		preload("res://structures/scenes/gunship.tscn"),
-		preload("res://structures/scenes/laser_ship.tscn"),
-		preload("res://structures/scenes/slow_area.tscn"),
-		preload("res://structures/scenes/explosive_mine.tscn")
-	]
-	for scene in structure_scenes:
-		var inst = scene.instantiate()
-		add_child(inst)
-		await get_tree().process_frame
-		inst.queue_free()
+	print("WARMUP: Waiting before restoring volume")
+	await get_tree().create_timer(1.5).timeout
+	print("WARMUP: Restoring master volume")
+	AudioServer.set_bus_volume_db(0, old_volume)
+
+	print("WARMUP: Hiding loading screen")
+	loading_screen_instance.queue_free()
+	loading_screen_instance = null
+	await get_tree().process_frame
+	print("WARMUP: Done")
