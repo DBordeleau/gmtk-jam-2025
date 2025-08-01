@@ -31,7 +31,8 @@ var hiscore: int = 0
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
-	_warm_up_particles_and_audio()
+	await _warm_up_particles_and_audio()
+	await _warm_up_scenes()
 	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
@@ -455,3 +456,27 @@ func _warm_up_particles_and_audio():
 	await get_tree().create_timer(0.1).timeout
 	laser_sfx.stop()
 	laser_sfx.queue_free()
+
+func _warm_up_scenes():
+	var enemy_scenes = [
+		preload("res://enemies/scenes/asteroid.tscn"),
+		preload("res://enemies/scenes/big_asteroid.tscn"),
+		preload("res://enemies/scenes/comet.tscn")
+	]
+	for scene in enemy_scenes:
+		var inst = scene.instantiate()
+		add_child(inst)
+		await get_tree().process_frame
+		inst.queue_free()
+
+	var structure_scenes = [
+		preload("res://structures/scenes/gunship.tscn"),
+		preload("res://structures/scenes/laser_ship.tscn"),
+		preload("res://structures/scenes/slow_area.tscn"),
+		preload("res://structures/scenes/explosive_mine.tscn")
+	]
+	for scene in structure_scenes:
+		var inst = scene.instantiate()
+		add_child(inst)
+		await get_tree().process_frame
+		inst.queue_free()
