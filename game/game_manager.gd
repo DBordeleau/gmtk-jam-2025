@@ -38,13 +38,13 @@ func _ready():
 
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
-# adds 2nd ring after wave 5
+# adds new rings every 10 waves up to 5 rings
 func _on_wave_completed():
 	wave_index += 1
 	currency += 5 + wave_index
 	update_currency_ui()
 	# Add a ring and zoom out every 5 waves
-	if wave_index % 5 == 0:
+	if wave_index % 10 == 0 and wave_index <= 50:
 		current_zoom = current_zoom * 0.7
 		await _zoom_camera_smoothly(current_zoom, 1.0)
 		structure_menu.update_for_camera_zoom()
@@ -171,7 +171,7 @@ func _on_planet_destroyed():
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
 	var hiscore_label = Label.new()
-	hiscore_label.text = "Hiscore: " + str(hiscore)
+	hiscore_label.text = "Hiscore: " + str(hiscore) + " waves completed."
 	hiscore_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hiscore_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hiscore_label.modulate = Color(0, 1, 0) if is_new_hiscore else Color(1, 1, 1)
