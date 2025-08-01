@@ -28,6 +28,8 @@ var is_visible_on_screen: bool = false
 var menu_width: int = 400
 
 @onready var gunship_cost_label: Label = $GunshipButton/GunshipCostLabel
+@onready var laser_ship_cost_label: Label = $LaserShipButton/LaserShipCostLabel
+
 @onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
 
 @onready var tooltip_scene = preload("res://user_interface/structure_tooltip.tscn")

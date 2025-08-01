@@ -35,6 +35,7 @@ func _ready():
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	update_currency_ui()
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
+	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
 
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
@@ -132,14 +133,18 @@ func _unhandled_input(event):
 			if not structure_menu.slow_area_unlocked:
 				structure_menu.unlock_slow_area()
 		if new_structure:
+			var placed_type = structure_menu.selected_structure_type # Store before clearing!
 			currency -= structure_cost
 			update_currency_ui()
+			if placed_type == "Gunship":
+				var new_gunship_cost = structure_cost + 10
+				structure_manager.set_structure_cost("Gunship", new_gunship_cost)
+				_update_gunship_cost_label(new_gunship_cost)
+			elif placed_type == "LaserShip":
+				var new_lasership_cost = structure_cost + 10
+				structure_manager.set_structure_cost("LaserShip", new_lasership_cost)
+				_update_lasership_cost_label(new_lasership_cost)
 			structure_menu.clear_selection()
-			# increase gunship cost when placing a gunship
-			if structure_menu.selected_structure_type == "Gunship":
-				var new_cost = structure_cost + 10
-				structure_manager.set_structure_cost("Gunship", new_cost)
-				_update_gunship_cost_label(new_cost)
 			_remove_preview()
 
 # called when planet health reaches 0
@@ -268,6 +273,9 @@ func _remove_preview():
 # updates the gunship cost label in the structure select menu
 func _update_gunship_cost_label(cost: int) -> void:
 	structure_menu.gunship_cost_label.text = "-" + str(cost)
+
+func _update_lasership_cost_label(cost: int) -> void:
+	structure_menu.laser_ship_cost_label.text = "-" + str(cost)
 
 func safe_wait(time: float):
 	if not get_tree() or not is_inside_tree():
