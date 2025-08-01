@@ -19,6 +19,11 @@ func take_damage(amount: int) -> void:
 	if health < 0:
 		health = 0
 	_update_healthbar()
+	
+	var camera = get_viewport().get_camera_2d()
+	if camera and camera.has_method("shake"):
+		camera.shake(20.0, 1.0)
+	
 	if health <= 0:
 		emit_signal("planet_destroyed")
 		queue_free()

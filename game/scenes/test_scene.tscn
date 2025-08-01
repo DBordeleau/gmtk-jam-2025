@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=13 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dfg7ai1lcj16x" path="res://user_interface/structure_select_menu.tscn" id="4_l4p2h"]
 [ext_resource type="Script" uid="uid://c1v17ry0g2y7i" path="res://wave_spawner/wave_manager.gd" id="4_ny0yt"]
 [ext_resource type="PackedScene" uid="uid://b6n1uariimoo5" path="res://user_interface/wave_ui.tscn" id="9_716vl"]
+[ext_resource type="Script" uid="uid://cv7u4hqmd20yq" path="res://game/camera.gd" id="10_atfu6"]
 [ext_resource type="PackedScene" uid="uid://b7l1b4j1o0jcm" path="res://user_interface/currency_ui.tscn" id="10_dj236"]
 [ext_resource type="PackedScene" uid="uid://f6v8ljlsk4vw" path="res://structures/scenes/planet.tscn" id="10_jp05k"]
 [ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="11_heu4h"]
@@ -86,6 +87,7 @@ color = Color(0, 0, 0, 1)
 
 [node name="MainCamera" type="Camera2D" parent="."]
 position = Vector2(958, 540)
+script = ExtResource("10_atfu6")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_716vl")

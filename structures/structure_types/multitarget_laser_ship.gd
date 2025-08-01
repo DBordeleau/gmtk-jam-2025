@@ -120,6 +120,9 @@ func take_damage(amount: float) -> void:
 		particle.rotation = global_rotation
 		particle.emitting = true
 		get_tree().current_scene.add_child(particle)
+		var camera = get_viewport().get_camera_2d()
+		if camera and camera.has_method("shake"):
+			camera.shake(12.0, 0.5)
 		if death_sfx:
 			# Detach the audio player so it can finish playing
 			death_sfx.get_parent().remove_child(death_sfx)
