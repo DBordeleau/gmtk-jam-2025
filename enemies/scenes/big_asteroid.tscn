@@ -133,6 +133,7 @@ z_index = 3
 collision_layer = 2
 script = ExtResource("1_ak75m")
 damage_particles = ExtResource("2_e8qss")
+base_speed = 75.0
 death_particles = ExtResource("2_vmogb")
 health = 20
 damage = 20

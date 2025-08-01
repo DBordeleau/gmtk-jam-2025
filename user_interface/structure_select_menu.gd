@@ -66,11 +66,6 @@ func _on_gunship_button_pressed():
 		slow_area_button.button_pressed = false
 		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("Gunship")
-	else:
-		selected_structure_type = ""
-		gunship_button.button_pressed = false
-		structure_type_selected.emit("")
-		
 
 func _on_slow_area_button_pressed():
 	if slow_area_button.button_pressed:
@@ -78,10 +73,6 @@ func _on_slow_area_button_pressed():
 		gunship_button.button_pressed = false
 		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("SlowArea")
-	else:
-		selected_structure_type = ""
-		slow_area_button.button_pressed = false
-		structure_type_selected.emit("")
 		
 func _on_laser_ship_button_pressed():
 	if laser_ship_button.button_pressed:
@@ -89,25 +80,27 @@ func _on_laser_ship_button_pressed():
 		gunship_button.button_pressed = false
 		slow_area_button.button_pressed = false
 		structure_type_selected.emit("LaserShip")
-	else:
-		selected_structure_type = ""
-		laser_ship_button.button_pressed = false
-		structure_type_selected.emit("")
 		
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
 	var gunship_cost = structure_manager.get_structure_cost("Gunship")
 	var slow_area_cost = structure_manager.get_structure_cost("SlowArea")
 	var laser_ship_cost = structure_manager.get_structure_cost("LaserShip")
+	
 	gunship_button.disabled = currency < gunship_cost
-	if gunship_button.disabled:
+	if gunship_button.disabled and selected_structure_type == "Gunship":
 		selected_structure_type = ""
+		gunship_button.button_pressed = false
+		
 	slow_area_button.disabled = currency < slow_area_cost
-	if slow_area_button.disabled:
+	if slow_area_button.disabled and selected_structure_type == "SlowArea":
 		selected_structure_type = ""
+		slow_area_button.button_pressed = false
+		
 	laser_ship_button.disabled = currency < laser_ship_cost
-	if laser_ship_button.disabled:
+	if laser_ship_button.disabled and selected_structure_type == "LaserShip":
 		selected_structure_type = ""
+		laser_ship_button.button_pressed = false
 
 # called when a gunship is placed for the first time
 func unlock_slow_area():

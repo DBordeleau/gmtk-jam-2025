@@ -5,6 +5,7 @@ extends CharacterBody2D # needed for move_and_slide() and velocity but we can ch
 @export var health: int = 10
 @export var damage: int = 10
 @export var speed: float = 100.0
+var slow_multiplier: float = 1.0  
 var death_sfx: AudioStreamPlayer
 var killed_by_player: bool = false
 
@@ -43,3 +44,6 @@ func die() -> void:
 
 func set_speed(new_speed: float) -> void:
 	speed = new_speed
+	
+func set_slow_multiplier(multiplier: float) -> void:
+	slow_multiplier = multiplier

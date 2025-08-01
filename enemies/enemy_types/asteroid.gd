@@ -2,6 +2,10 @@
 extends Enemy
 class_name Asteroid
 
+@export var base_speed: float = 100.0
+var spawn_position: Vector2
+var total_distance: float = 1.0
+
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var collider: CollisionShape2D = $CollisionShape2D
 
@@ -14,6 +18,8 @@ var has_collided: bool = false # prevents double damage
 func _ready():
 	var viewport = get_viewport()
 	target_position = viewport.get_visible_rect().size / 2
+	spawn_position = global_position
+	total_distance = spawn_position.distance_to(target_position)
 	super._ready()
 
 func _physics_process(delta: float) -> void:
@@ -22,6 +28,13 @@ func _physics_process(delta: float) -> void:
 
 func move_enemy(delta: float) -> void:
 	var direction = (target_position - global_position).normalized()
+	var distance_traveled = spawn_position.distance_to(global_position)
+	var progress = clamp(distance_traveled / total_distance, 0.0, 1.0)
+	
+	var gravity_scale = 0.3 # 0.0 = no effect, 1.0 = strong effect
+	var speed_bonus = base_speed * gravity_scale * progress
+	speed = (base_speed + speed_bonus) * slow_multiplier  # Apply slow multiplier here
+	
 	velocity = direction * speed
 	move_and_slide()
 

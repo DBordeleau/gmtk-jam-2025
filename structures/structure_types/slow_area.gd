@@ -26,15 +26,15 @@ func _draw():
 func _on_body_entered(body):
 	if body.is_in_group("enemies") and body not in slowed_enemies:
 		slowed_enemies.append(body)
-		if body.has_method("set_speed"):
-			body.set_speed(body.speed * 0.5)
+		if body.has_method("set_slow_multiplier"):
+			body.set_slow_multiplier(0.5)  # Changed from set_speed to set_slow_multiplier
 
 # returns speed to normal when enemies exit
 func _on_body_exited(body):
 	if body.is_in_group("enemies") and body in slowed_enemies:
 		slowed_enemies.erase(body)
-		if body.has_method("set_speed"):
-			body.set_speed(body.speed * 2) # restore speed
+		if body.has_method("set_slow_multiplier"):
+			body.set_slow_multiplier(1.0) 
 
 func update(delta: float) -> void:
 	queue_redraw()
