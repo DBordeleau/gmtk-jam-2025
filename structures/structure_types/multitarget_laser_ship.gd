@@ -76,17 +76,22 @@ func _process(delta: float) -> void:
 		cooldown_timer -= delta
 		if cooldown_timer <= 0.0:
 			ready_to_fire = true
-			print("LaserShip ready to fire again")
+			print("LaserShip ready to fire again - enemies in range: ", enemies_in_range.size())
 
 			# When cooldown expires, if we have enemies and aren't already acquiring, start acquisition
 			if not enemies_in_range.is_empty() and not is_acquiring_targets:
+				print("LaserShip: Starting acquisition after cooldown expired")
 				start_target_acquisition()
+			elif enemies_in_range.is_empty():
+				print("LaserShip: No enemies to attack after cooldown expired")
+			elif is_acquiring_targets:
+				print("LaserShip: Already acquiring targets when cooldown expired")
 
 
 func _on_enemy_entered(body: Node2D) -> void:
 	if body.is_in_group("enemies"):
 		enemies_in_range.append(body)
-		print("LaserShip: Enemy entered range. Ready to fire: ", ready_to_fire, " Acquiring: ", is_acquiring_targets, " Shield: ", is_shielded)
+		print("LaserShip: Enemy entered range. Ready to fire: ", ready_to_fire, " Acquiring: ", is_acquiring_targets, " Shield: ", is_shielded, " Enemies in range: ", enemies_in_range.size())
 
 		# If ready to fire and not already acquiring targets
 		if ready_to_fire and not is_acquiring_targets:
@@ -96,6 +101,8 @@ func _on_enemy_entered(body: Node2D) -> void:
 			# If we already have multiple enemies and aren't acquiring, fire immediately
 			elif enemies_in_range.size() > 1:
 				fire_at_all_targets()
+		else:
+			print("LaserShip: Enemy entered but can't attack yet - ready_to_fire: ", ready_to_fire, " is_acquiring: ", is_acquiring_targets)
 
 
 func _on_enemy_exited(body: Node2D) -> void:
