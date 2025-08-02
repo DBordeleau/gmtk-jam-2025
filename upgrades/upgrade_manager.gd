@@ -6,6 +6,8 @@ signal upgrade_choice_started
 signal upgrade_choice_finished
 var available_upgrades: Array[Upgrade] = []
 var applied_upgrades: Array[Upgrade]   = []
+# Track the compound interest level (how many times it's been taken)
+var compound_interest_level: int = 0
 
 @onready var upgrade_ui: Control = null
 
@@ -14,6 +16,23 @@ var applied_upgrades: Array[Upgrade]   = []
 
 func _ready():
 	_initialize_upgrades()
+
+
+# Create the compound interest upgrade based on current level
+func _create_compound_interest_upgrade() -> Upgrade:
+	var compound_interest = Upgrade.new()
+	compound_interest.name = "Compound Interest"
+	
+	var current_bonus = compound_interest_level + 1
+	var next_bonus = current_bonus + 1
+	
+	compound_interest.description = "Earn an additional +" + str(current_bonus) + " currency every time you eliminate a threat. If selected, the next time this upgrade is offered, you will earn an additional +" + str(next_bonus) + " currency."
+	compound_interest.target_structure_type = "Global"
+	compound_interest.property_name = "enemy_kill_bonus"
+	compound_interest.modification_type = "add"
+	compound_interest.value = current_bonus
+	
+	return compound_interest
 
 
 func _initialize_upgrades():
@@ -111,13 +130,7 @@ func _initialize_upgrades():
 	explosive_savings.value = 0.5
 
 	# Special Upgrades
-	var compound_interest = Upgrade.new()
-	compound_interest.name = "Compound Interest"
-	compound_interest.description = "Earn an extra +1 currency whenever you eliminate an enemy"
-	compound_interest.target_structure_type = "Global"  # Special type for global effects
-	compound_interest.property_name = "enemy_kill_bonus"
-	compound_interest.modification_type = "add"
-	compound_interest.value = 1
+	# Note: Compound Interest is now created dynamically in _create_compound_interest_upgrade()
 
 	available_upgrades = [
 	cannon_cooling,
@@ -129,7 +142,6 @@ func _initialize_upgrades():
 	lightweight_laser_ships,
 	black_hole_friday,
 	bigger_bombs,
-	compound_interest,
 	deeper_black_holes,
 	explosive_savings
 	]
@@ -143,9 +155,17 @@ func start_upgrade_choice():
 
 func _get_random_upgrades(count: int) -> Array[Upgrade]:
 	var filtered: Array[Upgrade] = []
+	
+	# Add regular upgrades
 	for upgrade in available_upgrades:
 		if _should_offer_upgrade(upgrade):
 			filtered.append(upgrade)
+	
+	# Add compound interest upgrade if it should be offered
+	var compound_interest = _create_compound_interest_upgrade()
+	if _should_offer_upgrade(compound_interest):
+		filtered.append(compound_interest)
+	
 	var shuffled: Array = filtered.duplicate()
 	shuffled.shuffle()
 	return shuffled.slice(0, min(count, shuffled.size()))
@@ -161,6 +181,10 @@ func _show_upgrade_ui(upgrades: Array[Upgrade]):
 
 
 func _on_upgrade_chosen(upgrade: Upgrade):
+	# If compound interest is chosen, increment the level
+	if upgrade.name == "Compound Interest":
+		compound_interest_level += 1
+	
 	apply_upgrade(upgrade)
 	applied_upgrades.append(upgrade)
 	_hide_upgrade_ui()
@@ -242,6 +266,9 @@ func apply_upgrades_to_new_structure(structure: Structure):
 
 
 func has_global_upgrade(property_name: String) -> bool:
+	if property_name == "enemy_kill_bonus" and compound_interest_level > 0:
+		return true
+	
 	for upgrade in applied_upgrades:
 		if upgrade.target_structure_type == "Global" and upgrade.property_name == property_name:
 			return true
@@ -249,6 +276,13 @@ func has_global_upgrade(property_name: String) -> bool:
 
 
 func get_global_upgrade_value(property_name: String) -> float:
+	if property_name == "enemy_kill_bonus":
+		# Calculate total compound interest bonus: 1 + 2 + 3 + ... + level
+		var total_bonus = 0.0
+		for i in range(1, compound_interest_level + 1):
+			total_bonus += i
+		return total_bonus
+	
 	for upgrade in applied_upgrades:
 		if upgrade.target_structure_type == "Global" and upgrade.property_name == property_name:
 			return upgrade.value
