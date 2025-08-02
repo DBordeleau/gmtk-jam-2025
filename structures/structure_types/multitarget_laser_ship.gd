@@ -20,7 +20,7 @@ var cleanup_timer: SceneTreeTimer = null
 @onready var attack_sfx: AudioStreamPlayer = $AttackSFX
 @onready var death_sfx: AudioStreamPlayer = $DeathSFX
 
-var max_health = 20
+var max_health: int = 20
 
 
 func _init():
@@ -146,12 +146,12 @@ func take_damage(amount: float) -> void:
 	if health < max_health:
 		smoke_vfx.emitting = true
 	if health <= 0:
-		var particle = death_particles.instantiate()
+		var particle: Node = death_particles.instantiate()
 		particle.position = global_position
 		particle.rotation = global_rotation
 		particle.emitting = true
 		get_tree().current_scene.add_child(particle)
-		var camera = get_viewport().get_camera_2d()
+		var camera: Camera2D = get_viewport().get_camera_2d()
 		if camera and camera.has_method("shake"):
 			camera.shake(12.0, 0.5)
 		if death_sfx:
@@ -161,7 +161,7 @@ func take_damage(amount: float) -> void:
 			death_sfx.play()
 			# Optionally, queue_free the audio player after it finishes
 			death_sfx.finished.connect(func(): death_sfx.queue_free())
-		var parent = get_parent()
+		var parent: Node = get_parent()
 		print(parent)
 		if parent and parent.has_method("remove_structure"):
 			parent.remove_structure(self)

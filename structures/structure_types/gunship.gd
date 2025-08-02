@@ -30,11 +30,11 @@ func update(delta: float) -> void:
 
 
 func _find_target():
-	var enemies       = get_tree().get_nodes_in_group("enemies")
-	var closest_dist  = INF
-	var closest_enemy = null
+	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
+	var closest_dist         = INF
+	var closest_enemy        = null
 	for enemy in enemies:
-		var dist = position.distance_to(enemy.position)
+		var dist: float = position.distance_to(enemy.position)
 		if dist < closest_dist:
 			closest_dist = dist
 			closest_enemy = enemy
@@ -43,8 +43,8 @@ func _find_target():
 
 func _track_target(delta):
 	if target_enemy:
-		var to_enemy      = target_enemy.position - position
-		var desired_angle = to_enemy.angle()
+		var to_enemy: Vector2    = target_enemy.position - position
+		var desired_angle: float = to_enemy.angle()
 		rotation = lerp_angle(rotation, desired_angle + PI/2, delta * 5.0) # offset because the sprite faces up and not right
 	else:
 		# smoothly rotate to default position
@@ -63,11 +63,11 @@ func take_damage(amount: float) -> void:
 	health -= amount
 	print("New health: " + str(health))
 	if health <= 0:
-		var particle = death_particles.instantiate()
+		var particle: Node   = death_particles.instantiate()
 		particle.position = global_position
 		particle.rotation = global_rotation
 		particle.emitting = true
-		var camera   = get_viewport().get_camera_2d()
+		var camera: Camera2D = get_viewport().get_camera_2d()
 		if camera and camera.has_method("shake"):
 			camera.shake(12.0, 0.5)
 		if death_sfx:
@@ -78,7 +78,7 @@ func take_damage(amount: float) -> void:
 			# Optionally, queue_free the audio player after it finishes
 			death_sfx.finished.connect(func(): death_sfx.queue_free())
 		get_tree().current_scene.add_child(particle)
-		var parent = get_parent()
+		var parent: Node = get_parent()
 		print(parent)
 		if parent and parent.has_method("remove_structure"):
 			parent.remove_structure(self)

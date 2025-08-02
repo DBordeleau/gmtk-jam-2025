@@ -16,8 +16,8 @@ func shake(amount: float = 8.0, duration: float = 0.3):
 func _process(delta):
 	if shake_timer > 0.0:
 		shake_timer -= delta
-		var t              = shake_timer / shake_duration
-		var current_amount = shake_amount * t * t * t * 2.0
+		var t: float              = shake_timer / shake_duration
+		var current_amount: float = shake_amount * t * t * t * 2.0
 		shake_offset = Vector2(
 			randf_range(-1, 1),
 			randf_range(-1, 1)

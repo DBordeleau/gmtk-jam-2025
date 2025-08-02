@@ -25,13 +25,13 @@ var pause_menu_instance: Control = null
 
 @onready var currency_ui: Control = $UILayer/CurrencyUI
 
-var currency: int                 = 20
-var wave_index: int = 0
-var current_zoom: Vector2 = Vector2(1.0, 1.0)
-var current_orbit: float  = 350.0
+var currency: int            = 20
+var wave_index: int          = 0
+var current_zoom: Vector2    = Vector2(1.0, 1.0)
+var current_orbit: float     = 350.0
 var preview_instance: Node2D = null
 var preview_type: String     = ""
-var hiscore: int = 0
+var hiscore: int             = 0
 
 
 # connects to wave manager signals and planet death signal for game over
@@ -56,9 +56,9 @@ func _ready():
 # starts the delay timer before starting the next wave
 # displays victory screen if there are no waves remaining
 # adds new rings every 10 waves up to 5 rings
-func _on_wave_completed():
+func _on_wave_completed() -> void:
 	wave_index += 1
-	var reward = 0
+	var reward: int = 0
 	if wave_index < 10:
 		reward = 5
 	elif wave_index < 20:
@@ -95,8 +95,8 @@ func _handle_ring_expansion_and_start_wave():
 
 
 func _zoom_camera_smoothly(target_zoom: Vector2, duration: float) -> void:
-	var start_zoom = camera.zoom
-	var t          = 0.0
+	var start_zoom: Vector2 = camera.zoom
+	var t: float            = 0.0
 	while t < duration:
 		camera.zoom = start_zoom.lerp(target_zoom, t / duration)
 		await get_tree().process_frame
@@ -119,11 +119,11 @@ func _show_victory_screen():
 	label.scale = Vector2(0, 0)
 	add_child(label)
 
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(label, "scale", Vector2(1, 1), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
-func _process(delta):
+func _process(delta) -> void:
 	if not get_tree():
 		return
 	structure_manager.update_all(delta)
@@ -132,7 +132,7 @@ func _process(delta):
 
 # On left click it places a structure, orbital structures are added to the orbit manager and snap to the path
 # SPACE = Reverse orbit direction
-func _unhandled_input(event):
+func _unhandled_input(event) -> void:
 	if not get_tree():
 		return
 
@@ -156,10 +156,10 @@ func _unhandled_input(event):
 			print("Not enough currency to place structure!")
 			return
 
-		var mouse_pos  =  camera.get_global_mouse_position()
+		var mouse_pos: Vector2 =  camera.get_global_mouse_position()
 		var snapped_pos: Vector2
-		var is_orbital := false
-		var orbit_idx  := 0
+		var is_orbital         := false
+		var orbit_idx          := 0
 
 		# only snap to orbit if the selected structure is orbital
 		if structure_menu.selected_structure_type == "Gunship" or structure_menu.selected_structure_type == "LaserShip":
@@ -221,7 +221,7 @@ func _on_planet_destroyed():
 	vbox.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	vbox.custom_minimum_size = Vector2(200, 100)
 
-	var waves_completed      = wave_index
+	var waves_completed: int = wave_index
 	var is_new_hiscore: bool = false
 	if waves_completed > hiscore:
 		hiscore = waves_completed
@@ -262,7 +262,7 @@ func _on_planet_destroyed():
 	game_over_container.position.y -= vbox.size.y
 
 	# Tween the entire container
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_process_mode(Tween.TWEEN_PROCESS_IDLE)
 	tween.tween_property(game_over_container, "scale", Vector2(2, 2), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(0.5).timeout
@@ -283,14 +283,14 @@ func update_currency_ui(change: int = 0):
 
 # called every time wave_manager emits the enemy_killed signal
 func _on_enemy_killed():
-	var base_reward = 1
-	var bonus       = 0
+	var base_reward: int = 1
+	var bonus: int       = 0
 
 	# Check for Compound Interest upgrade
 	if upgrade_manager.has_global_upgrade("enemy_kill_bonus"):
 		bonus = int(upgrade_manager.get_global_upgrade_value("enemy_kill_bonus"))
 
-	var total_reward = base_reward + bonus
+	var total_reward: int = base_reward + bonus
 	currency += total_reward
 	update_currency_ui(total_reward)
 
@@ -332,7 +332,7 @@ func _create_preview(type: String) -> Node2D:
 func _update_preview_position() -> void:
 	if not preview_instance or preview_type == "":
 		return
-	var mouse_pos = camera.get_global_mouse_position()
+	var mouse_pos: Vector2 = camera.get_global_mouse_position()
 	if preview_type == "Gunship" or preview_type == "LaserShip":
 		var center    = orbit_manager.orbit_center
 		var orbit_idx = orbit_manager.get_closest_orbit(mouse_pos)
@@ -363,22 +363,22 @@ func _update_slowarea_cost_label(cost: int) -> void:
 	structure_menu.slow_area_cost_label.text = "-" + str(cost)
 
 
-func safe_wait(time: float):
+func safe_wait(time: float) -> void:
 	if not get_tree() or not is_inside_tree():
 		return
 	await get_tree().create_timer(time).timeout
 
 
 func save_hiscore(value: int) -> void:
-	var save = FileAccess.open("user://hiscore.save", FileAccess.WRITE)
+	var save: FileAccess = FileAccess.open("user://hiscore.save", FileAccess.WRITE)
 	save.store_32(value)
 	save.close()
 
 
 func load_hiscore() -> int:
 	if FileAccess.file_exists("user://hiscore.save"):
-		var save  = FileAccess.open("user://hiscore.save", FileAccess.READ)
-		var value = save.get_32()
+		var save: FileAccess = FileAccess.open("user://hiscore.save", FileAccess.READ)
+		var value: int       = save.get_32()
 		save.close()
 		return value
 	return 0
@@ -389,7 +389,7 @@ func _on_first_gunship_placed():
 
 
 func _start_next_wave():
-	var delay = wave_manager.get_next_wave_delay()
+	var delay: float = wave_manager.get_next_wave_delay()
 	await safe_wait(delay)
 	wave_manager.start_wave(wave_index)
 
@@ -415,7 +415,7 @@ func _toggle_pause_menu():
 		_show_pause_menu()
 
 
-func _show_pause_menu():
+func _show_pause_menu() -> void:
 	if pause_menu_instance:
 		return
 	pause_menu_instance = pause_menu.instantiate()
@@ -463,12 +463,12 @@ func _warm_up_everything():
 	await get_tree().process_frame
 
 	# Position particles in the center of screen (behind loading screen)
-	var center = get_viewport().get_visible_rect().size / 2
+	var center: Vector2 = get_viewport().get_visible_rect().size / 2
 
 	# --- Warm up Gunship effects ---
 	print("WARMUP: Gunship effects")
-	var gunship_scene = preload("res://structures/scenes/gunship.tscn")
-	var temp_gunship  = gunship_scene.instantiate()
+	var gunship_scene: PackedScene = preload("res://structures/scenes/gunship.tscn")
+	var temp_gunship: Node         = gunship_scene.instantiate()
 	temp_gunship.position = center
 	temp_gunship.visible = true  # Make visible so GPU renders it
 	add_child(temp_gunship)
@@ -509,8 +509,8 @@ func _warm_up_everything():
 
 	# --- Warm up LaserShip effects ---
 	print("WARMUP: LaserShip effects")
-	var lasership_scene = preload("res://structures/scenes/laser_ship.tscn")
-	var temp_lasership  = lasership_scene.instantiate()
+	var lasership_scene: PackedScene = preload("res://structures/scenes/laser_ship.tscn")
+	var temp_lasership: Node         = lasership_scene.instantiate()
 	temp_lasership.position = center
 	temp_lasership.visible = true
 	add_child(temp_lasership)
@@ -526,7 +526,7 @@ func _warm_up_everything():
 	# IM PREFIRING MY LAZERS
 	print("WARMUP: Firing laser system")
 	if temp_lasership.has_node("LaserSystem"):
-		var laser_system                 = temp_lasership.get_node("LaserSystem")
+		var laser_system: Node           = temp_lasership.get_node("LaserSystem")
 		var typed_enemies: Array[Node2D] = [dummy_enemy]  # Properly typed array
 		laser_system.target_enemies(typed_enemies)  # Pass typed array
 		await get_tree().process_frame
@@ -577,8 +577,8 @@ func _warm_up_everything():
 
 	# --- Warm up ExplosiveMine effects ---
 	print("WARMUP: Mine explosion effects")
-	var mine_scene = preload("res://structures/scenes/explosive_mine.tscn")
-	var temp_mine  = mine_scene.instantiate()
+	var mine_scene: PackedScene = preload("res://structures/scenes/explosive_mine.tscn")
+	var temp_mine: Node         = mine_scene.instantiate()
 	temp_mine.position = center
 	temp_mine.visible = true
 	add_child(temp_mine)
@@ -607,8 +607,8 @@ func _warm_up_everything():
 	print("WARMUP: Enemy death effects")
 
 	# Asteroid death effects
-	var asteroid_scene = preload("res://enemies/scenes/asteroid.tscn")
-	var temp_asteroid  = asteroid_scene.instantiate()
+	var asteroid_scene: PackedScene = preload("res://enemies/scenes/asteroid.tscn")
+	var temp_asteroid: Node         = asteroid_scene.instantiate()
 	temp_asteroid.position = center
 	temp_asteroid.visible = true
 	add_child(temp_asteroid)
@@ -635,8 +635,8 @@ func _warm_up_everything():
 	await get_tree().process_frame
 
 	# Big asteroid
-	var big_asteroid_scene = preload("res://enemies/scenes/big_asteroid.tscn")
-	var temp_big_asteroid  = big_asteroid_scene.instantiate()
+	var big_asteroid_scene: PackedScene = preload("res://enemies/scenes/big_asteroid.tscn")
+	var temp_big_asteroid: Node         = big_asteroid_scene.instantiate()
 	temp_big_asteroid.position = center
 	temp_big_asteroid.visible = true
 	add_child(temp_big_asteroid)
@@ -656,8 +656,8 @@ func _warm_up_everything():
 	await get_tree().process_frame
 
 	# Comet (if different from asteroid)
-	var comet_scene = preload("res://enemies/scenes/comet.tscn")
-	var temp_comet  = comet_scene.instantiate()
+	var comet_scene: PackedScene = preload("res://enemies/scenes/comet.tscn")
+	var temp_comet: Node         = comet_scene.instantiate()
 	temp_comet.position = center
 	temp_comet.visible = true
 	add_child(temp_comet)

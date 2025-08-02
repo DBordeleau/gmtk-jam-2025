@@ -4,7 +4,7 @@ extends CharacterBody2D # needed for move_and_slide() and velocity but we can ch
 
 @export var health: int = 10
 @export var damage: int = 10
-@export var speed: float   = 100.0
+@export var speed: float = 100.0
 
 var slow_multiplier: float = 1.0
 var death_sfx: AudioStreamPlayer
@@ -14,7 +14,7 @@ var killed_by_player: bool = false
 func _ready():
 	# Add to "enemies" group for targeting
 	add_to_group("enemies")
-	var children = get_children()
+	var children: Array[Node] = get_children()
 	for child in children:
 		if child.name == "DeathSFX":
 			death_sfx = child

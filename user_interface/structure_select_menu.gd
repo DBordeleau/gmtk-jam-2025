@@ -20,7 +20,7 @@ var selected_structure_type: String = ""
 var slow_area_unlocked: bool = false
 
 # AI generated tween stuff
-@onready var tween: Tween      = null
+@onready var tween: Tween = null
 
 var is_visible_on_screen: bool = false
 # when retrieving menu width dynamically it is being set as 0
@@ -32,7 +32,7 @@ var menu_width: int = 400
 @onready var slow_area_cost_label: Label = $SlowAreaButton/SlowAreaCostLabel
 @onready var explosive_mine_cost_label: Label = $ExplosiveMineButon/ExplosiveMineCostLabel
 @onready var toggle_sfx: AudioStreamPlayer = $ToggleSFX
-@onready var tooltip_scene    = preload("res://user_interface/structure_tooltip.tscn")
+@onready var tooltip_scene: PackedScene = preload("res://user_interface/structure_tooltip.tscn")
 
 var tooltip_instance: Control = null
 
@@ -40,7 +40,7 @@ var tooltip_instance: Control = null
 # Sets the buttons to be in toggle mode, connects their signals, and makes them unpressed by default
 # hides the slow area button by default until the player places a gunship
 func _ready():
-	var children = get_children()
+	var children: Array[Node] = get_children()
 	for child in children:
 		if child is TextureButton:
 			child.toggle_mode = true
@@ -114,9 +114,9 @@ func _on_explosive_mine_button_pressed():
 
 # disables buttons if we cant afford associated structure
 func update_buttons(currency: int):
-	var gunship_cost    = structure_manager.get_structure_cost("Gunship")
-	var slow_area_cost  = structure_manager.get_structure_cost("SlowArea")
-	var laser_ship_cost = structure_manager.get_structure_cost("LaserShip")
+	var gunship_cost: int    = structure_manager.get_structure_cost("Gunship")
+	var slow_area_cost: int  = structure_manager.get_structure_cost("SlowArea")
+	var laser_ship_cost: int = structure_manager.get_structure_cost("LaserShip")
 
 	gunship_button.disabled = currency < gunship_cost
 	if gunship_button.disabled and selected_structure_type == "Gunship":
@@ -149,7 +149,7 @@ func unlock_slow_area():
 
 
 func _update_menu_position(off_screen: bool):
-	var viewport_size = get_viewport().get_visible_rect().size
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 
 	if off_screen:
 		# Position completely off the right edge
@@ -163,7 +163,7 @@ func _update_menu_position(off_screen: bool):
 
 func animate_menu_in():
 	print("Starting animate_menu_in")
-	var viewport_size = get_viewport().get_visible_rect().size
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 
 	# Kill existing tween
 	if tween:
@@ -171,7 +171,7 @@ func animate_menu_in():
 
 	# Create new tween
 	tween = create_tween()
-	var target_position = Vector2(viewport_size.x - menu_width - 10, position.y) # 10px padding
+	var target_position: Vector2 = Vector2(viewport_size.x - menu_width - 10, position.y) # 10px padding
 
 	print("Animating from: ", position, " to: ", target_position)
 
@@ -184,7 +184,7 @@ func animate_menu_in():
 
 func animate_menu_out():
 	print("Starting animate_menu_out")
-	var viewport_size = get_viewport().get_visible_rect().size
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 
 	# Kill existing tween
 	if tween:
@@ -192,7 +192,7 @@ func animate_menu_out():
 
 	# Create new tween
 	tween = create_tween()
-	var target_position = Vector2(viewport_size.x, position.y) # Completely off-screen
+	var target_position: Vector2 = Vector2(viewport_size.x, position.y) # Completely off-screen
 
 	print("Animating from: ", position, " to: ", target_position)
 
@@ -220,8 +220,8 @@ func toggle_menu():
 func update_for_camera_zoom():
 	if is_visible_on_screen:
 		# Update position immediately if menu is currently visible
-		var viewport_size = get_viewport().get_visible_rect().size
-		var menu_width    = size.x
+		var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+		var menu_width: float      = size.x
 		position = Vector2(viewport_size.x - menu_width - 10, position.y)
 
 
@@ -260,7 +260,7 @@ func _on_explosive_mine_button_mouse_entered():
 	_show_structure_tooltip("ExplosiveMine")
 
 
-func _show_structure_tooltip(type: String):
+func _show_structure_tooltip(type: String) -> void:
 	print("Attempting to show tooltip for type:", type)
 	_hide_structure_tooltip()
 	var structure_scene = structure_manager.structure_map.get(type)
@@ -271,9 +271,9 @@ func _show_structure_tooltip(type: String):
 	print("Instantiated structure for tooltip:", structure)
 
 	# APPLY UPGRADES TO THE TEMPORARY STRUCTURE FOR TOOLTIP
-	var game_manager = get_tree().get_root().get_node("GameManager")
+	var game_manager: Node = get_tree().get_root().get_node("GameManager")
 	if game_manager and game_manager.has_node("UpgradeManager"):
-		var upgrade_manager = game_manager.get_node("UpgradeManager")
+		var upgrade_manager: Node = game_manager.get_node("UpgradeManager")
 		upgrade_manager.apply_upgrades_to_new_structure(structure)
 
 	var name_text = structure.tooltip_name
@@ -321,15 +321,15 @@ func _hide_structure_tooltip():
 
 func _process(delta):
 	if tooltip_instance:
-		var mouse_pos    = get_global_mouse_position()
-		var tooltip_size = tooltip_instance.size
+		var mouse_pos: Vector2    = get_global_mouse_position()
+		var tooltip_size: Vector2 = tooltip_instance.size
 		tooltip_instance.global_position = mouse_pos - Vector2(tooltip_size.x + 100, 1)
 
 
 func _update_tooltip_position():
 	if tooltip_instance:
-		var mouse_pos    = get_global_mouse_position()
-		var tooltip_size = tooltip_instance.size
+		var mouse_pos: Vector2    = get_global_mouse_position()
+		var tooltip_size: Vector2 = tooltip_instance.size
 		tooltip_instance.global_position = mouse_pos - Vector2(tooltip_size.x + 100, 1)
 
 

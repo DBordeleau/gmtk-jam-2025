@@ -41,7 +41,7 @@ func _animate_currency_change(label: Label, is_gain: bool):
 	label.scale = Vector2(0.5, 0.5)
 	label.modulate.a = 0.0
 
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 
 	# Scale up and fade in
@@ -49,7 +49,7 @@ func _animate_currency_change(label: Label, is_gain: bool):
 	tween.tween_property(label, "modulate:a", 1.0, 0.2)
 
 	# Move upward (gains) or downward (losses)
-	var move_direction = Vector2(0, -30) if is_gain else Vector2(0, 30)
+	var move_direction: Vector2 = Vector2(0, -30) if is_gain else Vector2(0, 30)
 	tween.tween_property(label, "position", label.position + move_direction, 0.8).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 
 	# Hold for a moment, then fade out
@@ -63,6 +63,6 @@ func _animate_currency_change(label: Label, is_gain: bool):
 
 # Add a pulse animation to the main currency label
 func _pulse_currency_label():
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(currency_label, "scale", Vector2(1.1, 1.1), 0.1).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 	tween.tween_property(currency_label, "scale", Vector2(1.0, 1.0), 0.1).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_IN)

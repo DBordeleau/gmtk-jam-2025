@@ -31,7 +31,7 @@ func _ready() -> void:
 # Call this to create lasers targeting all enemies in the area
 func target_enemies(enemies: Array[Node2D]) -> void:
 	# Remove lasers for enemies no longer in range
-	var current_targets = active_lasers.keys()
+	var current_targets: Array = active_lasers.keys()
 
 	for target in current_targets:
 		if not is_instance_valid(target) or not enemies.has(target):
@@ -56,11 +56,11 @@ func create_laser(target: Node2D) -> void:
 	laser.visible = true
 
 	# Calculate initial direction and distance
-	var direction = (target.global_position - global_position).normalized()
-	var distance  = global_position.distance_to(target.global_position)
+	var direction: Vector2 = (target.global_position - global_position).normalized()
+	var distance: float    = global_position.distance_to(target.global_position)
 
-	var start_point = direction * start_distance
-	var end_point   = direction * distance
+	var start_point: Vector2 = direction * start_distance
+	var end_point: Vector2   = direction * distance
 
 	# Add points properly with correct positions
 	laser.add_point(start_point)
@@ -81,19 +81,19 @@ func create_laser(target: Node2D) -> void:
 
 func create_particles_for_laser(target: Node2D, laser: Line2D) -> void:
 	# Create casting particles (at laser start)
-	var casting_particles_instance = casting_particles.duplicate()
+	var casting_particles_instance: Node = casting_particles.duplicate()
 	casting_particles_instance.modulate = color
 	casting_particles_instance.emitting = true
 	add_child(casting_particles_instance)
 
 	# Create collision particles (at laser end)
-	var collision_particles_instance = collision_particles.duplicate()
+	var collision_particles_instance: Node = collision_particles.duplicate()
 	collision_particles_instance.modulate = color
 	collision_particles_instance.emitting = true
 	add_child(collision_particles_instance)
 
 	# Create beam particles (along laser length)
-	var beam_particles_instance = beam_particles.duplicate()
+	var beam_particles_instance: Node = beam_particles.duplicate()
 	beam_particles_instance.modulate = color
 	beam_particles_instance.emitting = true
 	add_child(beam_particles_instance)
@@ -111,7 +111,7 @@ func track_target(target: Node2D, laser: Line2D) -> void:
 	laser.set_meta("target", target)
 
 	# Create a tween for continuous updates
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_loops()  # Loop indefinitely
 
 	# Store the tween reference so we can kill it later
@@ -143,11 +143,11 @@ func update_laser_direction(target: Node2D, laser: Line2D) -> void:
 	if laser.get_point_count() != 2:
 		return
 
-	var direction = (target.global_position - global_position).normalized()
-	var distance  = global_position.distance_to(target.global_position)
+	var direction: Vector2 = (target.global_position - global_position).normalized()
+	var distance: float    = global_position.distance_to(target.global_position)
 
-	var start_point = direction * start_distance
-	var end_point   = direction * distance
+	var start_point: Vector2 = direction * start_distance
+	var end_point: Vector2   = direction * distance
 
 	# Update laser positions
 	laser.set_point_position(0, start_point)
@@ -175,14 +175,14 @@ func update_particles_for_laser(target: Node2D, start_point: Vector2, end_point:
 
 	# Update beam particles position and emission box (along laser length)
 	if is_instance_valid(particles["beam"]):
-		var beam_center = start_point + (end_point - start_point) * 0.5
+		var beam_center: Vector2 = start_point + (end_point - start_point) * 0.5
 		particles["beam"].position = beam_center
 		particles["beam"].rotation = direction.angle()
 
 		# Modify the emission box extents to match laser length
-		var laser_length = start_point.distance_to(end_point)
+		var laser_length: float = start_point.distance_to(end_point)
 		if particles["beam"].process_material is ParticleProcessMaterial:
-			var material = particles["beam"].process_material as ParticleProcessMaterial
+			var material: ParticleProcessMaterial = particles["beam"].process_material as ParticleProcessMaterial
 			material.emission_box_extents.x = laser_length * 0.5
 			material.emission_box_extents.y = line_width * 0.5  # Match laser width
 
@@ -251,7 +251,7 @@ func remove_particles_for_laser(target: Node2D) -> void:
 		if is_instance_valid(particle_system):
 			particle_system.emitting = false
 			# Remove particles after they finish their lifetime
-			var cleanup_timer = get_tree().create_timer(2.0)  # Adjust based on particle lifetime
+			var cleanup_timer: SceneTreeTimer = get_tree().create_timer(2.0)  # Adjust based on particle lifetime
 			cleanup_timer.timeout.connect(func(): if is_instance_valid(particle_system): particle_system.queue_free())
 
 	laser_particles.erase(target)
@@ -261,12 +261,12 @@ func appear_laser(laser: Line2D, target: Node2D) -> void:
 	laser.visible = true
 
 	# Calculate the target end point
-	var direction = (target.global_position - global_position).normalized()
-	var distance  = global_position.distance_to(target.global_position)
-	var end_point = direction * distance
+	var direction: Vector2 = (target.global_position - global_position).normalized()
+	var distance: float    = global_position.distance_to(target.global_position)
+	var end_point: Vector2 = direction * distance
 
 	# Create tween for both width and length animation
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)  # Allow multiple properties to animate simultaneously
 
 	# Animate width from 0 to full width
@@ -284,7 +284,7 @@ growth_time
 
 
 func disappear_laser(laser: Line2D) -> void:
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.tween_property(laser, "width", 0.0, growth_time).from_current()
 	tween.tween_callback(laser.queue_free)
 
@@ -306,6 +306,6 @@ func set_color(new_color: Color) -> void:
 
 # Clean up when the node is freed
 func _exit_tree() -> void:
-	var targets_to_cleanup = active_lasers.keys()
+	var targets_to_cleanup: Array = active_lasers.keys()
 	for target_key in targets_to_cleanup:
 		cleanup_laser_by_key(target_key)

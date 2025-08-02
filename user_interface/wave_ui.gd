@@ -51,7 +51,7 @@ func _on_enemy_killed():
 
 # starts next wave countdown based on the wave's delay time
 func _on_wave_completed():
-	var next_delay = wave_manager.get_next_wave_delay()
+	var next_delay: float = wave_manager.get_next_wave_delay()
 	next_wave_seconds = int(next_delay)
 	wave_label.text = "[color=green]Wave %d Completed! Next wave begins in %d seconds.[/color]" % [wave_index + 1, next_wave_seconds]
 	_start_countdown()
@@ -84,7 +84,7 @@ func _on_countdown_tick():
 
 # display remaining enemies once all have been spawned
 func _update_wave_label_enemies_remaining():
-	var remaining = wave_manager.active_enemies.size()
+	var remaining: int = wave_manager.active_enemies.size()
 	wave_label.text = "[color=yellow]Wave %d - %d enemies remaining[/color]" % [wave_index + 1, remaining]
 
 

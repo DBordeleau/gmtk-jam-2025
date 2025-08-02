@@ -45,11 +45,11 @@ func take_damage(amount: float) -> void:
 
 
 func explode():
-	var camera = get_tree().get_root().get_node("GameManager/MainCamera") # so we can shake camera
+	var camera: Node = get_tree().get_root().get_node("GameManager/MainCamera") # so we can shake camera
 	print("Mine exploding at position: ", global_position)
 
 	# Get all enemies in explosion range
-	var enemies_in_range = range_area.get_overlapping_bodies()
+	var enemies_in_range: Array[Node2D] = range_area.get_overlapping_bodies()
 	print("Enemies in range: ", enemies_in_range.size())
 
 	# Damage all enemies in range
@@ -60,7 +60,7 @@ func explode():
 
 	# Spawn explosion particles if available
 	if explosion_particles:
-		var particles = explosion_particles.instantiate()
+		var particles: Node = explosion_particles.instantiate()
 		particles.global_position = global_position
 		particles.emitting = true
 		get_tree().current_scene.add_child(particles)
@@ -76,7 +76,7 @@ func explode():
 	camera.shake(20.0, 0.5)
 
 	# Remove from structure manager
-	var structure_manager = get_tree().get_root().get_node("GameManager/StructureManager")
+	var structure_manager: Node = get_tree().get_root().get_node("GameManager/StructureManager")
 	if structure_manager:
 		print("Removing mine from structure manager")
 		structure_manager.structures.erase(self)

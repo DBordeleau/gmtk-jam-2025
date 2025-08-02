@@ -11,7 +11,7 @@ var health: int             = max_health
 
 # positions planet at the center of the screen and initializes the healthbar
 func _ready():
-	var viewport = get_viewport()
+	var viewport: Viewport = get_viewport()
 	global_position = viewport.get_visible_rect().size / 2
 	_update_healthbar()
 
@@ -23,7 +23,7 @@ func take_damage(amount: int) -> void:
 		health = 0
 	_update_healthbar()
 
-	var camera = get_viewport().get_camera_2d()
+	var camera: Camera2D = get_viewport().get_camera_2d()
 	if camera and camera.has_method("shake"):
 		camera.shake(20.0, 1.0)
 

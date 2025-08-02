@@ -137,7 +137,7 @@ func _initialize_upgrades():
 
 func start_upgrade_choice():
 	upgrade_choice_started.emit()
-	var chosen_upgrades = _get_random_upgrades(3)
+	var chosen_upgrades: Array[Upgrade] = _get_random_upgrades(3)
 	_show_upgrade_ui(chosen_upgrades)
 
 
@@ -146,7 +146,7 @@ func _get_random_upgrades(count: int) -> Array[Upgrade]:
 	for upgrade in available_upgrades:
 		if _should_offer_upgrade(upgrade):
 			filtered.append(upgrade)
-	var shuffled = filtered.duplicate()
+	var shuffled: Array = filtered.duplicate()
 	shuffled.shuffle()
 	return shuffled.slice(0, min(count, shuffled.size()))
 
@@ -154,7 +154,7 @@ func _get_random_upgrades(count: int) -> Array[Upgrade]:
 func _show_upgrade_ui(upgrades: Array[Upgrade]):
 	upgrade_ui = preload("res://upgrades/upgrade_choice_ui.tscn").instantiate()
 	# Add to UILayer instead of current_scene
-	var ui_layer = get_tree().get_root().get_node("GameManager/UILayer")
+	var ui_layer: Node = get_tree().get_root().get_node("GameManager/UILayer")
 	ui_layer.add_child(upgrade_ui)
 	upgrade_ui.setup_upgrades(upgrades)
 	upgrade_ui.upgrade_chosen.connect(_on_upgrade_chosen)
@@ -167,16 +167,16 @@ func _on_upgrade_chosen(upgrade: Upgrade):
 	upgrade_choice_finished.emit()
 
 
-func apply_upgrade(upgrade: Upgrade):
+func apply_upgrade(upgrade: Upgrade) -> void:
 	# Handle special case for cost reduction
 	if upgrade.property_name == "cost_reduction":
-		var structure_manager = get_tree().get_root().get_node("GameManager/StructureManager")
-		var current_cost      = structure_manager.get_structure_cost(upgrade.target_structure_type)
-		var new_cost          = int(current_cost * upgrade.value)
+		var structure_manager: Node = get_tree().get_root().get_node("GameManager/StructureManager")
+		var current_cost            = structure_manager.get_structure_cost(upgrade.target_structure_type)
+		var new_cost: int           = int(current_cost * upgrade.value)
 		structure_manager.set_structure_cost(upgrade.target_structure_type, new_cost)
 
 		# Update UI label
-		var game_manager = get_tree().get_root().get_node("GameManager")
+		var game_manager: Node = get_tree().get_root().get_node("GameManager")
 		if upgrade.target_structure_type == "Gunship":
 			game_manager._update_gunship_cost_label(new_cost)
 		elif upgrade.target_structure_type == "LaserShip":
@@ -195,8 +195,8 @@ func apply_upgrade(upgrade: Upgrade):
 		return
 
 	# Apply to existing structures
-	var structure_manager = get_tree().get_root().get_node("GameManager/StructureManager")
-	var orbit_manager     = get_tree().get_root().get_node("GameManager/OrbitManager")
+	var structure_manager: Node = get_tree().get_root().get_node("GameManager/StructureManager")
+	var orbit_manager: Node     = get_tree().get_root().get_node("GameManager/OrbitManager")
 
 	for structure in structure_manager.structures:
 		if structure.get_script() and structure.get_script().get_global_name() == upgrade.target_structure_type:

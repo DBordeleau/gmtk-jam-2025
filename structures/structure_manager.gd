@@ -9,14 +9,14 @@ extends Node
 
 var structures: Array = []
 
-var structure_costs = {
+var structure_costs: Dictionary = {
 						  "Gunship": 10,
 						  "SlowArea": 5,
 						  "LaserShip": 30,
 						  "ExplosiveMine": 10,
 					  }
 
-var structure_map = {
+var structure_map: Dictionary = {
 						"Gunship": preload("res://structures/scenes/gunship.tscn"),
 						"SlowArea": preload("res://structures/scenes/slow_area.tscn"),
 						"LaserShip": preload("res://structures/scenes/laser_ship.tscn"),
@@ -32,37 +32,37 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 
 	match type:
 		"Gunship":
-			var structure_scene = preload("res://structures/scenes/gunship.tscn")
-			var temp_structure  = structure_scene.instantiate()
+			var structure_scene: PackedScene = preload("res://structures/scenes/gunship.tscn")
+			var temp_structure: Node         = structure_scene.instantiate()
 			# Check for overlapping body colliders with other gunships/laserships on same orbit
 			for existing in structures:
 				if (existing is Gunship or existing is LaserShip) and existing.is_orbital and existing.orbit_idx == orbit_idx:
 					# Get body collider sizes for both structures
-					var existing_collider_size = _get_body_collider_size(existing)
-					var new_collider_size      = _get_body_collider_size(temp_structure)
-					var min_dist               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
+					var existing_collider_size: float = _get_body_collider_size(existing)
+					var new_collider_size: float      = _get_body_collider_size(temp_structure)
+					var min_dist: float               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
 					if position.distance_to(existing.position) < min_dist:
 						_show_placement_error("Cannot place overlapping ships!", position)
 						temp_structure.queue_free()
 						return null
 			structure = temp_structure
 		"LaserShip":
-			var structure_scene = preload("res://structures/scenes/laser_ship.tscn")
-			var temp_structure  = structure_scene.instantiate()
+			var structure_scene: PackedScene = preload("res://structures/scenes/laser_ship.tscn")
+			var temp_structure: Node         = structure_scene.instantiate()
 			# Check for overlapping body colliders with other gunships/laserships on same orbit
 			for existing in structures:
 				if (existing is Gunship or existing is LaserShip) and existing.is_orbital and existing.orbit_idx == orbit_idx:
 					# Get body collider sizes for both structures
-					var existing_collider_size = _get_body_collider_size(existing)
-					var new_collider_size      = _get_body_collider_size(temp_structure)
-					var min_dist               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
+					var existing_collider_size: float = _get_body_collider_size(existing)
+					var new_collider_size: float      = _get_body_collider_size(temp_structure)
+					var min_dist: float               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
 					if position.distance_to(existing.position) < min_dist:
 						_show_placement_error("Cannot place overlapping ships!", position)
 						temp_structure.queue_free()
 						return null
 			structure = temp_structure
 		"SlowArea":
-			var slow_scene = preload("res://structures/scenes/slow_area.tscn")
+			var slow_scene: PackedScene = preload("res://structures/scenes/slow_area.tscn")
 			structure = slow_scene.instantiate()
 			# Prevent overlapping slow area ranges
 			for existing in structures:
@@ -73,12 +73,12 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 						structure.queue_free()
 						return null
 		"ExplosiveMine":
-			var mine_scene = preload("res://structures/scenes/explosive_mine.tscn")
+			var mine_scene: PackedScene = preload("res://structures/scenes/explosive_mine.tscn")
 			structure = mine_scene.instantiate()
 			# Prevent overlapping mines
 			for existing in structures:
 				if existing is ExplosiveMine and structure is ExplosiveMine:
-					var min_dist = 50  # Minimum distance between mines
+					var min_dist: int = 50  # Minimum distance between mines
 					if position.distance_to(existing.position) < min_dist:
 						_show_placement_error("Cannot place mines in range of other mines!", position)
 						structure.queue_free()
@@ -97,7 +97,7 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 # Helper function to get the size of a structure's body collider
 func _get_body_collider_size(structure: Structure) -> float:
 	if structure.has_node("BodyCollider"):
-		var collider = structure.get_node("BodyCollider")
+		var collider: Node = structure.get_node("BodyCollider")
 		if collider.shape is CircleShape2D:
 			return collider.shape.radius * 2
 		elif collider.shape is RectangleShape2D:
@@ -117,12 +117,12 @@ func _show_placement_error(message: String, position: Vector2) -> void:
 	error_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 	# Get mouse position from the viewport instead
-	var mouse_pos = get_viewport().get_mouse_position()
+	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	error_label.position = mouse_pos + Vector2(20, -30)  # Offset so it doesn't cover the cursor
 	error_label.z_index = 100  # Make sure it appears on top
 
 	# Add to the scene (use UILayer if available, like the tooltip system)
-	var ui_layer = get_tree().current_scene.get_node_or_null("UILayer")
+	var ui_layer: Node = get_tree().current_scene.get_node_or_null("UILayer")
 	if ui_layer:
 		ui_layer.add_child(error_label)
 	else:
@@ -130,7 +130,7 @@ func _show_placement_error(message: String, position: Vector2) -> void:
 
 	# Animate the label
 	error_label.scale = Vector2.ZERO
-	var tween = create_tween()
+	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(error_label, "scale", Vector2(1.2, 1.2), 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(error_label, "modulate:a", 0.0, 1.5).set_delay(0.5)
