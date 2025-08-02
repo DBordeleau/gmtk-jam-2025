@@ -101,6 +101,10 @@ func _on_enemy_entered(body: Node2D) -> void:
 			# If we already have multiple enemies and aren't acquiring, fire immediately
 			elif enemies_in_range.size() > 1:
 				fire_at_all_targets()
+		# If we're ready to fire and already acquiring, but now have multiple enemies, fire immediately
+		elif ready_to_fire and is_acquiring_targets and enemies_in_range.size() > 1:
+			print("LaserShip: Multiple enemies detected during acquisition - firing immediately")
+			fire_at_all_targets()
 		else:
 			print("LaserShip: Enemy entered but can't attack yet - ready_to_fire: ", ready_to_fire, " is_acquiring: ", is_acquiring_targets)
 
