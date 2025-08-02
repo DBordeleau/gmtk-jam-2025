@@ -462,13 +462,39 @@ func _warm_up_everything():
 	temp_lasership.visible = true
 	add_child(temp_lasership)
 	await get_tree().process_frame
-	
+
+	# Create a dummy enemy for the laser to target
+	print("WARMUP: Creating dummy enemy for laser targeting")
+	var dummy_enemy = Node2D.new()
+	dummy_enemy.position = center + Vector2(200, 0)  # Position it away from laser ship
+	add_child(dummy_enemy)
+	await get_tree().process_frame
+
+	# IM PREFIRING MY LAZERS
+	print("WARMUP: Firing laser system")
+	if temp_lasership.has_node("LaserSystem"):
+		var laser_system = temp_lasership.get_node("LaserSystem")
+		var typed_enemies: Array[Node2D] = [dummy_enemy]  # Properly typed array
+		laser_system.target_enemies(typed_enemies)  # Pass typed array
+		await get_tree().process_frame
+		await get_tree().process_frame
+
 	# Warm up attack audio
 	if temp_lasership.has_node("AttackSFX"):
 		temp_lasership.get_node("AttackSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_lasership.get_node("AttackSFX").stop()
-	
+
+	# Clean up the laser beams and dummy enemy
+	print("WARMUP: Cleaning up laser system")
+	if temp_lasership.has_node("LaserSystem"):
+		var empty_enemies: Array[Node2D] = []  # Properly typed empty array
+		temp_lasership.get_node("LaserSystem").target_enemies(empty_enemies)  # Pass typed array
+		await get_tree().process_frame
+
+	dummy_enemy.queue_free()
+	await get_tree().process_frame
+
 	# Warm up death particles - RENDER ONSCREEN
 	if temp_lasership.death_particles:
 		var death_vfx = temp_lasership.death_particles.instantiate()
@@ -479,13 +505,13 @@ func _warm_up_everything():
 		await get_tree().process_frame
 		await get_tree().process_frame
 		death_vfx.queue_free()
-	
+
 	# Warm up death audio
 	if temp_lasership.has_node("DeathSFX"):
 		temp_lasership.get_node("DeathSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_lasership.get_node("DeathSFX").stop()
-	
+
 	temp_lasership.queue_free()
 	await get_tree().process_frame
 
