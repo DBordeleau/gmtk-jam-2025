@@ -74,7 +74,7 @@ func _on_wave_completed():
 	update_currency_ui(reward)
 	
 	# Check for upgrade every 5th wave
-	if wave_index % 5 == 0:  
+	if wave_index % 1 == 0:  
 		await safe_wait(1.0)
 		upgrade_manager.start_upgrade_choice()
 		return # don't start next wave until upgrade is chosen
@@ -274,8 +274,16 @@ func update_currency_ui(change: int = 0):
 	
 # called every time wave_manager emits the enemy_killed signal
 func _on_enemy_killed():
-	currency += 1
-	update_currency_ui(1)
+	var base_reward = 1
+	var bonus = 0
+	
+	# Check for Compound Interest upgrade
+	if upgrade_manager.has_global_upgrade("enemy_kill_bonus"):
+		bonus = int(upgrade_manager.get_global_upgrade_value("enemy_kill_bonus"))
+	
+	var total_reward = base_reward + bonus
+	currency += total_reward
+	update_currency_ui(total_reward)
 
 func _on_structure_type_selected(type: String) -> void:
 	_remove_preview()

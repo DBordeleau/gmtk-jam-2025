@@ -42,3 +42,5 @@ func update(delta: float) -> void:
 func update_tooltip_desc():
 	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
 	
+func update_range_display():
+	queue_redraw()  # This will trigger _draw() to redraw with new range

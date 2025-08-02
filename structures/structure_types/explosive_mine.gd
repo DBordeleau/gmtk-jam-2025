@@ -76,7 +76,9 @@ func explode():
 
 func update(delta: float) -> void:
 	queue_redraw()
-
+	
 func update_tooltip_desc():
 	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy. Deals " + str(damage) + " damage to ALL enemies within " + str(explosion_range) + " range. Single use."
-	
+
+func update_range_display():
+	queue_redraw()  # This will trigger _draw() to redraw with new range

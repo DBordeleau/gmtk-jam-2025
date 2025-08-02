@@ -84,6 +84,40 @@ func _initialize_upgrades():
 	black_hole_friday.modification_type = "multiply"
 	black_hole_friday.value = 0.5
 	
+	var deeper_black_holes = Upgrade.new()
+	deeper_black_holes.name = "Deeper Black Holes"
+	deeper_black_holes.description = "Increase the range of gravity wells by 15"
+	deeper_black_holes.target_structure_type = "SlowArea"
+	deeper_black_holes.property_name = "slow_range"
+	deeper_black_holes.modification_type = "add"
+	deeper_black_holes.value = 15.0
+	
+	# Explosive Mine Upgrades
+	var bigger_bombs = Upgrade.new()
+	bigger_bombs.name = "Bigger Bombs"
+	bigger_bombs.description = "Increase the explosion radius of explosive mines by 15"
+	bigger_bombs.target_structure_type = "ExplosiveMine"
+	bigger_bombs.property_name = "explosion_range"
+	bigger_bombs.modification_type = "add"
+	bigger_bombs.value = 15.0
+	
+	var explosive_savings = Upgrade.new()
+	explosive_savings.name = "Explosive Savings"
+	explosive_savings.description = "Halve the cost of explosive mines"
+	explosive_savings.target_structure_type = "ExplosiveMine"
+	explosive_savings.property_name = "cost_reduction"
+	explosive_savings.modification_type = "multiply"
+	explosive_savings.value = 0.5
+	
+	# Special Upgrades
+	var compound_interest = Upgrade.new()
+	compound_interest.name = "Compound Interest"
+	compound_interest.description = "Earn an extra +1 currency whenever you eliminate an enemy"
+	compound_interest.target_structure_type = "Global"  # Special type for global effects
+	compound_interest.property_name = "enemy_kill_bonus"
+	compound_interest.modification_type = "add"
+	compound_interest.value = 1
+	
 	available_upgrades = [
 		cannon_cooling, 
 		improved_propulsion, 
@@ -92,7 +126,11 @@ func _initialize_upgrades():
 		laser_ship_sale, 
 		supercharged_beams, 
 		lightweight_laser_ships,
-		black_hole_friday
+		black_hole_friday,
+		bigger_bombs,
+		compound_interest,
+		deeper_black_holes,
+		explosive_savings
 	]
 
 func start_upgrade_choice():
@@ -133,8 +171,17 @@ func apply_upgrade(upgrade: Upgrade):
 			game_manager._update_gunship_cost_label(new_cost)
 		elif upgrade.target_structure_type == "LaserShip":
 			game_manager._update_lasership_cost_label(new_cost)
+		elif upgrade.target_structure_type == "SlowArea":
+			game_manager._update_slowarea_cost_label(new_cost)
+		elif upgrade.target_structure_type == "ExplosiveMine":
+			game_manager._update_explosive_mine_cost_label(new_cost)
 			
 		game_manager.structure_menu.update_buttons(game_manager.currency)
+		return
+	
+	# Handle global upgrades (like Compound Interest)
+	if upgrade.target_structure_type == "Global":
+		# Global upgrades are tracked in applied_upgrades and handled elsewhere
 		return
 	
 	# Apply to existing structures
@@ -147,13 +194,25 @@ func apply_upgrade(upgrade: Upgrade):
 			if structure.has_method("update_tooltip_desc"):
 				structure.update_tooltip_desc()
 				
-			# UPDATE ORBIT MANAGER FOR SPEED CHANGES THIS IS THE SHIT THAT WAS BREAKING 
+			# UPDATE ORBIT MANAGER FOR SPEED CHANGES
 			if upgrade.property_name == "speed" and structure.is_orbital:
 				orbit_manager.update_structure_speed(structure, structure.speed)
 			
 			# update range display if attack_range was modified
 			if upgrade.property_name == "attack_range" and structure.has_method("update_range_display"):
 				structure.update_range_display()
+			
+			# Update range collider for SlowArea range changes
+			if upgrade.property_name == "slow_range" and structure.has_node("RangeArea/RangeCollider"):
+				var collider = structure.get_node("RangeArea/RangeCollider")
+				if collider.shape is CircleShape2D:
+					collider.shape.radius = structure.slow_range
+			
+			# Update range collider for ExplosiveMine explosion range changes
+			if upgrade.property_name == "explosion_range" and structure.has_node("RangeArea/RangeCollider"):
+				var collider = structure.get_node("RangeArea/RangeCollider")
+				if collider.shape is CircleShape2D:
+					collider.shape.radius = structure.explosion_range
 
 func _hide_upgrade_ui():
 	if upgrade_ui:
@@ -168,3 +227,15 @@ func apply_upgrades_to_new_structure(structure: Structure):
 			upgrade.apply_to_structure(structure)
 	if structure.has_method("update_tooltip_desc"):
 		structure.update_tooltip_desc()
+
+func has_global_upgrade(property_name: String) -> bool:
+	for upgrade in applied_upgrades:
+		if upgrade.target_structure_type == "Global" and upgrade.property_name == property_name:
+			return true
+	return false
+
+func get_global_upgrade_value(property_name: String) -> float:
+	for upgrade in applied_upgrades:
+		if upgrade.target_structure_type == "Global" and upgrade.property_name == property_name:
+			return upgrade.value
+	return 0.0
