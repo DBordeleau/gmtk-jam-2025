@@ -50,7 +50,8 @@ func take_damage(amount: float) -> void:
 func activate_shield():
 	if not is_orbital:
 		return
-		
+	
+	print("Activating shield for: ", self.name, " (", self.get_script().get_global_name(), ")")
 	is_shielded = true
 	_create_shield_visual()
 
@@ -58,7 +59,8 @@ func activate_shield():
 func deactivate_shield():
 	if not is_orbital:
 		return
-		
+	
+	print("Deactivating shield for: ", self.name, " (", self.get_script().get_global_name(), ")")
 	is_shielded = false
 	_remove_shield_visual()
 
@@ -70,16 +72,27 @@ func _create_shield_visual():
 	# Create a blue circle around the structure
 	shield_visual = Node2D.new()
 	shield_visual.name = "ShieldVisual"
-	add_child(shield_visual)
+	# Use call_deferred to avoid any potential interference with collision detection
+	call_deferred("_safe_add_shield_child", shield_visual)
 	
 	# Make sure it draws on top
 	shield_visual.z_index = 10
 
 
+func _safe_add_shield_child(visual_node: Node2D):
+	add_child(visual_node)
+
+
 func _remove_shield_visual():
 	if shield_visual:
-		shield_visual.queue_free()
+		# Use call_deferred to avoid any potential interference with collision detection
+		call_deferred("_safe_remove_shield_child", shield_visual)
 		shield_visual = null
+
+
+func _safe_remove_shield_child(visual_node: Node2D):
+	if is_instance_valid(visual_node):
+		visual_node.queue_free()
 
 
 func _draw():

@@ -41,8 +41,12 @@ func _ready() -> void:
 
 	# Connect area signals for enemy detection
 	if range_area:
+		print("LaserShip: Connecting Range signals")
 		range_area.body_entered.connect(_on_enemy_entered)
 		range_area.body_exited.connect(_on_enemy_exited)
+		print("LaserShip: Range signals connected successfully")
+	else:
+		print("LaserShip ERROR: No range_area found!")
 
 	# Configure laser system
 	if laser_system:
@@ -83,7 +87,7 @@ func _process(delta: float) -> void:
 func _on_enemy_entered(body: Node2D) -> void:
 	if body.is_in_group("enemies"):
 		enemies_in_range.append(body)
-		print("Enemy entered range. Ready to fire: ", ready_to_fire, " Acquiring: ", is_acquiring_targets)
+		print("LaserShip: Enemy entered range. Ready to fire: ", ready_to_fire, " Acquiring: ", is_acquiring_targets, " Shield: ", is_shielded)
 
 		# If ready to fire and not already acquiring targets
 		if ready_to_fire and not is_acquiring_targets:
@@ -98,7 +102,7 @@ func _on_enemy_entered(body: Node2D) -> void:
 func _on_enemy_exited(body: Node2D) -> void:
 	if body in enemies_in_range:
 		enemies_in_range.erase(body)
-		print("Enemy exited range. Enemies remaining: ", enemies_in_range.size())
+		print("LaserShip: Enemy exited range. Enemies remaining: ", enemies_in_range.size(), " Shield: ", is_shielded)
 		
 		# If no enemies left, cancel target acquisition
 		if enemies_in_range.is_empty():
@@ -106,9 +110,22 @@ func _on_enemy_exited(body: Node2D) -> void:
 			acquisition_timer = 0.0
 
 
+func start_target_acquisition() -> void:
+	if not ready_to_fire:
+		return
+		
+	print("LaserShip starting target acquisition for ", target_acquisition_delay, " seconds")
+	is_acquiring_targets = true
+	acquisition_timer = target_acquisition_delay
+
+
 func fire_at_all_targets() -> void:
 	if enemies_in_range.is_empty() or not ready_to_fire or not laser_system:
 		return
+
+	# Cancel target acquisition if we're firing
+	is_acquiring_targets = false
+	acquisition_timer = 0.0
 
 	print("LaserShip firing at ", enemies_in_range.size(), " enemies")
 
