@@ -185,6 +185,7 @@ func _unhandled_input(event) -> void:
 			var placed_type = structure_menu.selected_structure_type # Store before clearing!
 			currency -= structure_cost
 			update_currency_ui(-structure_cost)
+			structure_menu.update_buttons(currency)
 			upgrade_manager.apply_upgrades_to_new_structure(new_structure)
 			if placed_type == "Gunship":
 				var new_gunship_cost = structure_cost + 10
