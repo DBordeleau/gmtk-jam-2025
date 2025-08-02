@@ -200,6 +200,8 @@ func toggle_menu():
 	if is_visible_on_screen:
 		print("Animating menu off screen")
 		animate_menu_out()
+		if tooltip_instance:
+			tooltip_instance.queue_free()
 	else:
 		print("Animating menu into screen")
 		animate_menu_in()

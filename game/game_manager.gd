@@ -58,21 +58,23 @@ func _ready():
 # adds new rings every 10 waves up to 5 rings
 func _on_wave_completed():
 	wave_index += 1
+	var reward = 0
 	if wave_index < 10:
-		currency += 5
+		reward = 5
 	elif wave_index < 20:
-		currency += 10
+		reward = 10
 	elif wave_index < 30:
-		currency += 20
+		reward = 20
 	elif wave_index < 40:
-		currency += 30
+		reward = 30
 	else:
-		currency += 50
-	
-	update_currency_ui()
+		reward = 50
+
+	currency += reward
+	update_currency_ui(reward)
 	
 	# Check for upgrade every 5th wave
-	if wave_index % 1 == 0:  
+	if wave_index % 5 == 0:  
 		await safe_wait(1.0)
 		upgrade_manager.start_upgrade_choice()
 		return # don't start next wave until upgrade is chosen
@@ -176,7 +178,7 @@ func _unhandled_input(event):
 		if new_structure:
 			var placed_type = structure_menu.selected_structure_type # Store before clearing!
 			currency -= structure_cost
-			update_currency_ui()
+			update_currency_ui(-structure_cost) 
 			upgrade_manager.apply_upgrades_to_new_structure(new_structure)
 			if placed_type == "Gunship":
 				var new_gunship_cost = structure_cost + 10
@@ -194,8 +196,6 @@ func _unhandled_input(event):
 				var new_mine_cost = structure_cost + 10
 				structure_manager.set_structure_cost("ExplosiveMine", new_mine_cost)
 				_update_explosive_mine_cost_label(new_mine_cost)
-			
-			update_currency_ui() 	
 			
 			structure_menu.clear_selection()
 			_remove_preview()
@@ -268,14 +268,14 @@ func _on_play_again_pressed():
 	get_tree().call_deferred("reload_current_scene")
 
 # updates currency label and the structure select buttons
-func update_currency_ui():
-	currency_ui.currency_label.text = str(currency)
+func update_currency_ui(change: int = 0):
+	currency_ui.update_currency(currency, change)
 	structure_menu.update_buttons(currency)
 	
 # called every time wave_manager emits the enemy_killed signal
 func _on_enemy_killed():
 	currency += 1
-	update_currency_ui()
+	update_currency_ui(1)
 
 func _on_structure_type_selected(type: String) -> void:
 	_remove_preview()
