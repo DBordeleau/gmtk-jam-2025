@@ -78,8 +78,8 @@ func _on_wave_completed() -> void:
 	if game_is_over:
 		print("Wave completed but game is over - ignoring")
 		return
-		
-	wave_index += 1
+	
+	wave_index += 1	
 	var reward: int = 0
 	if wave_index < 10:
 		reward = 5
@@ -95,8 +95,8 @@ func _on_wave_completed() -> void:
 	currency += reward
 	update_currency_ui(reward)
 
-	# On every 10th wave, always expand rings and zoom camera, then check for upgrade
-	if wave_index % 10 == 0 and wave_index <= 50:
+	# On every 5th wave, always expand rings and zoom camera, then check for upgrade
+	if wave_index % 5 == 0 and wave_index <= 25:
 		expansion_handled_this_wave = true
 		await _handle_ring_expansion_and_start_wave()
 		# After expansion, if planet took no damage, offer upgrade
@@ -123,7 +123,6 @@ func _on_wave_completed() -> void:
 	planet_took_damage_this_wave = false
 	expansion_handled_this_wave = false
 
-
 # Helper to start upgrade UI and wait for it to finish
 func _start_upgrade_choice_and_wait():
 	upgrade_manager.start_upgrade_choice()
@@ -133,8 +132,8 @@ func _on_planet_damaged():
 
 
 func _handle_ring_expansion_and_start_wave():
-	# Add a ring and zoom out every 10 waves
-	if wave_index % 10 == 0 and wave_index <= 50:
+	# Add a ring and zoom out every 5 waves
+	if wave_index % 5 == 0 and wave_index <= 25:
 		current_zoom = current_zoom * 0.7
 		await _zoom_camera_smoothly(current_zoom, 1.0)
 		structure_menu.update_for_camera_zoom()

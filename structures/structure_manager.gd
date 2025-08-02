@@ -38,30 +38,30 @@ func place_structure(type: String, position: Vector2, is_orbital: bool, orbit_id
 		"Gunship":
 			var structure_scene: PackedScene = preload("res://structures/scenes/gunship.tscn")
 			var temp_structure: Node         = structure_scene.instantiate()
-			# Check for overlapping body colliders with other gunships/laserships on same orbit
+			# Check for overlapping attack ranges with other gunships/laserships on same orbit
 			for existing in structures:
 				if (existing is Gunship or existing is LaserShip) and existing.is_orbital and existing.orbit_idx == orbit_idx:
-					# Get body collider sizes for both structures
-					var existing_collider_size: float = _get_body_collider_size(existing)
-					var new_collider_size: float      = _get_body_collider_size(temp_structure)
-					var min_dist: float               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
-					if position.distance_to(existing.position) < min_dist:
-						_show_placement_error("Cannot place overlapping ships!", position)
+					# Check if attack ranges overlap
+					var existing_range: float = existing.attack_range
+					var new_range: float      = temp_structure.attack_range
+					var range_overlap_dist: float = existing_range + new_range - 20  # Small buffer to allow slight overlap
+					if position.distance_to(existing.position) < range_overlap_dist:
+						_show_placement_error("Can't place overlapping ships on the same orbital path!", position)
 						temp_structure.queue_free()
 						return null
 			structure = temp_structure
 		"LaserShip":
 			var structure_scene: PackedScene = preload("res://structures/scenes/laser_ship.tscn")
 			var temp_structure: Node         = structure_scene.instantiate()
-			# Check for overlapping body colliders with other gunships/laserships on same orbit
+			# Check for overlapping attack ranges with other gunships/laserships on same orbit
 			for existing in structures:
 				if (existing is Gunship or existing is LaserShip) and existing.is_orbital and existing.orbit_idx == orbit_idx:
-					# Get body collider sizes for both structures
-					var existing_collider_size: float = _get_body_collider_size(existing)
-					var new_collider_size: float      = _get_body_collider_size(temp_structure)
-					var min_dist: float               = (existing_collider_size + new_collider_size) / 2 + 5 # Small buffer
-					if position.distance_to(existing.position) < min_dist:
-						_show_placement_error("Cannot place overlapping ships!", position)
+					# Check if attack ranges overlap
+					var existing_range: float = existing.attack_range
+					var new_range: float      = temp_structure.attack_range
+					var range_overlap_dist: float = existing_range + new_range - 20  # Small buffer to allow slight overlap
+					if position.distance_to(existing.position) < range_overlap_dist:
+						_show_placement_error("Can't place overlapping ships on the same orbital path!", position)
 						temp_structure.queue_free()
 						return null
 			structure = temp_structure
@@ -117,6 +117,9 @@ func _show_placement_error(message: String, position: Vector2) -> void:
 	error_label.text = message
 	error_label.modulate = Color.RED
 	error_label.add_theme_font_size_override("font_size", 24)
+	# Add black outline to the label
+	error_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	error_label.add_theme_constant_override("outline_size", 3)
 	error_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	error_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 

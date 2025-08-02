@@ -10,8 +10,10 @@ signal enemy_killed
 var spawn_interval: float = 0.5 # seconds between individual enemy spawns
 @export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 # Difficulty scaling parameters
-var base_wave_cost: int             = 6
-var wave_cost_scaling_factor: float = 1.2  # Reduced from 1.3 to 1.2 for gentler scaling
+var base_wave_cost: int             = 8  # Increased from 6 for more challenging early waves
+var wave_cost_scaling_factor: float = 1.3  # Increased from 1.2 for faster early scaling
+var scaling_dampening_start: int    = 15   # Wave number where dampening begins
+var target_wave_40_cost: int        = 1000 # Target cost for wave 40
 var base_wave_delay: float          = 5.0
 var sequence_time_variance: float   = 1.0  # Reduced from 2.0 for faster spawning
 var max_sequence_delay: float       = 3.0  # Cap maximum delay between sequences
@@ -40,12 +42,36 @@ func _ready() -> void:
 func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()
 
-	# Calculate difficulty scaling using cost budget instead of enemy count
-	var difficulty_multiplier: float = pow(wave_cost_scaling_factor, wave_number)
-	var total_cost_budget: int       = int(base_wave_cost * difficulty_multiplier)
+	# Calculate difficulty scaling with logarithmic dampening for later waves
+	var total_cost_budget: int
+	
+	if wave_number <= scaling_dampening_start:
+		# Use normal exponential scaling for early waves (waves 1-15)
+		var difficulty_multiplier: float = pow(wave_cost_scaling_factor, wave_number)
+		total_cost_budget = int(base_wave_cost * difficulty_multiplier)
+	else:
+		# For later waves, use a dampened logarithmic approach
+		# Calculate what the cost would be at the dampening start
+		var dampening_start_cost: float = base_wave_cost * pow(wave_cost_scaling_factor, scaling_dampening_start)
+		
+		# Calculate progress from dampening start to wave 40
+		var progress_waves: float = wave_number - scaling_dampening_start
+		var total_dampening_waves: float = 40 - scaling_dampening_start
+		var progress_ratio: float = min(progress_waves / total_dampening_waves, 1.0)
+		
+		# Use logarithmic interpolation to reach target cost at wave 40
+		var cost_growth_factor: float = target_wave_40_cost / dampening_start_cost
+		var log_growth: float = log(cost_growth_factor) * progress_ratio
+		var current_multiplier: float = exp(log_growth)
+		
+		total_cost_budget = int(dampening_start_cost * current_multiplier)
+		
+		# For waves beyond 40, maintain the wave 40 cost with slight variance
+		if wave_number > 40:
+			total_cost_budget = int(target_wave_40_cost + (wave_number - 40) * 10)  # Small linear growth after 40
 
 	# Determine number of enemy sequences (1-3 based on wave number)
-	var num_sequences: int = 1 + int(wave_number / 4)  # Changed from /3 to /4 for slower sequence growth
+	var num_sequences: int = 1 + int(wave_number / 3)  # Changed back from /4 to /3 for more sequences in early waves
 
 	# Create enemy sequences
 	var sequences: Array[EnemySequence] = []
