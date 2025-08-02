@@ -60,7 +60,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	super._process(delta)
+	# Don't call super._process() to avoid double cooldown decrementing
+	# Just handle the drawing queue manually
+	queue_redraw()
 
 	# Handle target acquisition delay
 	if is_acquiring_targets:
@@ -74,6 +76,10 @@ func _process(delta: float) -> void:
 	# Only update cooldown timer if we're actually on cooldown
 	if not ready_to_fire:
 		cooldown_timer -= delta
+		# Remove excessive debug output, only print occasionally
+		var time_remaining = fmod(cooldown_timer, 0.5)
+		if time_remaining > 0.45 or cooldown_timer <= 0.1:
+			print("LaserShip cooldown remaining: ", cooldown_timer)
 		if cooldown_timer <= 0.0:
 			ready_to_fire = true
 			print("LaserShip ready to fire again - enemies in range: ", enemies_in_range.size())
