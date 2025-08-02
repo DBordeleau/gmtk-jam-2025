@@ -139,9 +139,15 @@ func apply_upgrade(upgrade: Upgrade):
 	
 	# Apply to existing structures
 	var structure_manager = get_tree().get_root().get_node("GameManager/StructureManager")
+	var orbit_manager = get_tree().get_root().get_node("GameManager/OrbitManager")
+	
 	for structure in structure_manager.structures:
 		if structure.get_script() and structure.get_script().get_global_name() == upgrade.target_structure_type:
 			upgrade.apply_to_structure(structure)
+			
+			# UPDATE ORBIT MANAGER FOR SPEED CHANGES THIS IS THE SHIT THAT WAS BREAKING 
+			if upgrade.property_name == "speed" and structure.is_orbital:
+				orbit_manager.update_structure_speed(structure, structure.speed)
 			
 			# update range display if attack_range was modified
 			if upgrade.property_name == "attack_range" and structure.has_method("update_range_display"):

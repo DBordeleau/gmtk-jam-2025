@@ -101,3 +101,8 @@ func _draw():
 			Color(1, 1, 1, 1),
 			line_width
 		)
+
+# Add this method to your OrbitManager
+func update_structure_speed(structure: Structure, new_speed: float) -> void:
+	if structure.is_orbital and structure in structures:
+		structure.speed = new_speed
