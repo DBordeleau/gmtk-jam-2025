@@ -83,5 +83,5 @@ func shoot():
 	if attack_sfx:
 		attack_sfx.play()
 
-func _update_tooltip_desc():
+func update_tooltip_desc():
 	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range for " + str(damage) + " damage every " + str(attack_cooldown) + " seconds. Dies on impact with any asteroid."
