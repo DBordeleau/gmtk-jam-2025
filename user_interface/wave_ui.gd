@@ -13,10 +13,10 @@ var is_spawning: bool = true
 # and planet death signal (we need to hide the wave UI when we are showing game over)
 func _ready():
 	wave_manager.wave_completed.connect(_on_wave_completed)
-	wave_manager.connect("enemy_spawned", Callable(self, "_on_enemy_spawned"))
-	wave_manager.connect("enemy_killed", Callable(self, "_on_enemy_killed"))
-	wave_manager.connect("wave_spawning_started", Callable(self, "_on_wave_spawning_started"))
-	wave_manager.connect("wave_spawning_finished", Callable(self, "_on_wave_spawning_finished"))
+	wave_manager.enemy_spawned.connect(Callable(self, "_on_enemy_spawned"))
+	wave_manager.enemy_killed.connect(Callable(self, "_on_enemy_killed"))
+	wave_manager.wave_spawning_started.connect(Callable(self, "_on_wave_spawning_started"))
+	wave_manager.wave_spawning_finished.connect(Callable(self, "_on_wave_spawning_finished"))
 	_update_wave_label_spawning()
 	
 	if planet:
