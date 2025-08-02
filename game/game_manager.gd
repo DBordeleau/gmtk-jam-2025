@@ -38,6 +38,8 @@ var fade_overlay: ColorRect  = null
 var planet_took_damage_this_wave: bool = false
 # Track if expansion was handled this wave (prevents double expansion on 10th wave)
 var expansion_handled_this_wave: bool = false
+# Track if the game is over to prevent wave processing
+var game_is_over: bool = false
 
 
 # connects to wave manager signals and planet death signal for game over
@@ -72,6 +74,11 @@ func _ready():
 # displays victory screen if there are no waves remaining
 # adds new rings every 10 waves up to 5 rings
 func _on_wave_completed() -> void:
+	# Don't process wave completion if game is over
+	if game_is_over:
+		print("Wave completed but game is over - ignoring")
+		return
+		
 	wave_index += 1
 	var reward: int = 0
 	if wave_index < 10:
@@ -167,7 +174,7 @@ func _show_victory_screen():
 
 
 func _process(delta) -> void:
-	if not get_tree():
+	if not get_tree() or game_is_over:
 		return
 	structure_manager.update_all(delta)
 	_update_preview_position()
@@ -176,7 +183,7 @@ func _process(delta) -> void:
 # On left click it places a structure, orbital structures are added to the orbit manager and snap to the path
 # SPACE = Reverse orbit direction
 func _unhandled_input(event) -> void:
-	if not get_tree():
+	if not get_tree() or game_is_over:
 		return
 
 	if event.is_action_pressed("pause"):
@@ -262,6 +269,10 @@ func _unhandled_input(event) -> void:
 # called when planet health reaches 0
 # displays game over screen with play again button
 func _on_planet_destroyed():
+	# Set game over flag FIRST to prevent any further wave processing
+	game_is_over = true
+	print("Planet destroyed - game over flag set")
+	
 	wave_manager.remove_all_active_enemies()
 	game_over.emit()
 	var game_over_container = Control.new()
@@ -322,6 +333,8 @@ func _on_planet_destroyed():
 
 # restarts the current scene when play again button is pressed
 func _on_play_again_pressed():
+	print("Play again pressed - resetting game state")
+	game_is_over = false  # Reset the game over flag
 	get_tree().paused = false
 	get_tree().call_deferred("reload_current_scene")
 
@@ -336,6 +349,10 @@ func update_currency_ui(change: int = 0):
 
 # called every time wave_manager emits the enemy_killed signal
 func _on_enemy_killed():
+	# Don't process enemy kills if game is over
+	if game_is_over:
+		return
+		
 	var base_reward: int = 1
 	var bonus: int       = 0
 
