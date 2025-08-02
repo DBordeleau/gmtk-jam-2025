@@ -32,6 +32,7 @@ var current_orbit: float     = 350.0
 var preview_instance: Node2D = null
 var preview_type: String     = ""
 var hiscore: int             = 0
+var fade_overlay: ColorRect  = null
 
 
 # connects to wave manager signals and planet death signal for game over
@@ -454,11 +455,27 @@ func _on_pause_menu_volume_changed(value: float) -> void:
 
 func _warm_up_everything():
 	print("WARMUP: Start")
+	
+	# Create a black fade overlay that covers everything
+	fade_overlay = ColorRect.new()
+	fade_overlay.color = Color.BLACK
+	fade_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	fade_overlay.z_index = 1000  # Make sure it's on top of everything
+	fade_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block mouse input
+	
+	# Add to UILayer if it exists, otherwise to the main scene
+	if has_node("UILayer"):
+		$UILayer.add_child(fade_overlay)
+	else:
+		add_child(fade_overlay)
+	
 	loading_screen_instance = loading_screen.instantiate()
 	if has_node("UILayer"):
 		$UILayer.add_child(loading_screen_instance)
 	else:
 		add_child(loading_screen_instance)
+	# Make sure loading screen is above the fade overlay
+	loading_screen_instance.z_index = 1001
 	print("WARMUP: Loading screen shown")
 	await get_tree().process_frame
 
@@ -481,11 +498,14 @@ func _warm_up_everything():
 		await get_tree().process_frame  # Extra frame for shader compilation
 		temp_gunship.get_node("gunship_attack_vfx").emitting = false
 
-	# Warm up attack audio
+	# Warm up attack audio at very low volume
 	if temp_gunship.has_node("AttackSFX"):
+		var original_volume = temp_gunship.get_node("AttackSFX").volume_db
+		temp_gunship.get_node("AttackSFX").volume_db = -80.0  # Very quiet
 		temp_gunship.get_node("AttackSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_gunship.get_node("AttackSFX").stop()
+		temp_gunship.get_node("AttackSFX").volume_db = original_volume
 
 	# Warm up death particles (PackedScene) - RENDER ONSCREEN
 	if temp_gunship.death_particles:
@@ -498,11 +518,14 @@ func _warm_up_everything():
 		await get_tree().process_frame  # Extra frame for shader compilation
 		death_vfx.queue_free()
 
-	# Warm up death audio
+	# Warm up death audio at very low volume
 	if temp_gunship.has_node("DeathSFX"):
+		var original_volume = temp_gunship.get_node("DeathSFX").volume_db
+		temp_gunship.get_node("DeathSFX").volume_db = -80.0  # Very quiet
 		temp_gunship.get_node("DeathSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_gunship.get_node("DeathSFX").stop()
+		temp_gunship.get_node("DeathSFX").volume_db = original_volume
 
 	temp_gunship.queue_free()
 	await get_tree().process_frame
@@ -532,11 +555,14 @@ func _warm_up_everything():
 		await get_tree().process_frame
 		await get_tree().process_frame
 
-	# Warm up attack audio
+	# Warm up attack audio at very low volume
 	if temp_lasership.has_node("AttackSFX"):
+		var original_volume = temp_lasership.get_node("AttackSFX").volume_db
+		temp_lasership.get_node("AttackSFX").volume_db = -80.0  # Very quiet
 		temp_lasership.get_node("AttackSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_lasership.get_node("AttackSFX").stop()
+		temp_lasership.get_node("AttackSFX").volume_db = original_volume
 
 	# Warm up smoke particles
 	if temp_lasership.has_node("SmokeVFX"):
@@ -566,11 +592,14 @@ func _warm_up_everything():
 		await get_tree().process_frame
 		death_vfx.queue_free()
 
-	# Warm up death audio
+	# Warm up death audio at very low volume
 	if temp_lasership.has_node("DeathSFX"):
+		var original_volume = temp_lasership.get_node("DeathSFX").volume_db
+		temp_lasership.get_node("DeathSFX").volume_db = -80.0  # Very quiet
 		temp_lasership.get_node("DeathSFX").play()
 		await get_tree().create_timer(0.01).timeout
 		temp_lasership.get_node("DeathSFX").stop()
+		temp_lasership.get_node("DeathSFX").volume_db = original_volume
 
 	temp_lasership.queue_free()
 	await get_tree().process_frame
@@ -586,6 +615,12 @@ func _warm_up_everything():
 
 	# Add mine to structure manager temporarily so explode() doesn't error
 	structure_manager.structures.append(temp_mine)
+
+	# Temporarily reduce explosion audio volume before triggering explode()
+	var original_mine_volume = -1000.0  # Default if no audio node
+	if temp_mine.has_node("ExplodeSFX"):
+		original_mine_volume = temp_mine.get_node("ExplodeSFX").volume_db
+		temp_mine.get_node("ExplodeSFX").volume_db = -80.0  # Very quiet
 
 	# Warm up explosion particles and camera shake by actually triggering explode()
 	print("WARMUP: Triggering mine explosion")
@@ -615,11 +650,14 @@ func _warm_up_everything():
 		await get_tree().process_frame
 		death_vfx.queue_free()
 
-	# Warm up death audio
+	# Warm up death audio at very low volume
 	if temp_asteroid.has_node("DeathSFX"):
+		var original_volume = temp_asteroid.get_node("DeathSFX").volume_db
+		temp_asteroid.get_node("DeathSFX").volume_db = -80.0  # Very quiet
 		temp_asteroid.get_node("DeathSFX").play()
 		await get_tree().create_timer(0.05).timeout
 		temp_asteroid.get_node("DeathSFX").stop()
+		temp_asteroid.get_node("DeathSFX").volume_db = original_volume
 
 	temp_asteroid.queue_free()
 	await get_tree().process_frame
@@ -673,4 +711,27 @@ func _warm_up_everything():
 	loading_screen_instance.queue_free()
 	loading_screen_instance = null
 	await get_tree().process_frame
+	
+	# Wait a moment to ensure loading screen is gone
+	await get_tree().create_timer(0.1).timeout
+	
+	# Make sure fade overlay is still black and visible
+	if fade_overlay:
+		fade_overlay.color = Color.BLACK
+		fade_overlay.modulate = Color.WHITE  # Ensure it's fully opaque
+		fade_overlay.visible = true
+		print("WARMUP: Fade overlay prepared for fade-in")
+	
+	# Fade in from black to reveal the game world
+	print("WARMUP: Fading in from black")
+	if fade_overlay:
+		var fade_tween = create_tween()
+		fade_tween.tween_property(fade_overlay, "modulate:a", 0.0, 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		await fade_tween.finished
+		
+		# Remove the fade overlay
+		fade_overlay.queue_free()
+		fade_overlay = null
+		print("WARMUP: Fade complete, overlay removed")
+	
 	print("WARMUP: Done")
