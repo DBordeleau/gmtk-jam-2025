@@ -17,8 +17,11 @@ var cleanup_timer: SceneTreeTimer = null
 @onready var range_area: Area2D = $Range
 @onready var laser_system: LaserSystem = $LaserSystem
 
+@onready var smoke_vfx: GPUParticles2D = $SmokeVFX
 @onready var attack_sfx: AudioStreamPlayer = $AttackSFX
 @onready var death_sfx: AudioStreamPlayer = $DeathSFX
+
+var max_health = 20
 
 func _init():
 	damage = 10
@@ -130,6 +133,8 @@ func attack() -> void:
 func take_damage(amount: float) -> void:
 	health -= amount
 	print("New health: " + str(health))
+	if health < max_health:
+		smoke_vfx.emitting = true
 	if health <= 0:
 		var particle = death_particles.instantiate()
 		particle.position = global_position

@@ -499,6 +499,13 @@ func _warm_up_everything():
 		await get_tree().create_timer(0.01).timeout
 		temp_lasership.get_node("AttackSFX").stop()
 
+	# Warm up smoke particles
+	if temp_lasership.has_node("SmokeVFX"):
+		temp_lasership.get_node("SmokeVFX").emitting = true
+		await get_tree().process_frame
+		await get_tree().process_frame  # Extra frame for shader compilation
+		temp_lasership.get_node("SmokeVFX").emitting = false
+
 	# Clean up the laser beams and dummy enemy
 	print("WARMUP: Cleaning up laser system")
 	if temp_lasership.has_node("LaserSystem"):
@@ -548,6 +555,11 @@ func _warm_up_everything():
 		await get_tree().process_frame
 		await get_tree().process_frame
 		explosion_vfx.queue_free()
+	
+	if temp_mine.has_node("ExplodeSFX"):
+		temp_mine.get_node("ExplodeSFX").play()
+		await get_tree().create_timer(0.01).timeout
+		temp_mine.get_node("ExplodeSFX").stop()
 	
 	temp_mine.queue_free()
 	await get_tree().process_frame

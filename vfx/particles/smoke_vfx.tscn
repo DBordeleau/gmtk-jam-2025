@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://bjdb7s31f876n"]
+
+[ext_resource type="Texture2D" uid="uid://bwttgwf53plxl" path="res://assets/vfx_assets/textures/smoke_01.png" id="1_hdnx0"]
+
+[sub_resource type="Curve" id="Curve_l80dj"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_j56q7"]
+curve = SubResource("Curve_l80dj")
+
+[sub_resource type="Curve" id="Curve_3xre0"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.993151, 1), 1.64329, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1xm2l"]
+curve = SubResource("Curve_3xre0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ke3jy"]
+particle_flag_disable_z = true
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, -3, 0)
+spread = 0.0
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+gravity = Vector3(0, -6, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = -2.23517e-06
+scale_min = 0.3
+scale_max = 0.4
+scale_curve = SubResource("CurveTexture_1xm2l")
+alpha_curve = SubResource("CurveTexture_j56q7")
+
+[node name="SmokeVFX" type="GPUParticles2D"]
+amount = 20
+texture = ExtResource("1_hdnx0")
+lifetime = 3.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_ke3jy")
