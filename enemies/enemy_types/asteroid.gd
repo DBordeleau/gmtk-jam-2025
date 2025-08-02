@@ -38,7 +38,8 @@ func move_enemy(delta: float) -> void:
 
 	var gravity_scale: float = 0.3 # 0.0 = no effect, 1.0 = strong effect
 	var speed_bonus          = base_speed * gravity_scale * progress
-	speed = (base_speed + speed_bonus) * slow_multiplier  # Apply slow multiplier here
+	# Apply both slow multiplier and wave speed multiplier
+	speed = (base_speed + speed_bonus) * slow_multiplier * wave_speed_multiplier
 
 	velocity = direction * speed
 	move_and_slide()

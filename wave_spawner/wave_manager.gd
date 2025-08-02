@@ -13,7 +13,8 @@ var spawn_interval: float = 0.5 # seconds between individual enemy spawns
 var base_wave_cost: int             = 6
 var wave_cost_scaling_factor: float = 1.3
 var base_wave_delay: float          = 5.0
-var sequence_time_variance: float   = 2.0
+var sequence_time_variance: float   = 1.0  # Reduced from 2.0 for faster spawning
+var max_sequence_delay: float       = 3.0  # Cap maximum delay between sequences
 # Enemy scene references for random generation
 var enemy_scenes: Array[PackedScene] = []
 var enemy_costs: Array[int]          = []
@@ -91,8 +92,10 @@ func generate_wave(wave_number: int) -> Wave:
 		var actual_cost_used = sequence.amount * enemy_cost
 		remaining_budget -= actual_cost_used
 
-		# Set spawn timing with some variance
-		sequence.time = i * sequence_time_variance + randf() * sequence_time_variance
+		# Set spawn timing with overlapping sequences for faster spawning
+		# Early sequences start immediately, later ones have reduced delays
+		var base_sequence_delay = min(i * 0.5, max_sequence_delay)  # Overlap sequences more
+		sequence.time = base_sequence_delay + randf() * sequence_time_variance
 
 
 		sequences.append(sequence)
@@ -127,18 +130,51 @@ func start_wave(wave_index: int = 0) -> void:
 
 # spawns enemy sequences and emits a signal for each enemy spawned so the wave ui can count up in realtime
 func _spawn_wave(wave: Wave) -> void:
+	# Track active sequence spawning
+	var sequences_completed: int = 0
+	var total_sequences: int = wave.enemy_sequences.size()
+	
+	# Start all sequences concurrently
 	for sequence in wave.enemy_sequences:
-		await safe_wait(sequence.time)
-		for i in range(sequence.amount):
-			await safe_wait(spawn_interval)
-			var enemy_instance: Node = sequence.enemy.instantiate()
-			var spawn_pos: Vector2   = get_random_edge_position()
-			enemy_instance.global_position = spawn_pos
-			add_child(enemy_instance)
-			active_enemies.append(enemy_instance)
-			enemies_spawned += 1
-			emit_signal("enemy_spawned")
-			enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
+		# Use call_deferred to start each sequence independently
+		_spawn_sequence_async(sequence)
+	
+	# Wait for all sequences to complete by checking the counter
+	while sequences_completed < total_sequences:
+		await get_tree().process_frame
+		# Check if all enemies have been spawned (simpler completion check)
+		if enemies_spawned >= enemies_to_spawn:
+			break
+
+
+func _spawn_sequence_async(sequence: EnemySequence) -> void:
+	await safe_wait(sequence.time)
+	
+	# Reduce spawn interval for later waves to speed up spawning
+	var wave_spawn_interval = spawn_interval
+	if current_wave_index >= 10:
+		wave_spawn_interval = spawn_interval * 0.6  # 40% faster after wave 10
+	elif current_wave_index >= 5:
+		wave_spawn_interval = spawn_interval * 0.8  # 20% faster after wave 5
+	
+	for i in range(sequence.amount):
+		if i > 0:  # Don't wait before the first enemy in sequence
+			await safe_wait(wave_spawn_interval)
+		
+		var enemy_instance: Node = sequence.enemy.instantiate()
+		
+		# Apply wave-based speed scaling to enemies
+		if enemy_instance.has_method("set_wave_speed_multiplier"):
+			var speed_multiplier = 1.0 + (current_wave_index * 0.02)  # 2% speed increase per wave
+			enemy_instance.set_wave_speed_multiplier(speed_multiplier)
+		
+		var spawn_pos: Vector2 = get_random_edge_position()
+		enemy_instance.global_position = spawn_pos
+		add_child(enemy_instance)
+		active_enemies.append(enemy_instance)
+		enemies_spawned += 1
+		emit_signal("enemy_spawned")
+		enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
 
 
 

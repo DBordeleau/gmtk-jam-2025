@@ -15,5 +15,5 @@ func take_damage(amount: int):
 		sprite.scale = Vector2(1, 1)
 		collider.scale = Vector2(2.3, 2.3)
 		damage = damage / 2
-		speed = 50
+		base_speed = 50  # Update base_speed instead of speed to preserve multipliers
 	super.take_damage(amount)

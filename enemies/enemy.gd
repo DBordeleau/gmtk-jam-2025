@@ -7,6 +7,7 @@ extends CharacterBody2D # needed for move_and_slide() and velocity but we can ch
 @export var speed: float = 100.0
 
 var slow_multiplier: float = 1.0
+var wave_speed_multiplier: float = 1.0  # New multiplier for wave-based speed scaling
 var death_sfx: AudioStreamPlayer
 var killed_by_player: bool = false
 
@@ -55,3 +56,7 @@ func set_speed(new_speed: float) -> void:
 
 func set_slow_multiplier(multiplier: float) -> void:
 	slow_multiplier = multiplier
+
+
+func set_wave_speed_multiplier(multiplier: float) -> void:
+	wave_speed_multiplier = multiplier

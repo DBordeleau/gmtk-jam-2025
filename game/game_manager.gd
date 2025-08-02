@@ -42,6 +42,7 @@ var expansion_handled_this_wave: bool = false
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
+	update_currency_ui()
 	await _warm_up_everything()
 	music.play()
 	# Set music to continue playing when game is paused
@@ -57,7 +58,6 @@ func _ready():
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	upgrade_manager.upgrade_choice_started.connect(_on_upgrade_choice_started)
 	upgrade_manager.upgrade_choice_finished.connect(_on_upgrade_choice_finished)
-	update_currency_ui()
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
 	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
 	_update_slowarea_cost_label(structure_manager.get_structure_cost("SlowArea"))
@@ -369,6 +369,9 @@ func _create_preview(type: String) -> Node2D:
 		"ExplosiveMine":
 			preview = preload("res://structures/scenes/explosive_mine.tscn").instantiate()
 	if preview:
+		# Apply upgrades to preview so range indicators are correct
+		upgrade_manager.apply_upgrades_to_new_structure(preview)
+		
 		if preview.has_node("Sprite"):
 			preview.get_node("Sprite").modulate.a = 0.5
 		if preview.has_node("BodyCollider"):
