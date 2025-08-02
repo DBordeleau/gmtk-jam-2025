@@ -13,6 +13,10 @@ var enemies_in_range: Array[Node2D] = []
 # Track if the ship is ready to fire (cooldown expired)
 var ready_to_fire: bool           = true
 var cleanup_timer: SceneTreeTimer = null
+# New variables for delayed firing
+var target_acquisition_delay: float = 0.8  # Wait 0.8 seconds for more targets
+var acquisition_timer: float = 0.0
+var is_acquiring_targets: bool = false
 
 @onready var range_area: Area2D = $Range
 @onready var laser_system: LaserSystem = $LaserSystem
@@ -54,6 +58,15 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 
+	# Handle target acquisition delay
+	if is_acquiring_targets:
+		acquisition_timer -= delta
+		if acquisition_timer <= 0.0:
+			is_acquiring_targets = false
+			# Fire at all targets we've acquired
+			if not enemies_in_range.is_empty() and ready_to_fire:
+				fire_at_all_targets()
+
 	# Only update cooldown timer if we're actually on cooldown
 	if not ready_to_fire:
 		cooldown_timer -= delta
@@ -62,24 +75,35 @@ func _process(delta: float) -> void:
 			print("LaserShip ready to fire again")
 
 			# Check if we have enemies to attack now that we're ready
-			if not enemies_in_range.is_empty():
-				fire_at_all_targets()
+			# If we're not currently acquiring targets and have enemies, start acquisition
+			if not enemies_in_range.is_empty() and not is_acquiring_targets:
+				start_target_acquisition()
 
 
 func _on_enemy_entered(body: Node2D) -> void:
 	if body.is_in_group("enemies"):
 		enemies_in_range.append(body)
-		print("Enemy entered range. Ready to fire: ", ready_to_fire)
+		print("Enemy entered range. Ready to fire: ", ready_to_fire, " Acquiring: ", is_acquiring_targets)
 
-		# If ready to fire, attack immediately
-		if ready_to_fire:
-			fire_at_all_targets()
+		# If ready to fire and not already acquiring targets
+		if ready_to_fire and not is_acquiring_targets:
+			# If this is the first enemy, start target acquisition delay
+			if enemies_in_range.size() == 1:
+				start_target_acquisition()
+			# If we already have multiple enemies and aren't acquiring, fire immediately
+			elif enemies_in_range.size() > 1:
+				fire_at_all_targets()
 
 
 func _on_enemy_exited(body: Node2D) -> void:
 	if body in enemies_in_range:
 		enemies_in_range.erase(body)
 		print("Enemy exited range. Enemies remaining: ", enemies_in_range.size())
+		
+		# If no enemies left, cancel target acquisition
+		if enemies_in_range.is_empty():
+			is_acquiring_targets = false
+			acquisition_timer = 0.0
 
 
 func fire_at_all_targets() -> void:

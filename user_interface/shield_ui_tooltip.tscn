@@ -43,5 +43,5 @@ offset_right = 301.0
 offset_bottom = 190.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
-text = "Press SHIFT to make all of your orbital structures impervious to damage for 1 second. Using the shield increases its cost by 10."
+text = "Press SHIFT to make all of your orbital structures impervious to damage for 3 seconds. Using the shield increases its cost by 10."
 autowrap_mode = 3

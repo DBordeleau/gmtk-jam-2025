@@ -11,7 +11,7 @@ var spawn_interval: float = 0.5 # seconds between individual enemy spawns
 @export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 # Difficulty scaling parameters
 var base_wave_cost: int             = 6
-var wave_cost_scaling_factor: float = 1.3
+var wave_cost_scaling_factor: float = 1.2  # Reduced from 1.3 to 1.2 for gentler scaling
 var base_wave_delay: float          = 5.0
 var sequence_time_variance: float   = 1.0  # Reduced from 2.0 for faster spawning
 var max_sequence_delay: float       = 3.0  # Cap maximum delay between sequences
@@ -45,7 +45,7 @@ func generate_wave(wave_number: int) -> Wave:
 	var total_cost_budget: int       = int(base_wave_cost * difficulty_multiplier)
 
 	# Determine number of enemy sequences (1-3 based on wave number)
-	var num_sequences: int = 1 + int(wave_number / 3)
+	var num_sequences: int = 1 + int(wave_number / 4)  # Changed from /3 to /4 for slower sequence growth
 
 	# Create enemy sequences
 	var sequences: Array[EnemySequence] = []
@@ -55,11 +55,11 @@ func generate_wave(wave_number: int) -> Wave:
 	# Choose random enemy type, with preference for stronger enemies in later waves
 	var available_indices: Array[Variant] = [0] # Always include basic asteroid
 
-	if wave_number >= 5:
-		available_indices.append(2) # Add comet after wave 5
+	if wave_number >= 7:  # Changed from 5 to 7 - introduce comets later
+		available_indices.append(2) # Add comet after wave 7
 
-	if wave_number >= 10:
-		available_indices.append(1) # Add big asteroid after wave 10
+	if wave_number >= 12:  # Changed from 10 to 12 - introduce big asteroids later
+		available_indices.append(1) # Add big asteroid after wave 12
 
 	for i in range(num_sequences):
 		var sequence = EnemySequence.new()
@@ -152,10 +152,10 @@ func _spawn_sequence_async(sequence: EnemySequence) -> void:
 	
 	# Reduce spawn interval for later waves to speed up spawning
 	var wave_spawn_interval = spawn_interval
-	if current_wave_index >= 10:
-		wave_spawn_interval = spawn_interval * 0.6  # 40% faster after wave 10
-	elif current_wave_index >= 5:
-		wave_spawn_interval = spawn_interval * 0.8  # 20% faster after wave 5
+	if current_wave_index >= 15:  # Changed thresholds to be less aggressive
+		wave_spawn_interval = spawn_interval * 0.6  # 40% faster after wave 15
+	elif current_wave_index >= 8:  # Changed from 5 to 8
+		wave_spawn_interval = spawn_interval * 0.8  # 20% faster after wave 8
 	
 	for i in range(sequence.amount):
 		if i > 0:  # Don't wait before the first enemy in sequence
@@ -165,7 +165,7 @@ func _spawn_sequence_async(sequence: EnemySequence) -> void:
 		
 		# Apply wave-based speed scaling to enemies
 		if enemy_instance.has_method("set_wave_speed_multiplier"):
-			var speed_multiplier = 1.0 + (current_wave_index * 0.02)  # 2% speed increase per wave
+			var speed_multiplier = 1.0 + (current_wave_index * 0.015)  # Reduced from 0.02 to 0.015 (1.5% per wave instead of 2%)
 			enemy_instance.set_wave_speed_multiplier(speed_multiplier)
 		
 		var spawn_pos: Vector2 = get_random_edge_position()

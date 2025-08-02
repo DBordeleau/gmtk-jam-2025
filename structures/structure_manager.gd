@@ -10,7 +10,7 @@ extends Node
 var structures: Array = []
 var shield_active: bool = false
 var shield_timer: float = 0.0
-var shield_duration: float = 1.0
+var shield_duration: float = 3.0  # Increased from 1.0 to 3.0 seconds
 var shield_cost: int = 10
 
 var structure_costs: Dictionary = {
