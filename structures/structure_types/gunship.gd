@@ -12,7 +12,7 @@ var target_enemy: Enemy = null
 func _init():
 	damage = 10
 	attack_range = 150
-	attack_cooldown = 1.0
+	attack_cooldown = 2.0
 	health = 10
 	speed = 0.6
 	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range for " + str(damage) + " damage every " + str(attack_cooldown) + " seconds. Dies on impact with any asteroid."

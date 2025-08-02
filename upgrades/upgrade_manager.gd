@@ -129,6 +129,14 @@ func _initialize_upgrades():
 	explosive_savings.modification_type = "multiply"
 	explosive_savings.value = 0.5
 
+	var save_on_shields = Upgrade.new()
+	save_on_shields.name = "Save on Shields"
+	save_on_shields.description = "Halve the current cost of activating your shield"
+	save_on_shields.target_structure_type = "Shield"
+	save_on_shields.property_name = "shield_cost_reduction"
+	save_on_shields.modification_type = "multiply"
+	save_on_shields.value = 0.5
+
 	# Special Upgrades
 	# Note: Compound Interest is now created dynamically in _create_compound_interest_upgrade()
 
@@ -143,7 +151,8 @@ func _initialize_upgrades():
 	black_hole_friday,
 	bigger_bombs,
 	deeper_black_holes,
-	explosive_savings
+	explosive_savings,
+	save_on_shields
 	]
 
 
@@ -211,6 +220,19 @@ func apply_upgrade(upgrade: Upgrade) -> void:
 			game_manager._update_explosive_mine_cost_label(new_cost)
 
 		game_manager.structure_menu.update_buttons(game_manager.currency)
+		return
+
+	# Handle shield cost reduction
+	if upgrade.property_name == "shield_cost_reduction":
+		var structure_manager: Node = get_tree().get_root().get_node("GameManager/StructureManager")
+		var current_shield_cost = structure_manager.get_shield_cost()
+		var new_shield_cost: int = int(current_shield_cost * upgrade.value)
+		structure_manager.shield_cost = new_shield_cost
+
+		# Update shield UI
+		var game_manager: Node = get_tree().get_root().get_node("GameManager")
+		game_manager._update_shield_cost_ui()
+		game_manager._update_shield_affordability()
 		return
 
 	# Handle global upgrades (like Compound Interest)

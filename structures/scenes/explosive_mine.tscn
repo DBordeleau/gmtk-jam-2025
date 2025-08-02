@@ -49,4 +49,4 @@ shape = SubResource("CircleShape2D_64oom")
 
 [node name="ExplodeSFX" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_64oom")
-volume_db = -10.0
+volume_db = -5.0

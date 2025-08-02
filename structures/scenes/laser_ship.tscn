@@ -77,7 +77,7 @@ volume_db = -15.0
 
 [node name="DeathSFX" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_xv7uo")
-volume_db = -20.0
+volume_db = -10.0
 
 [node name="SmokeVFX" parent="." instance=ExtResource("7_xv7uo")]
 z_index = 10
