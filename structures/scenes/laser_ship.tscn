@@ -63,7 +63,6 @@ frame_progress = 0.259774
 collision_mask = 2
 
 [node name="RangeCollider" type="CollisionShape2D" parent="Range"]
-visible = false
 shape = SubResource("CircleShape2D_0vk70")
 
 [node name="BodyCollider" type="CollisionShape2D" parent="."]
