@@ -584,23 +584,13 @@ func _warm_up_everything():
 	add_child(temp_mine)
 	await get_tree().process_frame
 
-	# Warm up explosion particles - RENDER ONSCREEN
-	if temp_mine.explosion_particles:
-		var explosion_vfx = temp_mine.explosion_particles.instantiate()
-		explosion_vfx.position = center
-		explosion_vfx.visible = true
-		add_child(explosion_vfx)
-		explosion_vfx.emitting = true
-		await get_tree().process_frame
-		await get_tree().process_frame
-		explosion_vfx.queue_free()
+	# Add mine to structure manager temporarily so explode() doesn't error
+	structure_manager.structures.append(temp_mine)
 
-	if temp_mine.has_node("ExplodeSFX"):
-		temp_mine.get_node("ExplodeSFX").play()
-		await get_tree().create_timer(0.01).timeout
-		temp_mine.get_node("ExplodeSFX").stop()
-
-	temp_mine.queue_free()
+	# Warm up explosion particles and camera shake by actually triggering explode()
+	print("WARMUP: Triggering mine explosion")
+	temp_mine.explode()
+	await get_tree().process_frame
 	await get_tree().process_frame
 
 	# --- Warm up Enemy death effects ---

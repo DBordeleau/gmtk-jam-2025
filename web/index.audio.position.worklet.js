@@ -31,39 +31,39 @@
 const POST_THRESHOLD_S = 0.1;
 
 class GodotPositionReportingProcessor extends AudioWorkletProcessor {
-    constructor(...args) {
-        super(...args);
-        this.lastPostTime = currentTime;
-        this.position = 0;
-        this.ended = false;
+	constructor(...args) {
+		super(...args);
+		this.lastPostTime = currentTime;
+		this.position = 0;
+		this.ended = false;
 
-        this.port.onmessage = (event) => {
-            if (event?.data?.type === 'ended') {
-                this.ended = true;
-            }
-        };
-    }
+		this.port.onmessage = (event) => {
+			if (event?.data?.type === 'ended') {
+				this.ended = true;
+			}
+		};
+	}
 
-    process(inputs, _outputs, _parameters) {
-        if (this.ended) {
-            return false;
-        }
+	process(inputs, _outputs, _parameters) {
+		if (this.ended) {
+			return false;
+		}
 
-        if (inputs.length > 0) {
-            const input = inputs[0];
-            if (input.length > 0) {
-                this.position += input[0].length;
-            }
-        }
+		if (inputs.length > 0) {
+			const input = inputs[0];
+			if (input.length > 0) {
+				this.position += input[0].length;
+			}
+		}
 
-        // Posting messages is expensive. Let's limit the number of posts.
-        if (currentTime - this.lastPostTime > POST_THRESHOLD_S) {
-            this.lastPostTime = currentTime;
-            this.port.postMessage({type: 'position', data: this.position});
-        }
+		// Posting messages is expensive. Let's limit the number of posts.
+		if (currentTime - this.lastPostTime > POST_THRESHOLD_S) {
+			this.lastPostTime = currentTime;
+			this.port.postMessage({ type: 'position', data: this.position });
+		}
 
-        return true;
-    }
+		return true;
+	}
 }
 
 registerProcessor('godot-position-reporting-processor', GodotPositionReportingProcessor);
