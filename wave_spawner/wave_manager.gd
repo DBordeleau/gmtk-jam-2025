@@ -7,14 +7,13 @@ signal wave_spawning_started
 signal wave_spawning_finished
 signal enemy_spawned
 signal enemy_killed
-@export var spawn_interval: float = 0.5 # seconds between individual enemy spawns
-@export var camera: Camera2D # camera reference so we can spawn enemies outside of view
+var spawn_interval: float = 0.5 # seconds between individual enemy spawns
+var camera: Camera2D # camera reference so we can spawn enemies outside of view
 # Difficulty scaling parameters
-@export var base_wave_cost: int = 6
-@export var wave_cost_scaling_factor: float = 1.3
-@export var base_wave_delay: float = 5.0
-@export var sequence_time_variance: float = 2.0
-
+var base_wave_cost: int             = 6
+var wave_cost_scaling_factor: float = 1.3
+var base_wave_delay: float          = 5.0
+var sequence_time_variance: float   = 2.0
 # Enemy scene references for random generation
 var enemy_scenes: Array[PackedScene] = []
 var enemy_costs: Array[int]          = []
