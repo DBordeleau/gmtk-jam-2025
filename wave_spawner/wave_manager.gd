@@ -34,6 +34,8 @@ func _ready() -> void:
 	start_first_wave.connect(_on_start_first_wave)
 
 
+
+
 func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()
 
@@ -42,6 +44,8 @@ func generate_wave(wave_number: int) -> Wave:
 	var total_cost_budget: int       = int(base_wave_cost * difficulty_multiplier)
 
 	# Determine number of enemy sequences (1-3 based on wave number)
+	var num_sequences: int = 1 + int(wave_number / 3)
+
 	var num_sequences: int = 1 + int(wave_number / 3)
 
 	# Create enemy sequences
@@ -92,10 +96,13 @@ func generate_wave(wave_number: int) -> Wave:
 		# Set spawn timing with some variance
 		sequence.time = i * sequence_time_variance + randf() * sequence_time_variance
 
+
 		sequences.append(sequence)
+
 
 	new_wave.enemy_sequences = sequences
 	new_wave.time_to_next_wave = base_wave_delay + randf() * 2.0 # Add some variance to wave timing
+
 
 	return new_wave
 
@@ -106,16 +113,21 @@ func start_wave(wave_index: int = 0) -> void:
 
 	var current_wave: Wave = generate_wave(current_wave_index)
 
+
+	var current_wave: Wave = generate_wave(current_wave_index)
+
 	spawning = true
 	active_enemies.clear()
 	enemies_to_spawn = 0
 	enemies_spawned = 0
+
 
 	for sequence in current_wave.enemy_sequences:
 		enemies_to_spawn += sequence.amount
 	emit_signal("wave_spawning_started")
 	await _spawn_wave(current_wave)
 	emit_signal("wave_spawning_finished")
+
 
 
 # spawns enemy sequences and emits a signal for each enemy spawned so the wave ui can count up in realtime
@@ -126,6 +138,8 @@ func _spawn_wave(wave: Wave) -> void:
 			await safe_wait(spawn_interval)
 			var enemy_instance: Node = sequence.enemy.instantiate()
 			var spawn_pos: Vector2   = get_random_edge_position()
+			var enemy_instance: Node = sequence.enemy.instantiate()
+			var spawn_pos: Vector2   = get_random_edge_position()
 			enemy_instance.global_position = spawn_pos
 			add_child(enemy_instance)
 			active_enemies.append(enemy_instance)
@@ -134,10 +148,15 @@ func _spawn_wave(wave: Wave) -> void:
 			enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
 
 
+
 # helper function for spawning enemies around the edge of the screen
 func get_random_edge_position() -> Vector2:
 	if not get_tree():
 		return Vector2.ZERO
+	var camera_rect: Rect2 = get_camera_visible_rect()
+	var edge: int          = randi() % 4
+	var x: float           = 0.0
+	var y: float           = 0.0
 	var camera_rect: Rect2 = get_camera_visible_rect()
 	var edge: int          = randi() % 4
 	var x: float           = 0.0
@@ -158,8 +177,13 @@ func get_random_edge_position() -> Vector2:
 	return Vector2(x, y)
 
 
+
 # helper function to calculate viewport edges after the camera has zoomed out
 func get_camera_visible_rect() -> Rect2:
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+	var camera_center: Vector2 = camera.get_screen_center_position()
+	var zoom: Vector2          = camera.zoom
+
 	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 	var camera_center: Vector2 = camera.get_screen_center_position()
 	var zoom: Vector2          = camera.zoom
@@ -168,7 +192,11 @@ func get_camera_visible_rect() -> Rect2:
 	var visible_size: Vector2 = viewport_size / zoom
 	var top_left: Vector2     = camera_center - visible_size / 2
 
+	var visible_size: Vector2 = viewport_size / zoom
+	var top_left: Vector2     = camera_center - visible_size / 2
+
 	return Rect2(top_left, visible_size)
+
 
 
 func _on_enemy_exited(enemy):
@@ -181,9 +209,12 @@ func _on_enemy_exited(enemy):
 		emit_signal("wave_completed")
 
 
+
 # getter function for wave_ui
 func get_next_wave_delay() -> float:
 	# Generate next wave to get its delay time
+	var next_wave: Wave = generate_wave(current_wave_index)
+	return next_wave.time_to_next_wave
 	var next_wave: Wave = generate_wave(current_wave_index)
 	return next_wave.time_to_next_wave
 
@@ -194,9 +225,11 @@ func safe_wait(time: float) -> void:
 	await get_tree().create_timer(time).timeout
 
 
+
 func remove_all_active_enemies() -> void:
 	for enemy in active_enemies:
 		enemy.queue_free()
+
 
 
 func _on_start_first_wave():
