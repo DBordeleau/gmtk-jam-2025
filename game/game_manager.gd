@@ -857,6 +857,18 @@ func _warm_up_everything():
 	loading_screen_instance = null
 	await get_tree().process_frame
 	
+	# --- Warm up background music ---
+	print("WARMUP: Warming up background music")
+	if music:
+		var original_music_volume = music.volume_db
+		music.volume_db = -80.0  # Very quiet
+		music.play()
+		await get_tree().create_timer(0.05).timeout
+		music.stop()
+		music.volume_db = original_music_volume
+
+	print("WARMUP: Done")
+	
 	# Wait a moment to ensure loading screen is gone
 	await get_tree().create_timer(0.1).timeout
 	
@@ -879,4 +891,3 @@ func _warm_up_everything():
 		fade_overlay = null
 		print("WARMUP: Fade complete, overlay removed")
 	
-	print("WARMUP: Done")

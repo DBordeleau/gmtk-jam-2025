@@ -135,8 +135,11 @@ func start_target_acquisition() -> void:
 	acquisition_timer = target_acquisition_delay
 
 
+
 func fire_at_all_targets() -> void:
-	if enemies_in_range.is_empty() or not ready_to_fire or not laser_system:
+	if not ready_to_fire:
+		return
+	if enemies_in_range.is_empty() or not laser_system:
 		return
 
 	# Cancel target acquisition if we're firing
