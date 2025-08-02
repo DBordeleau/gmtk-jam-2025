@@ -67,7 +67,7 @@ func _process(delta: float) -> void:
 		acquisition_timer -= delta
 		if acquisition_timer <= 0.0:
 			is_acquiring_targets = false
-			# Fire at all targets we've acquired
+			# Fire at all targets we've acquired, but only if we're still ready to fire
 			if not enemies_in_range.is_empty() and ready_to_fire:
 				fire_at_all_targets()
 
@@ -78,8 +78,7 @@ func _process(delta: float) -> void:
 			ready_to_fire = true
 			print("LaserShip ready to fire again")
 
-			# Check if we have enemies to attack now that we're ready
-			# If we're not currently acquiring targets and have enemies, start acquisition
+			# When cooldown expires, if we have enemies and aren't already acquiring, start acquisition
 			if not enemies_in_range.is_empty() and not is_acquiring_targets:
 				start_target_acquisition()
 
@@ -127,7 +126,7 @@ func fire_at_all_targets() -> void:
 	is_acquiring_targets = false
 	acquisition_timer = 0.0
 
-	print("LaserShip firing at ", enemies_in_range.size(), " enemies")
+	print("LaserShip firing at ", enemies_in_range.size(), " enemies (Time: ", Time.get_time_dict_from_system(), ")")
 
 	# Use LaserSystem to create lasers with particles
 	laser_system.target_enemies(enemies_in_range)
@@ -142,7 +141,7 @@ func fire_at_all_targets() -> void:
 	# Put the weapon on cooldown AFTER firing
 	ready_to_fire = false
 	cooldown_timer = attack_cooldown
-	print("LaserShip on cooldown for ", attack_cooldown, " seconds")
+	print("LaserShip on cooldown for ", attack_cooldown, " seconds (until Time: ", Time.get_time_dict_from_system()["second"] + attack_cooldown, ")")
 
 	# Cancel any existing cleanup timer
 	if cleanup_timer:
