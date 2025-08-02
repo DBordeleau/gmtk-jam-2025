@@ -33,6 +33,10 @@ var preview_instance: Node2D = null
 var preview_type: String     = ""
 var hiscore: int             = 0
 var fade_overlay: ColorRect  = null
+# Track if planet took damage this wave
+var planet_took_damage_this_wave: bool = false
+# Track if expansion was handled this wave (prevents double expansion on 10th wave)
+var expansion_handled_this_wave: bool = false
 
 
 # connects to wave manager signals and planet death signal for game over
@@ -43,6 +47,9 @@ func _ready():
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
 	planet.planet_destroyed.connect(_on_planet_destroyed)
+	# Connect to a custom signal for planet damage
+	if planet.has_signal("planet_damaged"):
+		planet.planet_damaged.connect(_on_planet_damaged)
 	structure_menu.first_gunship_placed.connect(_on_first_gunship_placed)
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
 	upgrade_manager.upgrade_choice_started.connect(_on_upgrade_choice_started)
@@ -52,6 +59,7 @@ func _ready():
 	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
 	_update_slowarea_cost_label(structure_manager.get_structure_cost("SlowArea"))
 	_update_explosive_mine_cost_label(structure_manager.get_structure_cost("ExplosiveMine"))
+
 
 
 # starts the delay timer before starting the next wave
@@ -74,13 +82,40 @@ func _on_wave_completed() -> void:
 	currency += reward
 	update_currency_ui(reward)
 
-	# Check for upgrade every 5th wave
-	if wave_index % 1 == 0:
-		await safe_wait(1.0)
-		upgrade_manager.start_upgrade_choice()
-		return # don't start next wave until upgrade is chosen
+	# On every 10th wave, always expand rings and zoom camera, then check for upgrade
+	if wave_index % 10 == 0 and wave_index <= 50:
+		expansion_handled_this_wave = true
+		await _handle_ring_expansion_and_start_wave()
+		# After expansion, if planet took no damage, offer upgrade
+		if not planet_took_damage_this_wave:
+			await safe_wait(1.0)
+			await _start_upgrade_choice_and_wait()
+		# Reset flags for next wave
+		planet_took_damage_this_wave = false
+		expansion_handled_this_wave = false
+		return
 
+	# On other waves, if planet took no damage, offer upgrade before next wave
+	if not planet_took_damage_this_wave:
+		await safe_wait(1.0)
+		await _start_upgrade_choice_and_wait()
+		# Reset flag for next wave
+		planet_took_damage_this_wave = false
+		expansion_handled_this_wave = false
+		return
+
+	# If planet took damage, just start next wave (or expansion if needed)
+	planet_took_damage_this_wave = false
+	expansion_handled_this_wave = false
 	await _handle_ring_expansion_and_start_wave()
+
+
+# Helper to start upgrade UI and wait for it to finish
+func _start_upgrade_choice_and_wait():
+	upgrade_manager.start_upgrade_choice()
+	await upgrade_manager.upgrade_choice_finished
+func _on_planet_damaged():
+	planet_took_damage_this_wave = true
 
 
 func _handle_ring_expansion_and_start_wave():
@@ -391,6 +426,8 @@ func _on_first_gunship_placed():
 
 
 func _start_next_wave():
+	# Reset perfect wave flag at the start of each wave
+	planet_took_damage_this_wave = false
 	var delay: float = wave_manager.get_next_wave_delay()
 	await safe_wait(delay)
 	wave_manager.start_wave(wave_index)
@@ -402,8 +439,9 @@ func _on_upgrade_choice_started():
 
 func _on_upgrade_choice_finished():
 	get_tree().paused = false
-	# Handle ring expansion after upgrade is finished
-	await _handle_ring_expansion_and_start_wave()
+	# Only handle ring expansion if it hasn't already been handled for this wave
+	if not expansion_handled_this_wave:
+		await _handle_ring_expansion_and_start_wave()
 
 
 func _update_explosive_mine_cost_label(cost: int) -> void:

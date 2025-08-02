@@ -255,23 +255,27 @@ func get_global_upgrade_value(property_name: String) -> float:
 	return 0.0
 
 func _should_offer_upgrade(upgrade: Upgrade) -> bool:
-	# Prevent Cannon Cooling Tech if Gunship cooldown is already 0.2 or less
+	# Prevent Cannon Cooling Tech if applying it would make Gunship cooldown 0.2 or less
 	if upgrade.property_name == "attack_cooldown" and upgrade.target_structure_type == "Gunship":
 		var structure_scene = get_tree().get_root().get_node("GameManager/StructureManager").structure_map.get("Gunship")
 		if structure_scene:
 			var temp = structure_scene.instantiate()
 			apply_upgrades_to_new_structure(temp)
-			if temp.attack_cooldown <= 0.2:
+			# Check what the cooldown would be AFTER applying this upgrade
+			var cooldown_after_upgrade = temp.attack_cooldown + upgrade.value
+			if cooldown_after_upgrade < 0.2:
 				temp.queue_free()
 				return false
 			temp.queue_free()
-	# Prevent Supercharged Beams if LaserShip cooldown is already 0.2 or less
+	# Prevent Supercharged Beams if applying it would make LaserShip cooldown 0.2 or less
 	if upgrade.property_name == "attack_cooldown" and upgrade.target_structure_type == "LaserShip":
 		var structure_scene = get_tree().get_root().get_node("GameManager/StructureManager").structure_map.get("LaserShip")
 		if structure_scene:
 			var temp = structure_scene.instantiate()
 			apply_upgrades_to_new_structure(temp)
-			if temp.attack_cooldown <= 0.2:
+			# Check what the cooldown would be AFTER applying this upgrade
+			var cooldown_after_upgrade = temp.attack_cooldown + upgrade.value
+			if cooldown_after_upgrade < 0.2:
 				temp.queue_free()
 				return false
 			temp.queue_free()
