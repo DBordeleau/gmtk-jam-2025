@@ -60,6 +60,11 @@ func attack() -> void:
 
 
 func take_damage(amount: float) -> void:
+	# Check if this is an orbital structure and if shield is active
+	if is_orbital and is_shielded:
+		print("Gunship damage blocked by shield!")
+		return
+		
 	health -= amount
 	print("New health: " + str(health))
 	if health <= 0:

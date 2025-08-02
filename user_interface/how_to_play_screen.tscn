@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://7kyfjpiw3xuv"]
+[gd_scene load_steps=5 format=3 uid="uid://7kyfjpiw3xuv"]
 
 [ext_resource type="Texture2D" uid="uid://bo3ila2b73p33" path="res://assets/ui_assets/main_menu/keyboard_space.png" id="1_yu24d"]
 [ext_resource type="Texture2D" uid="uid://copvbf4oyd4cw" path="res://assets/ui_assets/main_menu/keyboard_b.png" id="2_sthps"]
 [ext_resource type="Texture2D" uid="uid://bufks6hjnr20k" path="res://assets/ui_assets/main_menu/mouse_left.png" id="3_xe6gd"]
+[ext_resource type="Texture2D" uid="uid://b5ax7dx7ghiol" path="res://assets/ui_assets/main_menu/keyboard_shift.png" id="4_sthps"]
 
 [node name="HowToPlayScreen" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,10 +35,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -625.0
-offset_top = -382.0
-offset_right = 625.0
-offset_bottom = 118.0
+offset_left = -675.0
+offset_top = -400.0
+offset_right = 675.0
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -47,7 +47,9 @@ theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
 text = "Orbital Defender is an arcade style wave survival game. Defend your home planet from incoming threats by purchasing and placing structures in its orbit. Structures become more expensive the more you buy so make your purchases strategically! You earn money by eliminating threats and surviving a wave.
 
-Every 5 waves you will get to select 1 of 3 random upgrades and every 10 waves the playing area will get larger and a new orbital path will be drawn around your home planet."
+If you complete a wave without your planet sustaining any damage, you will get to select 1 of 3 random upgrades. 
+
+Every 10 waves the playing area will get larger and a new orbital path will be drawn around your home planet."
 
 [node name="ControlsLabel" type="Label" parent="."]
 layout_mode = 1
@@ -75,9 +77,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 50.0
+offset_left = -166.0
 offset_top = 167.0
-offset_right = 178.0
+offset_right = -38.0
 offset_bottom = 295.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -86,9 +88,9 @@ texture = ExtResource("1_yu24d")
 
 [node name="ReverseOrbitLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 768.0
+offset_left = 560.0
 offset_top = 762.0
-offset_right = 1009.0
+offset_right = 801.0
 offset_bottom = 811.0
 theme_override_font_sizes/font_size = 35
 text = "Reverse Orbit:"
@@ -100,9 +102,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 69.0
+offset_left = -160.0
 offset_top = 304.0
-offset_right = 197.0
+offset_right = -32.0
 offset_bottom = 432.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -110,9 +112,9 @@ texture = ExtResource("2_sthps")
 
 [node name="ToggleShopLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 778.0
+offset_left = 585.0
 offset_top = 891.0
-offset_right = 1019.0
+offset_right = 826.0
 offset_bottom = 940.0
 theme_override_font_sizes/font_size = 35
 text = "Toggle Shop:"
@@ -124,19 +126,43 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 69.0
-offset_top = 415.0
-offset_right = 197.0
-offset_bottom = 543.0
+offset_left = 398.0
+offset_top = 173.0
+offset_right = 526.0
+offset_bottom = 301.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_xe6gd")
 
 [node name="SelectPlaceStructureLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 649.0
-offset_top = 1000.0
-offset_right = 1030.0
-offset_bottom = 1049.0
+offset_left = 978.0
+offset_top = 758.0
+offset_right = 1359.0
+offset_bottom = 807.0
 theme_override_font_sizes/font_size = 35
 text = "Select/Place Structure:"
+
+[node name="ShiftIcon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 398.0
+offset_top = 300.0
+offset_right = 526.0
+offset_bottom = 428.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_sthps")
+
+[node name="ShieldLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1097.0
+offset_top = 885.0
+offset_right = 1478.0
+offset_bottom = 934.0
+theme_override_font_sizes/font_size = 35
+text = "Activate Shield:"

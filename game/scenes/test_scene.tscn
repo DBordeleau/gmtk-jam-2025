@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c555fglxjvpj3"]
+[gd_scene load_steps=18 format=3 uid="uid://c555fglxjvpj3"]
 
 [ext_resource type="Script" uid="uid://b2l4iyckvcr84" path="res://game/game_manager.gd" id="1_f14q8"]
 [ext_resource type="Script" uid="uid://2h2hxw8gmy6d" path="res://orbital_path/orbit_manager.gd" id="1_magnn"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://b7l1b4j1o0jcm" path="res://user_interface/currency_ui.tscn" id="10_dj236"]
 [ext_resource type="PackedScene" uid="uid://f6v8ljlsk4vw" path="res://structures/scenes/planet.tscn" id="10_jp05k"]
 [ext_resource type="Shader" uid="uid://jgpu78ncfwb8" path="res://vfx/shaders/starry_background_shader.gdshader" id="11_heu4h"]
+[ext_resource type="PackedScene" uid="uid://byh3h0axnaoko" path="res://user_interface/shield_prompt_ui.tscn" id="11_k8ops"]
 [ext_resource type="AudioStream" uid="uid://cgydx5alecfbn" path="res://assets/sound/bgm/main_bgm_loop.ogg" id="14_t6ilw"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t6ilw"]
@@ -79,6 +80,20 @@ offset_right = 20.0
 offset_bottom = 45.0
 grow_horizontal = 1
 
+[node name="ShieldPromptUI" parent="UILayer" instance=ExtResource("11_k8ops")]
+modulate = Color(1, 1, 1, 0.67451)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
+offset_left = 37.0
+offset_top = -90.0
+offset_right = 37.0
+offset_bottom = -90.0
+grow_horizontal = 1
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -10
 material = SubResource("ShaderMaterial_t6ilw")
@@ -106,6 +121,6 @@ environment = SubResource("Environment_716vl")
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_t6ilw")
-volume_db = -5.0
+volume_db = -8.0
 
 [connection signal="game_over" from="." to="UILayer/WaveUI" method="_on_test_scene_game_over"]

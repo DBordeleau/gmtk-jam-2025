@@ -141,6 +141,11 @@ func attack() -> void:
 
 
 func take_damage(amount: float) -> void:
+	# Check if this is an orbital structure and if shield is active
+	if is_orbital and is_shielded:
+		print("LaserShip damage blocked by shield!")
+		return
+		
 	health -= 10 # Laser ship always takes 10 damage, so it can survive a collision even with a big asteroid
 	print("New health: " + str(health))
 	if health < max_health:

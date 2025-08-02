@@ -12,6 +12,10 @@ extends Structure
 
 @export var death_particles: PackedScene
 
+# Shield variables
+var shield_visual: Node2D = null
+var is_shielded: bool = false
+
 
 func _ready():
 	queue_redraw()
@@ -23,14 +27,14 @@ func _process(delta):
 	queue_redraw()
 
 
-func _draw():
-	# Draw attack range as a red circle
-	draw_circle(Vector2.ZERO, attack_range, Color(1, 0, 0, 0.5))
-
-
 #draw_arc(Vector2.ZERO, attack_range, 0, TAU, 64, Color(1, 0, 0, 0.5), 2.0)
 
 func take_damage(amount: float) -> void:
+	# Check if this is an orbital structure and if shield is active
+	if is_orbital and is_shielded:
+		print("Damage blocked by shield!")
+		return
+		
 	health -= amount
 	print("New health: " + str(health))
 	if health <= 0:
@@ -41,6 +45,56 @@ func take_damage(amount: float) -> void:
 		get_tree().current_scene.add_child(particle)
 		if owner and owner.has_method("remove_structure"):
 			owner.remove_structure(self)
+
+
+func activate_shield():
+	if not is_orbital:
+		return
+		
+	is_shielded = true
+	_create_shield_visual()
+
+
+func deactivate_shield():
+	if not is_orbital:
+		return
+		
+	is_shielded = false
+	_remove_shield_visual()
+
+
+func _create_shield_visual():
+	if shield_visual:
+		return  # Shield visual already exists
+	
+	# Create a blue circle around the structure
+	shield_visual = Node2D.new()
+	shield_visual.name = "ShieldVisual"
+	add_child(shield_visual)
+	
+	# Make sure it draws on top
+	shield_visual.z_index = 10
+
+
+func _remove_shield_visual():
+	if shield_visual:
+		shield_visual.queue_free()
+		shield_visual = null
+
+
+func _draw():
+	# Draw attack range as a red circle
+	draw_circle(Vector2.ZERO, attack_range, Color(1, 0, 0, 0.5))
+	
+	# Draw shield visual if active
+	if is_shielded:
+		var shield_radius = 30.0  # Small blue circle around the structure
+		# Use engine ticks for smooth pulsing effect
+		var pulse = sin(Time.get_ticks_msec() * 0.006) * 0.3 + 0.7
+		var shield_color = Color(0.3, 0.7, 1.0, 0.6 * pulse)  # Blue with pulsing transparency
+		draw_circle(Vector2.ZERO, shield_radius, shield_color)
+		# Draw a slightly larger circle outline for better visibility
+		draw_arc(Vector2.ZERO, shield_radius, 0, TAU, 32, Color(0.5, 0.8, 1.0, pulse), 3.0)
 
 
 # Reduce CD every frame (not used rn)

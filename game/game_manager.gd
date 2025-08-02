@@ -18,6 +18,7 @@ var loading_screen_instance: Control = null
 @onready var structure_menu: Control = $UILayer/StructureSelectMenu
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
+@onready var shield_prompt_ui: Control = $UILayer/ShieldPromptUI
 
 @export var pause_menu: PackedScene
 
@@ -61,6 +62,9 @@ func _ready():
 	_update_lasership_cost_label(structure_manager.get_structure_cost("LaserShip"))
 	_update_slowarea_cost_label(structure_manager.get_structure_cost("SlowArea"))
 	_update_explosive_mine_cost_label(structure_manager.get_structure_cost("ExplosiveMine"))
+	_update_shield_cost_ui()
+	_update_shield_affordability()
+	_update_shield_ui_visibility()
 
 
 
@@ -181,6 +185,9 @@ func _unhandled_input(event) -> void:
 
 	if event.is_action_pressed("reverse_orbit"):
 		orbit_manager.reverse_orbit()
+
+	if event.is_action_pressed("shield"):
+		_activate_shield()
 
 	if event.is_action_pressed("toggle_structure_select_menu"):
 		structure_menu.toggle_menu()
@@ -323,6 +330,8 @@ func _on_play_again_pressed():
 func update_currency_ui(change: int = 0):
 	currency_ui.update_currency(currency, change)
 	structure_menu.update_buttons(currency)
+	_update_shield_affordability()
+	_update_shield_ui_visibility()
 
 
 # called every time wave_manager emits the enemy_killed signal
@@ -455,6 +464,23 @@ func _update_explosive_mine_cost_label(cost: int) -> void:
 	structure_menu.explosive_mine_cost_label.text = "-" + str(cost)
 
 
+func _update_shield_cost_ui() -> void:
+	if shield_prompt_ui and shield_prompt_ui.has_method("update_shield_cost"):
+		shield_prompt_ui.update_shield_cost(structure_manager.get_shield_cost())
+
+
+func _update_shield_affordability():
+	if shield_prompt_ui and shield_prompt_ui.has_method("update_affordability"):
+		var can_afford = currency >= structure_manager.get_shield_cost()
+		shield_prompt_ui.update_affordability(can_afford)
+
+
+func _update_shield_ui_visibility():
+	if shield_prompt_ui:
+		var has_orbital_structures = structure_manager.has_orbital_structures()
+		shield_prompt_ui.visible = has_orbital_structures
+
+
 func _toggle_pause_menu():
 	if pause_menu_instance:
 		_resume_game()
@@ -497,6 +523,59 @@ func _on_pause_menu_volume_changed(value: float) -> void:
 	Settings.master_volume = value
 	Settings.save_settings()
 	AudioServer.set_bus_volume_db(0, linear_to_db(value))
+
+
+func _activate_shield():
+	# Check if we have any orbital structures first
+	if not structure_manager.has_orbital_structures():
+		return  # Don't show any message, just return silently
+	
+	var shield_cost = structure_manager.get_shield_cost()
+	if currency < shield_cost:
+		_show_insufficient_currency_message("Need " + str(shield_cost) + " currency to shield!")
+		return
+	
+	currency -= shield_cost
+	update_currency_ui(-shield_cost)
+	structure_manager.activate_shield()
+	
+	# Increase shield cost for next use
+	structure_manager.increase_shield_cost()
+	_update_shield_cost_ui()
+
+
+func _show_insufficient_currency_message(message: String):
+	var error_label = Label.new()
+	error_label.text = message
+	error_label.modulate = Color.RED
+	error_label.add_theme_font_size_override("font_size", 28)
+	# Add black outline to the label
+	error_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	error_label.add_theme_constant_override("outline_size", 3)
+	error_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	error_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	
+	# Position in center of screen
+	var viewport_size = get_viewport().get_visible_rect().size
+	error_label.position = viewport_size / 2 - Vector2(150, 20)  # Rough offset for centering
+	error_label.z_index = 100
+	
+	# Add to UILayer
+	if has_node("UILayer"):
+		$UILayer.add_child(error_label)
+	else:
+		add_child(error_label)
+	
+	# Animate the label
+	error_label.scale = Vector2.ZERO
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(error_label, "scale", Vector2(1.2, 1.2), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(error_label, "modulate:a", 0.0, 2.0).set_delay(0.5)
+	
+	# Clean up after animation
+	await tween.finished
+	error_label.queue_free()
 
 
 func _warm_up_everything():

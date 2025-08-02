@@ -8,6 +8,10 @@ extends Node
 @export var orbit_manager: OrbitManager
 
 var structures: Array = []
+var shield_active: bool = false
+var shield_timer: float = 0.0
+var shield_duration: float = 1.0
+var shield_cost: int = 10
 
 var structure_costs: Dictionary = {
 						  "Gunship": 10,
@@ -145,6 +149,9 @@ func remove_structure(structure: Structure) -> void:
 	print("Removing " + structure.name)
 	if structure in structures:
 		print("Removing " + structure.name)
+		# Deactivate shield if structure had one
+		if structure.has_method("deactivate_shield"):
+			structure.deactivate_shield()
 		structures.erase(structure)
 		structure.queue_free()
 	if structure.is_orbital:
@@ -153,6 +160,12 @@ func remove_structure(structure: Structure) -> void:
 
 # updates every structure in the scene
 func update_all(delta: float) -> void:
+	# Update shield timer
+	if shield_active:
+		shield_timer -= delta
+		if shield_timer <= 0.0:
+			_deactivate_shield()
+	
 	for structure in structures:
 		if structure.has_method("update"):
 			structure.update(delta)
@@ -164,3 +177,42 @@ func get_structure_cost(type: String) -> int:
 
 func set_structure_cost(type: String, cost: int) -> void:
 	structure_costs[type] = cost
+
+
+func activate_shield():
+	shield_active = true
+	shield_timer = shield_duration
+	
+	# Activate shield visual for all orbital structures
+	for structure in structures:
+		if structure.is_orbital and structure.has_method("activate_shield"):
+			structure.activate_shield()
+
+
+func _deactivate_shield():
+	shield_active = false
+	shield_timer = 0.0
+	
+	# Deactivate shield visual for all orbital structures
+	for structure in structures:
+		if structure.is_orbital and structure.has_method("deactivate_shield"):
+			structure.deactivate_shield()
+
+
+func is_shield_active() -> bool:
+	return shield_active
+
+
+func get_shield_cost() -> int:
+	return shield_cost
+
+
+func increase_shield_cost():
+	shield_cost += 10
+
+
+func has_orbital_structures() -> bool:
+	for structure in structures:
+		if structure.is_orbital:
+			return true
+	return false

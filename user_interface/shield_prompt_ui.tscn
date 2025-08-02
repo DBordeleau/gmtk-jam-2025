@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://byh3h0axnaoko"]
+
+[ext_resource type="Texture2D" uid="uid://b5ax7dx7ghiol" path="res://assets/ui_assets/main_menu/keyboard_shift.png" id="1_83ckt"]
+[ext_resource type="Script" uid="uid://bsqptm167xshw" path="res://user_interface/shield_prompt_ui.gd" id="1_f8tke"]
+[ext_resource type="Texture2D" uid="uid://8sdwjij5so2o" path="res://assets/ui_assets/shield_icon.png" id="2_f8tke"]
+[ext_resource type="Texture2D" uid="uid://bbjjwydjgjilv" path="res://assets/ui_assets/currency_icon.png" id="3_5y6xx"]
+
+[node name="ShieldPromptUI" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1420.0
+offset_bottom = -830.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f8tke")
+
+[node name="ShiftIcon" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 0
+offset_left = 9.0
+offset_top = 3.0
+offset_right = 137.0
+offset_bottom = 131.0
+scale = Vector2(0.865304, 0.865304)
+texture = ExtResource("1_83ckt")
+expand_mode = 3
+
+[node name="ShieldIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_f8tke")
+
+[node name="CoinIcon" type="TextureRect" parent="."]
+offset_left = 130.0
+offset_top = 39.0
+offset_right = 180.0
+offset_bottom = 89.0
+texture = ExtResource("3_5y6xx")
+expand_mode = 3
+
+[node name="ShieldCostLabel" type="Label" parent="."]
+offset_left = 190.0
+offset_top = 34.0
+offset_right = 265.0
+offset_bottom = 94.0
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "-10"
+vertical_alignment = 1

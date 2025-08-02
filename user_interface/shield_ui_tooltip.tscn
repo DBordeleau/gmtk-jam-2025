@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlhjt1edjqy6t"]
+
+[ext_resource type="Script" uid="uid://bsg2l63wkqrk1" path="res://user_interface/shield_ui_tooltip.gd" id="1_wdkuo"]
+[ext_resource type="Texture2D" uid="uid://btco1ttcdojfx" path="res://assets/ui_assets/tooltip_panel.png" id="2_o01g2"]
+
+[node name="ShieldTooltip" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1595.0
+offset_bottom = -880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_wdkuo")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.398)
+layout_mode = 0
+offset_right = 325.0
+offset_bottom = 200.0
+mouse_filter = 2
+texture = ExtResource("2_o01g2")
+expand_mode = 3
+
+[node name="NameLabel" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_top = 5.0
+offset_right = 325.0
+offset_bottom = 35.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "Activate Shield"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="TextureRect"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 40.0
+offset_right = 301.0
+offset_bottom = 190.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "Press SHIFT to make all of your orbital structures impervious to damage for 1 second. Using the shield increases its cost by 10."
+autowrap_mode = 3
