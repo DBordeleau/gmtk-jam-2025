@@ -161,7 +161,7 @@ func _setup_card_hover_animation(container: Control, card: Panel, original_style
 	button.mouse_exited.connect(func():
 		card.add_theme_stylebox_override("panel", original_style)
 		var tween: Tween = create_tween()
-		tween.tween_property(card_container, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+		tween.tween_property(container, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 	)
 
 func _animate_in():
