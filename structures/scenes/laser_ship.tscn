@@ -67,7 +67,6 @@ visible = false
 shape = SubResource("CircleShape2D_0vk70")
 
 [node name="BodyCollider" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, 9)
 scale = Vector2(2.394, 2.394)
 shape = SubResource("CircleShape2D_pbwok")

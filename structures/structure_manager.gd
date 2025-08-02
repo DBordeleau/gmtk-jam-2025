@@ -10,10 +10,10 @@ extends Node
 var structures: Array = []
 
 var structure_costs = {
-	"Gunship": 20,
+	"Gunship": 10,
 	"SlowArea": 5,
 	"LaserShip": 30,
-	"ExplosiveMine": 10,  # Add this line
+	"ExplosiveMine": 10,
 }
 
 var structure_map = {

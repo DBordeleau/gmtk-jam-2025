@@ -19,19 +19,19 @@ func _initialize_upgrades():
 	# Gunship upgrades
 	var cannon_cooling = Upgrade.new()
 	cannon_cooling.name = "Cannon Cooling Tech"
-	cannon_cooling.description = "Reduce Gunship attack cooldown by 0.1 seconds"
+	cannon_cooling.description = "Reduce Gunship attack cooldown by 0.2 seconds"
 	cannon_cooling.target_structure_type = "Gunship"
 	cannon_cooling.property_name = "attack_cooldown"
 	cannon_cooling.modification_type = "add"
-	cannon_cooling.value = -0.1
+	cannon_cooling.value = -0.2
 	
 	var improved_propulsion = Upgrade.new()
 	improved_propulsion.name = "Improved Propulsion System"
-	improved_propulsion.description = "Increase Gunship orbiting speed by 10%"
+	improved_propulsion.description = "Increase Gunship orbiting speed by 20%"
 	improved_propulsion.target_structure_type = "Gunship"
 	improved_propulsion.property_name = "speed"
 	improved_propulsion.modification_type = "multiply"
-	improved_propulsion.value = 1.1
+	improved_propulsion.value = 1.2
 	
 	var gunship_sale = Upgrade.new()
 	gunship_sale.name = "Gunship Sale"
@@ -44,11 +44,11 @@ func _initialize_upgrades():
 	# Siege Cannons upgrade
 	var siege_cannons = Upgrade.new()
 	siege_cannons.name = "Siege Cannons"
-	siege_cannons.description = "Increase Gunship attack range by 10"
+	siege_cannons.description = "Increase Gunship attack range by 15"
 	siege_cannons.target_structure_type = "Gunship"
 	siege_cannons.property_name = "attack_range"
 	siege_cannons.modification_type = "add"
-	siege_cannons.value = 10.0
+	siege_cannons.value = 15.0
 	
 	# LaserShip upgrades
 	var laser_ship_sale = Upgrade.new()
@@ -61,19 +61,19 @@ func _initialize_upgrades():
 	
 	var supercharged_beams = Upgrade.new()
 	supercharged_beams.name = "Supercharged Beams"
-	supercharged_beams.description = "Reduce Laser Ship attack cooldown by 0.1 seconds"
+	supercharged_beams.description = "Reduce Laser Ship attack cooldown by 0.2 seconds"
 	supercharged_beams.target_structure_type = "LaserShip"
 	supercharged_beams.property_name = "attack_cooldown"
 	supercharged_beams.modification_type = "add"
-	supercharged_beams.value = -0.1
+	supercharged_beams.value = -0.2
 	
 	var lightweight_laser_ships = Upgrade.new()
 	lightweight_laser_ships.name = "Lightweight Laser Ships"
-	lightweight_laser_ships.description = "Increase Laser Ship orbiting speed by 10%"
+	lightweight_laser_ships.description = "Increase Laser Ship orbiting speed by 20%"
 	lightweight_laser_ships.target_structure_type = "LaserShip"
 	lightweight_laser_ships.property_name = "speed"
 	lightweight_laser_ships.modification_type = "multiply"
-	lightweight_laser_ships.value = 1.1
+	lightweight_laser_ships.value = 1.2
 	
 	# SlowArea upgrades
 	var black_hole_friday = Upgrade.new()

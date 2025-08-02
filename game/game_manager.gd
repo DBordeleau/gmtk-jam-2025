@@ -10,6 +10,7 @@ signal game_over()
 @export var loading_screen: PackedScene
 var loading_screen_instance: Control = null
 
+@onready var body_collider: CollisionShape2D = $BodyCollider
 @onready var structure_manager = $StructureManager
 @onready var orbit_manager = $OrbitManager
 @onready var wave_manager: WaveManager = $WaveManager
@@ -57,7 +58,17 @@ func _ready():
 # adds new rings every 10 waves up to 5 rings
 func _on_wave_completed():
 	wave_index += 1
-	currency += wave_index
+	if wave_index < 10:
+		currency += 5
+	elif wave_index < 20:
+		currency += 10
+	elif wave_index < 30:
+		currency += 20
+	elif wave_index < 40:
+		currency += 30
+	else:
+		currency += 50
+	
 	update_currency_ui()
 	
 	# Check for upgrade every 5th wave
@@ -183,6 +194,9 @@ func _unhandled_input(event):
 				var new_mine_cost = structure_cost + 10
 				structure_manager.set_structure_cost("ExplosiveMine", new_mine_cost)
 				_update_explosive_mine_cost_label(new_mine_cost)
+			
+			update_currency_ui() 	
+			
 			structure_menu.clear_selection()
 			_remove_preview()
 
