@@ -139,7 +139,11 @@ func start_upgrade_choice():
 	_show_upgrade_ui(chosen_upgrades)
 
 func _get_random_upgrades(count: int) -> Array[Upgrade]:
-	var shuffled = available_upgrades.duplicate()
+	var filtered: Array[Upgrade] = []
+	for upgrade in available_upgrades:
+		if _should_offer_upgrade(upgrade):
+			filtered.append(upgrade)
+	var shuffled = filtered.duplicate()
 	shuffled.shuffle()
 	return shuffled.slice(0, min(count, shuffled.size()))
 
@@ -239,3 +243,26 @@ func get_global_upgrade_value(property_name: String) -> float:
 		if upgrade.target_structure_type == "Global" and upgrade.property_name == property_name:
 			return upgrade.value
 	return 0.0
+
+func _should_offer_upgrade(upgrade: Upgrade) -> bool:
+	# Prevent Cannon Cooling Tech if Gunship cooldown is already 0.2 or less
+	if upgrade.property_name == "attack_cooldown" and upgrade.target_structure_type == "Gunship":
+		var structure_scene = get_tree().get_root().get_node("GameManager/StructureManager").structure_map.get("Gunship")
+		if structure_scene:
+			var temp = structure_scene.instantiate()
+			apply_upgrades_to_new_structure(temp)
+			if temp.attack_cooldown <= 0.2:
+				temp.queue_free()
+				return false
+			temp.queue_free()
+	# Prevent Supercharged Beams if LaserShip cooldown is already 0.2 or less
+	if upgrade.property_name == "attack_cooldown" and upgrade.target_structure_type == "LaserShip":
+		var structure_scene = get_tree().get_root().get_node("GameManager/StructureManager").structure_map.get("LaserShip")
+		if structure_scene:
+			var temp = structure_scene.instantiate()
+			apply_upgrades_to_new_structure(temp)
+			if temp.attack_cooldown <= 0.2:
+				temp.queue_free()
+				return false
+			temp.queue_free()
+	return true
