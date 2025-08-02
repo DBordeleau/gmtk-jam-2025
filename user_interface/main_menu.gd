@@ -46,8 +46,10 @@ func load_hiscore() -> int:
 		return value
 	return 0
 
+
 func _on_play_button_pressed() -> void:
 	_fade_and_load_scene()
+
 
 func _fade_and_load_scene():
 	fade_rect.visible = true

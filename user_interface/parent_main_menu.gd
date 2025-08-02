@@ -7,9 +7,10 @@ extends Control
 
 
 func _on_how_to_play_button_pressed() -> void:
-	main_menu_screen.visible = false 
+	main_menu_screen.visible = false
 	how_to_play_screen.visible = true
 	back_button.visible = true
+
 
 func _on_back_button_pressed() -> void:
 	back_button.visible = false
@@ -17,7 +18,8 @@ func _on_back_button_pressed() -> void:
 	how_to_play_screen.visible = false
 	options_screen.visible = false
 
+
 func _on_options_button_pressed() -> void:
-	main_menu_screen.visible = false 
+	main_menu_screen.visible = false
 	options_screen.visible = true
 	back_button.visible = true

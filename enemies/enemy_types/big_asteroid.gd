@@ -4,9 +4,10 @@ class_name BigAsteroid
 
 @export var damage_particles: PackedScene
 
+
 func take_damage(amount: int):
 	if health - amount > 0:
-		var particle = damage_particles.instantiate()
+		var particle: Node = damage_particles.instantiate()
 		particle.position = global_position
 		particle.rotation = global_rotation
 		particle.emitting = true
