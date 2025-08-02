@@ -5,6 +5,7 @@ func _physics_process(delta: float) -> void:
 	_rotate_to_direction()
 	_check_collisions()
 
+
 func _rotate_to_direction():
 	if velocity.length() > 0:
 		rotation = velocity.angle()

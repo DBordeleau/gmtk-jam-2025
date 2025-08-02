@@ -7,24 +7,22 @@ signal wave_spawning_started
 signal wave_spawning_finished
 signal enemy_spawned
 signal enemy_killed
-
 @export var spawn_interval: float = 0.5 # seconds between individual enemy spawns
 @export var camera: Camera2D # camera reference so we can spawn enemies outside of view
-
 # Difficulty scaling parameters
 @export var base_enemy_count: int = 2
 @export var enemy_count_scaling: float = 1.3
 @export var base_wave_delay: float = 5.0
 @export var sequence_time_variance: float = 2.0
-
 # Enemy scene references for random generation
 @export var enemy_scenes: Array[PackedScene] = []
 
 var current_wave_index: int = 0
-var active_enemies: Array = []
-var spawning: bool = false
-var enemies_to_spawn: int = 0
-var enemies_spawned: int = 0
+var active_enemies: Array   = []
+var spawning: bool          = false
+var enemies_to_spawn: int   = 0
+var enemies_spawned: int    = 0
+
 
 func _ready() -> void:
 	if enemy_scenes.is_empty():
@@ -32,25 +30,26 @@ func _ready() -> void:
 		enemy_scenes.append(preload("res://enemies/scenes/big_asteroid.tscn"))
 		enemy_scenes.append(preload("res://enemies/scenes/comet.tscn"))
 	start_first_wave.connect(_on_start_first_wave)
-		
+
+
 func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()
-	
+
 	# Calculate difficulty scaling
 	var difficulty_multiplier = pow(enemy_count_scaling, wave_number)
-	var total_enemies = int(base_enemy_count * difficulty_multiplier)
-	
+	var total_enemies         = int(base_enemy_count * difficulty_multiplier)
+
 	# Determine number of enemy sequences (1-3 based on wave number)
 	var num_sequences = 1 + int(wave_number / 3)
-	
+
 	# Create enemy sequences
 	var sequences: Array[EnemySequence] = []
-	var enemies_per_sequence = max(1, int(total_enemies / num_sequences))
-	var remaining_enemies = total_enemies
-	
+	var enemies_per_sequence            = max(1, int(total_enemies / num_sequences))
+	var remaining_enemies               = total_enemies
+
 	for i in range(num_sequences):
 		var sequence = EnemySequence.new()
-		
+
 		# Choose random enemy type, with preference for stronger enemies in later waves
 		var available_indices = [0] # Always include basic asteroid
 
@@ -62,42 +61,43 @@ func generate_wave(wave_number: int) -> Wave:
 
 		var enemy_index = available_indices[randi() % available_indices.size()]
 		sequence.enemy = enemy_scenes[enemy_index]
-		
+
 		# Distribute enemies across sequences
 		if i == num_sequences - 1:
 			sequence.amount = remaining_enemies
 		else:
 			sequence.amount = min(enemies_per_sequence, remaining_enemies)
-		
+
 		remaining_enemies -= sequence.amount
-		
+
 		# Set spawn timing with some variance
 		sequence.time = i * sequence_time_variance + randf() * sequence_time_variance
-		
+
 		sequences.append(sequence)
-	
+
 	new_wave.enemy_sequences = sequences
 	new_wave.time_to_next_wave = base_wave_delay + randf() * 2.0 # Add some variance to wave timing
-	
+
 	return new_wave
 
 
 # starts spawning the wave and emits a signal when complete
 func start_wave(wave_index: int = 0) -> void:
 	current_wave_index = wave_index
-	
+
 	var current_wave = generate_wave(current_wave_index)
-	
+
 	spawning = true
 	active_enemies.clear()
 	enemies_to_spawn = 0
 	enemies_spawned = 0
-	
+
 	for sequence in current_wave.enemy_sequences:
 		enemies_to_spawn += sequence.amount
 	emit_signal("wave_spawning_started")
 	await _spawn_wave(current_wave)
 	emit_signal("wave_spawning_finished")
+
 
 # spawns enemy sequences and emits a signal for each enemy spawned so the wave ui can count up in realtime
 func _spawn_wave(wave: Wave) -> void:
@@ -106,7 +106,7 @@ func _spawn_wave(wave: Wave) -> void:
 		for i in range(sequence.amount):
 			await safe_wait(spawn_interval)
 			var enemy_instance = sequence.enemy.instantiate()
-			var spawn_pos = get_random_edge_position()
+			var spawn_pos      = get_random_edge_position()
 			enemy_instance.global_position = spawn_pos
 			add_child(enemy_instance)
 			active_enemies.append(enemy_instance)
@@ -114,14 +114,15 @@ func _spawn_wave(wave: Wave) -> void:
 			emit_signal("enemy_spawned")
 			enemy_instance.tree_exited.connect(_on_enemy_exited.bind(enemy_instance))
 
+
 # helper function for spawning enemies around the edge of the screen
 func get_random_edge_position() -> Vector2:
 	if not get_tree():
 		return Vector2.ZERO
 	var camera_rect = get_camera_visible_rect()
-	var edge = randi() % 4
-	var x = 0.0
-	var y = 0.0
+	var edge        = randi() % 4
+	var x           = 0.0
+	var y           = 0.0
 	match edge:
 		0: # top
 			x = randf_range(camera_rect.position.x, camera_rect.position.x + camera_rect.size.x)
@@ -137,17 +138,19 @@ func get_random_edge_position() -> Vector2:
 			y = randf_range(camera_rect.position.y, camera_rect.position.y + camera_rect.size.y)
 	return Vector2(x, y)
 
+
 # helper function to calculate viewport edges after the camera has zoomed out
 func get_camera_visible_rect() -> Rect2:
 	var viewport_size = get_viewport().get_visible_rect().size
 	var camera_center = camera.get_screen_center_position()
-	var zoom = camera.zoom
-	
+	var zoom          = camera.zoom
+
 	# Calculate the visible area in world coordinates
 	var visible_size = viewport_size / zoom
-	var top_left = camera_center - visible_size / 2
-	
+	var top_left     = camera_center - visible_size / 2
+
 	return Rect2(top_left, visible_size)
+
 
 func _on_enemy_exited(enemy):
 	if enemy in active_enemies:
@@ -158,20 +161,24 @@ func _on_enemy_exited(enemy):
 		spawning = false
 		emit_signal("wave_completed")
 
+
 # getter function for wave_ui
 func get_next_wave_delay() -> float:
 	# Generate next wave to get its delay time
-		var next_wave = generate_wave(current_wave_index)
-		return next_wave.time_to_next_wave
+	var next_wave = generate_wave(current_wave_index)
+	return next_wave.time_to_next_wave
+
 
 func safe_wait(time: float):
 	if not get_tree() or not is_inside_tree():
 		return
 	await get_tree().create_timer(time).timeout
 
+
 func remove_all_active_enemies() -> void:
 	for enemy in active_enemies:
 		enemy.queue_free()
+
 
 func _on_start_first_wave():
 	start_wave(0)
