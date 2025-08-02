@@ -11,7 +11,7 @@ signal enemy_killed
 @export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 # Difficulty scaling parameters
 @export var base_wave_cost: int = 6
-@export var enemy_count_scaling: float = 1.3
+@export var wave_cost_scaling_factor: float = 1.3
 @export var base_wave_delay: float = 5.0
 @export var sequence_time_variance: float = 2.0
 
@@ -39,7 +39,7 @@ func generate_wave(wave_number: int) -> Wave:
 	var new_wave = Wave.new()
 
 	# Calculate difficulty scaling using cost budget instead of enemy count
-	var difficulty_multiplier: float = pow(enemy_count_scaling, wave_number)
+	var difficulty_multiplier: float = pow(wave_cost_scaling_factor, wave_number)
 	var total_cost_budget: int       = int(base_wave_cost * difficulty_multiplier)
 
 	# Determine number of enemy sequences (1-3 based on wave number)
