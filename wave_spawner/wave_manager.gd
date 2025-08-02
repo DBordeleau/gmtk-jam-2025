@@ -8,7 +8,7 @@ signal wave_spawning_finished
 signal enemy_spawned
 signal enemy_killed
 var spawn_interval: float = 0.5 # seconds between individual enemy spawns
-var camera: Camera2D # camera reference so we can spawn enemies outside of view
+@export var camera: Camera2D # camera reference so we can spawn enemies outside of view
 # Difficulty scaling parameters
 var base_wave_cost: int             = 6
 var wave_cost_scaling_factor: float = 1.3
@@ -44,8 +44,6 @@ func generate_wave(wave_number: int) -> Wave:
 	var total_cost_budget: int       = int(base_wave_cost * difficulty_multiplier)
 
 	# Determine number of enemy sequences (1-3 based on wave number)
-	var num_sequences: int = 1 + int(wave_number / 3)
-
 	var num_sequences: int = 1 + int(wave_number / 3)
 
 	# Create enemy sequences
@@ -113,9 +111,6 @@ func start_wave(wave_index: int = 0) -> void:
 
 	var current_wave: Wave = generate_wave(current_wave_index)
 
-
-	var current_wave: Wave = generate_wave(current_wave_index)
-
 	spawning = true
 	active_enemies.clear()
 	enemies_to_spawn = 0
@@ -138,8 +133,6 @@ func _spawn_wave(wave: Wave) -> void:
 			await safe_wait(spawn_interval)
 			var enemy_instance: Node = sequence.enemy.instantiate()
 			var spawn_pos: Vector2   = get_random_edge_position()
-			var enemy_instance: Node = sequence.enemy.instantiate()
-			var spawn_pos: Vector2   = get_random_edge_position()
 			enemy_instance.global_position = spawn_pos
 			add_child(enemy_instance)
 			active_enemies.append(enemy_instance)
@@ -153,10 +146,6 @@ func _spawn_wave(wave: Wave) -> void:
 func get_random_edge_position() -> Vector2:
 	if not get_tree():
 		return Vector2.ZERO
-	var camera_rect: Rect2 = get_camera_visible_rect()
-	var edge: int          = randi() % 4
-	var x: float           = 0.0
-	var y: float           = 0.0
 	var camera_rect: Rect2 = get_camera_visible_rect()
 	var edge: int          = randi() % 4
 	var x: float           = 0.0
@@ -184,20 +173,10 @@ func get_camera_visible_rect() -> Rect2:
 	var camera_center: Vector2 = camera.get_screen_center_position()
 	var zoom: Vector2          = camera.zoom
 
-	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
-	var camera_center: Vector2 = camera.get_screen_center_position()
-	var zoom: Vector2          = camera.zoom
-
-	# Calculate the visible area in world coordinates
-	var visible_size: Vector2 = viewport_size / zoom
-	var top_left: Vector2     = camera_center - visible_size / 2
-
 	var visible_size: Vector2 = viewport_size / zoom
 	var top_left: Vector2     = camera_center - visible_size / 2
 
 	return Rect2(top_left, visible_size)
-
-
 
 func _on_enemy_exited(enemy):
 	if enemy in active_enemies:
@@ -213,8 +192,6 @@ func _on_enemy_exited(enemy):
 # getter function for wave_ui
 func get_next_wave_delay() -> float:
 	# Generate next wave to get its delay time
-	var next_wave: Wave = generate_wave(current_wave_index)
-	return next_wave.time_to_next_wave
 	var next_wave: Wave = generate_wave(current_wave_index)
 	return next_wave.time_to_next_wave
 
