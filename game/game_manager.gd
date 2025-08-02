@@ -105,9 +105,10 @@ func _on_wave_completed() -> void:
 		return
 
 	# If planet took damage, just start next wave (or expansion if needed)
+	await _handle_ring_expansion_and_start_wave()
+	# Reset flags for next wave
 	planet_took_damage_this_wave = false
 	expansion_handled_this_wave = false
-	await _handle_ring_expansion_and_start_wave()
 
 
 # Helper to start upgrade UI and wait for it to finish

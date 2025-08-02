@@ -2,6 +2,7 @@ class_name Planet
 extends StaticBody2D
 
 signal planet_destroyed
+signal planet_damaged
 @export var max_health: int = 100
 
 var health: int             = max_health
@@ -22,6 +23,9 @@ func take_damage(amount: int) -> void:
 	if health < 0:
 		health = 0
 	_update_healthbar()
+
+	# Emit planet_damaged signal when damage is taken
+	emit_signal("planet_damaged")
 
 	var camera: Camera2D = get_viewport().get_camera_2d()
 	if camera and camera.has_method("shake"):
