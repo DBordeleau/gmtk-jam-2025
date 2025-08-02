@@ -16,7 +16,7 @@ var shield_cost: int = 10
 var structure_costs: Dictionary = {
 						  "Gunship": 10,
 						  "SlowArea": 5,
-						  "LaserShip": 30,
+						  "LaserShip": 0,
 						  "ExplosiveMine": 10,
 					  }
 

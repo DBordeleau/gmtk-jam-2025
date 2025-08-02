@@ -14,7 +14,7 @@ var enemies_in_range: Array[Node2D] = []
 var ready_to_fire: bool           = true
 var cleanup_timer: SceneTreeTimer = null
 # New variables for delayed firing
-var target_acquisition_delay: float = 0.8  # Wait 0.8 seconds for more targets
+var target_acquisition_delay: float = 0.3
 var acquisition_timer: float = 0.0
 var is_acquiring_targets: bool = false
 
