@@ -141,7 +141,7 @@ func attack() -> void:
 
 
 func take_damage(amount: float) -> void:
-	health -= amount
+	health -= 10 # Laser ship always takes 10 damage, so it can survive a collision even with a big asteroid
 	print("New health: " + str(health))
 	if health < max_health:
 		smoke_vfx.emitting = true
