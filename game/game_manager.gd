@@ -43,6 +43,8 @@ var expansion_handled_this_wave: bool = false
 func _ready():
 	await _warm_up_everything()
 	music.play()
+	# Set music to continue playing when game is paused
+	music.process_mode = Node.PROCESS_MODE_ALWAYS
 	hiscore = load_hiscore()
 	wave_manager.wave_completed.connect(_on_wave_completed)
 	wave_manager.enemy_killed.connect(_on_enemy_killed)
