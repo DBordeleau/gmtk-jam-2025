@@ -72,7 +72,7 @@ func _on_wave_completed():
 	update_currency_ui()
 	
 	# Check for upgrade every 5th wave
-	if wave_index % 5 == 0:  
+	if wave_index % 1 == 0:  
 		await safe_wait(1.0)
 		upgrade_manager.start_upgrade_choice()
 		return # don't start next wave until upgrade is chosen

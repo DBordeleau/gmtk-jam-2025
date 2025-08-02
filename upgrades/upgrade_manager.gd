@@ -144,7 +144,9 @@ func apply_upgrade(upgrade: Upgrade):
 	for structure in structure_manager.structures:
 		if structure.get_script() and structure.get_script().get_global_name() == upgrade.target_structure_type:
 			upgrade.apply_to_structure(structure)
-			
+			if structure.has_method("update_tooltip_desc"):
+				structure.update_tooltip_desc()
+				
 			# UPDATE ORBIT MANAGER FOR SPEED CHANGES THIS IS THE SHIT THAT WAS BREAKING 
 			if upgrade.property_name == "speed" and structure.is_orbital:
 				orbit_manager.update_structure_speed(structure, structure.speed)
@@ -164,3 +166,5 @@ func apply_upgrades_to_new_structure(structure: Structure):
 	for upgrade in applied_upgrades:
 		if upgrade.target_structure_type == structure_type and upgrade.property_name != "cost_reduction":
 			upgrade.apply_to_structure(structure)
+	if structure.has_method("update_tooltip_desc"):
+		structure.update_tooltip_desc()

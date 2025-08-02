@@ -159,3 +159,7 @@ func take_damage(amount: float) -> void:
 # Clean up when destroyed
 func _exit_tree() -> void:
 	cleanup_all_lasers()
+
+func update_tooltip_desc():
+	tooltip_desc = "A resilient ship that fires laser beams, attacking multiple enemies simultaneously. Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Can survive 1 collision with an asteroid."
+	

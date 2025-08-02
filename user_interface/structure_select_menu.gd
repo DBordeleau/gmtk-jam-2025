@@ -249,6 +249,13 @@ func _show_structure_tooltip(type: String):
 		return
 	var structure = structure_scene.instantiate()
 	print("Instantiated structure for tooltip:", structure)
+	
+	# APPLY UPGRADES TO THE TEMPORARY STRUCTURE FOR TOOLTIP
+	var game_manager = get_tree().get_root().get_node("GameManager")
+	if game_manager and game_manager.has_node("UpgradeManager"):
+		var upgrade_manager = game_manager.get_node("UpgradeManager")
+		upgrade_manager.apply_upgrades_to_new_structure(structure)
+	
 	var name_text = structure.tooltip_name
 	var desc_text = structure.tooltip_desc
 	print("Tooltip name:", name_text, "Tooltip desc:", desc_text)
@@ -257,6 +264,7 @@ func _show_structure_tooltip(type: String):
 	print("Instantiated tooltip scene:", tooltip_instance)
 	if not tooltip_instance:
 		print("Failed to instantiate tooltip scene!")
+		structure.queue_free()  # Clean up the temporary structure
 		return
 
 	if not tooltip_instance.has_node("name_label") or not tooltip_instance.has_node("description_label"):
@@ -276,6 +284,10 @@ func _show_structure_tooltip(type: String):
 	get_parent().add_child(tooltip_instance)
 	tooltip_instance.z_index = 1000 # Ensure on top
 	print("Tooltip added to menu.")
+	
+	# Clean up the temporary structure
+	structure.queue_free()
+	
 	await get_tree().process_frame
 	_update_tooltip_position()
 

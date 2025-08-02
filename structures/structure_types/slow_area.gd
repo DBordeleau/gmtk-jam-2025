@@ -38,3 +38,7 @@ func _on_body_exited(body):
 
 func update(delta: float) -> void:
 	queue_redraw()
+
+func update_tooltip_desc():
+	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
+	
