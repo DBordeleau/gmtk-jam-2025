@@ -10,7 +10,7 @@ var color := Color.WHITE: set = set_color
 ## Distance from center to start drawing lasers
 var start_distance := 40.0
 ## Line width for the laser beams
-var line_width := 8.0
+var line_width := 4.0
 
 @onready var casting_particles: GPUParticles2D = $CastingParticles
 @onready var collision_particles: GPUParticles2D = $CollisionParticles
@@ -47,10 +47,20 @@ func create_laser(target: Node2D) -> void:
 	var laser = Line2D.new()
 	laser.end_cap_mode = Line2D.LINE_CAP_ROUND
 	laser.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	laser.width = line_width
+	laser.width = 0.0  # Start at 0 width for animation
 	laser.modulate = color
-	laser.add_point(Vector2.RIGHT * start_distance)
-	laser.add_point(Vector2.RIGHT * start_distance)  # Start collapsed
+	laser.visible = true
+	
+	# Calculate initial direction and distance
+	var direction = (target.global_position - global_position).normalized()
+	var distance = global_position.distance_to(target.global_position)
+	
+	var start_point = direction * start_distance
+	var end_point = direction * distance
+	
+	# Add points properly with correct positions
+	laser.add_point(start_point)
+	laser.add_point(start_point)  # Start collapsed at start_point
 	
 	add_child(laser)
 	active_lasers[target] = laser
@@ -58,7 +68,7 @@ func create_laser(target: Node2D) -> void:
 	# Create particle systems for this laser
 	create_particles_for_laser(target, laser)
 	
-	# Animate appearance
+	# Animate appearance - this will grow the width and extend the line
 	appear_laser(laser, target)
 	
 	# Start tracking the target
@@ -120,15 +130,20 @@ func update_laser_for_target(laser: Line2D, _value: float) -> void:
 func update_laser_direction(target: Node2D, laser: Line2D) -> void:
 	if not is_instance_valid(target) or not is_instance_valid(laser):
 		return
-		
+	
+	# Only update if laser has been fully created
+	if laser.get_point_count() != 2:
+		return
+	
 	var direction = (target.global_position - global_position).normalized()
 	var distance = global_position.distance_to(target.global_position)
 	
 	var start_point = direction * start_distance
 	var end_point = direction * distance
 	
-	laser.points[0] = start_point
-	laser.points[1] = end_point
+	# Update laser positions
+	laser.set_point_position(0, start_point)
+	laser.set_point_position(1, end_point)
 	
 	# Update particle positions and properties
 	update_particles_for_laser(target, start_point, end_point, direction)
@@ -188,22 +203,21 @@ func cleanup_laser_by_key(target_key) -> void:
 			laser.queue_free()
 
 func cleanup_particles_by_key(target_key) -> void:
-	# Don't type the parameter - accept any key (even freed objects)
 	if not laser_particles.has(target_key):
 		return
 	
 	var particles = laser_particles[target_key]
 	
-	# Stop emitting and clean up particles
+	# Stop emitting and clean up particles immediately
 	for particle_type in particles.keys():
 		var particle_system = particles[particle_type]
 		if is_instance_valid(particle_system):
 			particle_system.emitting = false
-			# Remove particles after they finish their lifetime
-			var cleanup_timer = get_tree().create_timer(2.0)  # Adjust based on particle lifetime
-			cleanup_timer.timeout.connect(func(): if is_instance_valid(particle_system): particle_system.queue_free())
+			# Queue free immediately instead of waiting
+			particle_system.queue_free()
 	
 	laser_particles.erase(target_key)
+	
 func remove_laser(target: Node2D) -> void:
 	# For valid targets, we can still use the typed version
 	if is_instance_valid(target):
@@ -231,8 +245,26 @@ func remove_particles_for_laser(target: Node2D) -> void:
 
 func appear_laser(laser: Line2D, target: Node2D) -> void:
 	laser.visible = true
+	
+	# Calculate the target end point
+	var direction = (target.global_position - global_position).normalized()
+	var distance = global_position.distance_to(target.global_position)
+	var end_point = direction * distance
+	
+	# Create tween for both width and length animation
 	var tween = create_tween()
-	tween.tween_property(laser, "width", line_width, growth_time * 2.0).from(0.0)
+	tween.set_parallel(true)  # Allow multiple properties to animate simultaneously
+	
+	# Animate width from 0 to full width
+	tween.tween_property(laser, "width", line_width, growth_time)
+	
+	# Animate the end point from start_point to target
+	tween.tween_method(
+		func(pos: Vector2): laser.set_point_position(1, pos),
+		laser.get_point_position(0),  # Start from the first point
+		end_point,  # End at target
+		growth_time
+	)
 
 func disappear_laser(laser: Line2D) -> void:
 	var tween = create_tween()

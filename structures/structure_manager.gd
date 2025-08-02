@@ -12,7 +12,7 @@ var structures: Array = []
 var structure_costs = {
 	"Gunship": 20,
 	"SlowArea": 5,
-	"LaserShip": 30,
+	"LaserShip": 0,
 	"ExplosiveMine": 10,  # Add this line
 }
 

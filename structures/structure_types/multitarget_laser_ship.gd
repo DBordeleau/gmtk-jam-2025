@@ -114,8 +114,8 @@ func cleanup_all_lasers() -> void:
 	if cleanup_timer:
 		cleanup_timer = null
 	
-	if laser_system:
-		# Remove all lasers by passing empty array
+	if laser_system and is_instance_valid(laser_system):
+		# Remove all lasers regardless of firing state
 		laser_system.target_enemies([])
 
 func deal_damage_to_enemy(enemy: Node2D) -> void:
@@ -154,10 +154,3 @@ func take_damage(amount: float) -> void:
 # Clean up when destroyed
 func _exit_tree() -> void:
 	cleanup_all_lasers()
-
-# used by game_manager to warm up attack effects
-func shoot():
-	if laser_system:
-		laser_system.target_enemies([])
-	if attack_sfx:
-		attack_sfx.play()
