@@ -278,7 +278,7 @@ func appear_laser(laser: Line2D, target: Node2D) -> void:
 			laser.get_point_position(0),  # Start from the first point
 end_point,  # End at target
 growth_time
-    )
+	)
 
 
 
