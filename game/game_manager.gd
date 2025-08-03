@@ -543,7 +543,41 @@ func _on_pause_menu_resume():
 
 
 func _on_pause_menu_quit():
-	get_tree().quit()
+	# Check and update hiscore if current wave is better
+	if wave_index > hiscore:
+		hiscore = wave_index
+		save_hiscore(hiscore)
+		print("New hiscore saved: ", hiscore)
+	
+	# Start fade transition to main menu
+	_quit_to_main_menu_with_fade()
+
+
+func _quit_to_main_menu_with_fade():
+	# Create a black fade overlay
+	var quit_fade_overlay = ColorRect.new()
+	quit_fade_overlay.color = Color.BLACK
+	quit_fade_overlay.modulate.a = 0.0  # Start transparent
+	quit_fade_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	quit_fade_overlay.z_index = 2000  # Make sure it's on top of everything
+	quit_fade_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	# Add to UILayer if it exists, otherwise to the main scene
+	if has_node("UILayer"):
+		$UILayer.add_child(quit_fade_overlay)
+	else:
+		add_child(quit_fade_overlay)
+	
+	# Unpause the game so tweens can work
+	get_tree().paused = false
+	
+	# Fade to black
+	var fade_tween: Tween = create_tween()
+	fade_tween.tween_property(quit_fade_overlay, "modulate:a", 1.0, 0.5)
+	await fade_tween.finished
+	
+	# Change to main menu scene
+	get_tree().change_scene_to_file("res://user_interface/parent_main_menu.tscn")
 
 
 func _on_pause_menu_volume_changed(value: float) -> void:

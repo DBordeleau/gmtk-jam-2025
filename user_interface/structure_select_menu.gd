@@ -69,9 +69,8 @@ func _ready():
 # Every pressed function should set the selected struct type and disable all other buttons
 func _on_gunship_button_pressed():
 	if gunship_button.button_pressed:
+		_unpress_all_except("Gunship")
 		selected_structure_type = "Gunship"
-		slow_area_button.button_pressed = false
-		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("Gunship")
 	else:
 		selected_structure_type = ""
@@ -80,9 +79,8 @@ func _on_gunship_button_pressed():
 
 func _on_slow_area_button_pressed():
 	if slow_area_button.button_pressed:
+		_unpress_all_except("SlowArea")
 		selected_structure_type = "SlowArea"
-		gunship_button.button_pressed = false
-		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("SlowArea")
 	else:
 		selected_structure_type = ""
@@ -91,9 +89,8 @@ func _on_slow_area_button_pressed():
 
 func _on_laser_ship_button_pressed():
 	if laser_ship_button.button_pressed:
+		_unpress_all_except("LaserShip")
 		selected_structure_type = "LaserShip"
-		gunship_button.button_pressed = false
-		slow_area_button.button_pressed = false
 		structure_type_selected.emit("LaserShip")
 	else:
 		selected_structure_type = ""
@@ -102,14 +99,24 @@ func _on_laser_ship_button_pressed():
 
 func _on_explosive_mine_button_pressed():
 	if explosive_mine_button.button_pressed:
+		_unpress_all_except("ExplosiveMine")
 		selected_structure_type = "ExplosiveMine"
-		gunship_button.button_pressed = false
-		slow_area_button.button_pressed = false
-		laser_ship_button.button_pressed = false
 		structure_type_selected.emit("ExplosiveMine")
 	else:
 		selected_structure_type = ""
 		structure_type_selected.emit("")
+
+
+# Helper function to unpress all buttons except the specified one
+func _unpress_all_except(exception: String) -> void:
+	if exception != "Gunship":
+		gunship_button.button_pressed = false
+	if exception != "SlowArea":
+		slow_area_button.button_pressed = false
+	if exception != "LaserShip":
+		laser_ship_button.button_pressed = false
+	if exception != "ExplosiveMine":
+		explosive_mine_button.button_pressed = false
 
 
 # disables buttons if we cant afford associated structure

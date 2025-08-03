@@ -61,12 +61,13 @@ func explode():
 	
 	print("Enemies in range: ", enemies_in_range.size())
 
-	# Damage all enemies in range
+	# Kill all enemies in range without awarding currency
 	for enemy in enemies_in_range:
-		if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
-			# Mark enemy as killed by player so we get currency
-			enemy.take_damage(damage)
-			print("Damaged enemy: ", enemy)
+		if enemy.is_in_group("enemies"):
+			# Directly set health to 0 and call die() to bypass the killed_by_player flag
+			enemy.health = 0
+			enemy.die()
+			print("Killed enemy: ", enemy)
 
 	# Spawn explosion particles if available
 	if explosion_particles:
