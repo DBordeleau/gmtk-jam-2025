@@ -45,7 +45,7 @@ func _gui_input(event):
 
 func update_shield_cost(cost: int):
 	if cost_label:
-		cost_label.text = str(cost)
+		cost_label.text = "-" + str(cost)
 		print("Updated shield cost display to: ", cost)
 	else:
 		print("Warning: No cost label found to update")

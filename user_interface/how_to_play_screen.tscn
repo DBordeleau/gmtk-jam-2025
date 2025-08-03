@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://b5ax7dx7ghiol" path="res://assets/ui_assets/main_menu/keyboard_shift.png" id="4_sthps"]
 
 [node name="HowToPlayScreen" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,20 +36,21 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -675.0
-offset_top = -400.0
+offset_top = -418.0
 offset_right = 675.0
-offset_bottom = 100.0
+offset_bottom = 82.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/normal_font_size = 35
+theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
-text = "Orbital Defender is an arcade style wave survival game. Defend your home planet from incoming threats by purchasing and placing structures in its orbit. Structures become more expensive the more you buy so make your purchases strategically! You earn money by eliminating threats and surviving a wave.
+text = "Orbital Defense is an arcade style wave survival game. Defend your home planet against incoming threats by purchasing and placing structures in its orbit. Structures become more expensive the more you buy so make your purchases strategically! You earn money by eliminating threats and surviving a wave.
 
 If you complete a wave without your planet sustaining any damage, you will get to select 1 of 3 random upgrades. 
 
-Every 10 waves the playing area will get larger and a new orbital path will be drawn around your home planet."
+Every 5 waves the playing area will get larger and a new orbital path will be drawn around your home planet until there are 5 orbital paths. Survive as long as you can!"
+scroll_active = false
 
 [node name="ControlsLabel" type="Label" parent="."]
 layout_mode = 1

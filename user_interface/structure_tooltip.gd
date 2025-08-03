@@ -7,3 +7,5 @@ extends Control
 func _ready():
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# Make the description label font size smaller for long tooltips
+	description_label.add_theme_font_size_override("font_size", 16)

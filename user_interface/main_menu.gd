@@ -13,24 +13,36 @@ func _setup_hiscore_label():
 	# Set the text with BBCode formatting using teal colors to match your UI
 	hiscore_label.text = "[font_size=50][center][color=#40E0D0]Your personal record is [b]%d[/b] waves completed[/color][/center][/font_size]" % hiscore
 	
+	# Set the pivot to the center of the label for proper rotation
+	await get_tree().process_frame  # Ensure layout is updated
+	var size = hiscore_label.size
+	hiscore_label.pivot_offset = size / 2
+	# Center the label's position if needed (optional, comment out if not desired)
+	# hiscore_label.position += size / 2
+
 	# Start the bouncing animation
 	_animate_hiscore_label()
 
 func _animate_hiscore_label():
-	# Create bouncing animation with teal glow effect
+	# Create bouncing, scaling, and rotation animation with teal glow effect
 	var scale_tween = create_tween()
 	scale_tween.set_loops()
-	
 	# Scale up slightly (bounce effect)
 	scale_tween.tween_property(hiscore_label, "scale", Vector2(1.1, 1.1), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	# Scale back down
 	scale_tween.tween_property(hiscore_label, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	
+
 	var bounce_tween = create_tween()
 	bounce_tween.set_loops()
 	bounce_tween.tween_property(hiscore_label, "position:y", hiscore_label.position.y - 5, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	bounce_tween.tween_property(hiscore_label, "position:y", hiscore_label.position.y, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	
+
+	# Add rotation tween: smoothly oscillate between -20 and 20 degrees (in radians)
+	var rotation_tween = create_tween()
+	rotation_tween.set_loops()
+	rotation_tween.tween_property(hiscore_label, "rotation", deg_to_rad(20), 1.5).from(deg_to_rad(-20)).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	rotation_tween.tween_property(hiscore_label, "rotation", deg_to_rad(-20), 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
 	# Add teal glow effect that matches your "HOW TO PLAY" text
 	var glow_tween = create_tween()
 	glow_tween.set_loops()

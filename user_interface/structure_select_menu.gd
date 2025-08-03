@@ -299,14 +299,17 @@ func _show_structure_tooltip(type: String) -> void:
 	else:
 		print("Tooltip instance has expected label nodes.")
 
+
 	tooltip_instance.get_node("TextureRect/NameLabel").text = name_text
-	tooltip_instance.get_node("TextureRect/DescriptionLabel").text = desc_text
+	var desc_label = tooltip_instance.get_node("TextureRect/DescriptionLabel")
+	desc_label.text = desc_text
 	tooltip_instance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	tooltip_instance.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 
 	# Dynamically resize font to fit label
 	tooltip_instance.get_node("TextureRect/NameLabel").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tooltip_instance.get_node("TextureRect/DescriptionLabel").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.add_theme_font_size_override("font_size", 16)
 
 	get_parent().add_child(tooltip_instance)
 	tooltip_instance.z_index = 1000 # Ensure on top
