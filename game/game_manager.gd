@@ -251,10 +251,10 @@ func _unhandled_input(event) -> void:
 				var new_slowarea_cost = structure_cost + 5
 				structure_manager.set_structure_cost("SlowArea", new_slowarea_cost)
 				_update_slowarea_cost_label(new_slowarea_cost)
-			elif placed_type == "ExplosiveMine":
-				var new_mine_cost = structure_cost + 10
-				structure_manager.set_structure_cost("ExplosiveMine", new_mine_cost)
-				_update_explosive_mine_cost_label(new_mine_cost)
+			#elif placed_type == "ExplosiveMine":
+				#var new_mine_cost = structure_cost + 10
+				#structure_manager.set_structure_cost("ExplosiveMine", new_mine_cost)
+				#_update_explosive_mine_cost_label(new_mine_cost)
 			
 			# NOW update button states with the new costs
 			structure_menu.update_buttons(currency)

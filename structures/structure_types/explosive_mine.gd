@@ -3,7 +3,7 @@ extends Structure
 
 @onready var range_collider: CollisionShape2D = $RangeArea/RangeCollider
 
-@export var explosion_range: float = 180.0
+@export var explosion_range: float = 225.0
 @export var damage: int = 50
 
 @onready var range_area: Area2D = $RangeArea
