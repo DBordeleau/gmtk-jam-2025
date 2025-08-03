@@ -48,8 +48,17 @@ func explode():
 	var camera: Node = get_tree().get_root().get_node("GameManager/MainCamera") # so we can shake camera
 	print("Mine exploding at position: ", global_position)
 
-	# Get all enemies in explosion range
-	var enemies_in_range: Array[Node2D] = range_area.get_overlapping_bodies()
+	# Get all enemies in explosion range using direct distance calculation
+	# This is more reliable than Area2D overlap detection for immediate explosions
+	var all_enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
+	var enemies_in_range: Array[Node] = []
+	
+	for enemy in all_enemies:
+		if enemy and is_instance_valid(enemy):
+			var distance_to_enemy: float = global_position.distance_to(enemy.global_position)
+			if distance_to_enemy <= explosion_range:
+				enemies_in_range.append(enemy)
+	
 	print("Enemies in range: ", enemies_in_range.size())
 
 	# Damage all enemies in range
