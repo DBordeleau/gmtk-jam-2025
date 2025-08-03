@@ -20,7 +20,7 @@ func _init():
 	is_orbital = false
 	health = 1
 	tooltip_name = "Explosive Mine"
-	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Cost does not increase."
+	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Enemies killed by mines award no currency. Cost does not increase."
 	super._init()
 
 
@@ -65,7 +65,6 @@ func explode():
 	for enemy in enemies_in_range:
 		if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
 			# Mark enemy as killed by player so we get currency
-			enemy.killed_by_player = true
 			enemy.take_damage(damage)
 			print("Damaged enemy: ", enemy)
 
@@ -101,8 +100,7 @@ func update(delta: float) -> void:
 
 
 func update_tooltip_desc():
-	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Cost does not increase."
-
+	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Enemies killed by mines award no currency. Cost does not increase."
 
 func update_range_display():
 	queue_redraw()  # This will trigger _draw() to redraw with new range
