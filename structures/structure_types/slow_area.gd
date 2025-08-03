@@ -10,7 +10,7 @@ var slowed_enemies: Array = []
 
 
 func _init():
-	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
+	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet. Cost +10"
 	super._init()
 
 
@@ -50,7 +50,7 @@ func update(delta: float) -> void:
 
 
 func update_tooltip_desc():
-	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet."
+	tooltip_desc = "A synthetic mini blackhole that greatly slows down everything around it. Halves the speed of all enemies within " + str(slow_range) + " range. Does not orbit the home planet. Cost +10"
 
 
 func update_range_display():

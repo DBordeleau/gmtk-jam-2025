@@ -32,7 +32,7 @@ func _init():
 	attack_range = 215
 	attack_cooldown = 3.0
 	speed = 0.6  # Add this line
-	tooltip_desc = "A resilient ship that fires laser beams, attacking multiple enemies simultaneously. Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Can survive 1 collision with an asteroid."
+	tooltip_desc = "A resilient ship that fires laser beams at all enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Can survive 1 collision with an asteroid."
 	super._init()
 
 
@@ -238,5 +238,4 @@ func _exit_tree() -> void:
 
 
 func update_tooltip_desc():
-	tooltip_desc = "A resilient ship that fires laser beams, attacking multiple enemies simultaneously. Deals " + str(damage) + " damage to ALL enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Can survive 1 collision with an asteroid."
-	
+	tooltip_desc = "A resilient ship that fires laser beams at all enemies within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Can survive 1 collision with an asteroid. Cost +10"

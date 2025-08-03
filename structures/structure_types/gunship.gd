@@ -15,7 +15,7 @@ func _init():
 	attack_cooldown = 2.0
 	health = 10
 	speed = 0.6
-	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range for " + str(damage) + " damage every " + str(attack_cooldown) + " seconds. Dies on impact with any asteroid."
+	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Dies on impact with any enemy."
 
 	super._init()
 
@@ -98,4 +98,4 @@ func shoot():
 
 
 func update_tooltip_desc():
-	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range for " + str(damage) + " damage every " + str(attack_cooldown) + " seconds. Dies on impact with any asteroid."
+	tooltip_desc = "A spaceship equipped with a powerful cannon. Orbits your home world, blasting the nearest threat within " + str(attack_range) + " range every " + str(attack_cooldown) + " seconds. Dies on impact with any enemy. Cost +10"

@@ -20,7 +20,7 @@ func _init():
 	is_orbital = false
 	health = 1
 	tooltip_name = "Explosive Mine"
-	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy. Deals " + str(damage) + " damage to ALL enemies within " + str(explosion_range) + " range. Single use."
+	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Cost does not increase."
 	super._init()
 
 
@@ -90,7 +90,7 @@ func update(delta: float) -> void:
 
 
 func update_tooltip_desc():
-	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy. Deals " + str(damage) + " damage to ALL enemies within " + str(explosion_range) + " range. Single use."
+	tooltip_desc = "A powerful explosive device that detonates when touched by an enemy, exploding and killing all enemies within " + str(explosion_range) + " range. Single use. Cost does not increase."
 
 
 func update_range_display():

@@ -59,9 +59,9 @@ func _ready():
 	explosive_mine_button.mouse_entered.connect(_on_explosive_mine_button_mouse_entered)
 	explosive_mine_button.mouse_exited.connect(_on_structure_button_mouse_exited)
 
-	slow_area_button.visible = false # Hide by default
-	laser_ship_button.visible = false # Hide by default
-	explosive_mine_button.visible = false # Hide by default
+	slow_area_button.disabled = true # Hide by default
+	laser_ship_button.disabled = true # Hide by default
+	explosive_mine_button.disabled = true # Hide by default
 	await get_tree().process_frame
 	_update_menu_position(true)
 
@@ -141,9 +141,9 @@ func update_buttons(currency: int):
 
 # called when a gunship is placed for the first time
 func unlock_slow_area():
-	slow_area_button.visible = true
-	laser_ship_button.visible = true
-	explosive_mine_button.visible = true
+	slow_area_button.disabled = false
+	laser_ship_button.disabled = false
+	explosive_mine_button.disabled = false
 	slow_area_unlocked = true
 	first_gunship_placed.emit()
 

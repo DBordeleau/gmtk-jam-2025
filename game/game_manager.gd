@@ -44,7 +44,7 @@ var game_is_over: bool = false
 
 # connects to wave manager signals and planet death signal for game over
 func _ready():
-	update_currency_ui()
+	update_currency_ui(0, true)
 	await _warm_up_everything()
 	music.play()
 	# Set music to continue playing when game is paused
@@ -339,11 +339,16 @@ func _on_play_again_pressed():
 
 
 # updates currency label and the structure select buttons
-func update_currency_ui(change: int = 0):
-	currency_ui.update_currency(currency, change)
-	structure_menu.update_buttons(currency)
-	_update_shield_affordability()
-	_update_shield_ui_visibility()
+func update_currency_ui(change: int = 0, first_call: bool = false):
+	if not first_call:
+		currency_ui.update_currency(currency, change)
+		structure_menu.update_buttons(currency)
+		_update_shield_affordability()
+		_update_shield_ui_visibility()
+	else: # dont update menu buttons the first call
+		currency_ui.update_currency(currency, change)
+		_update_shield_affordability()
+		_update_shield_ui_visibility()
 
 
 # called every time wave_manager emits the enemy_killed signal
