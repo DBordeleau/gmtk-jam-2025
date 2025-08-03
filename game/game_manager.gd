@@ -259,8 +259,11 @@ func _unhandled_input(event) -> void:
 			# NOW update button states with the new costs
 			structure_menu.update_buttons(currency)
 
-			structure_menu.clear_selection()
-			_remove_preview()
+			# Only clear selection if player can't afford another structure of the same type
+			var new_structure_cost = structure_manager.get_structure_cost(placed_type)
+			if currency < new_structure_cost:
+				structure_menu.clear_selection()
+				_remove_preview()
 
 
 # called when planet health reaches 0
