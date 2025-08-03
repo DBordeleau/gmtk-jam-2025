@@ -55,6 +55,8 @@ func explode():
 	# Damage all enemies in range
 	for enemy in enemies_in_range:
 		if enemy.is_in_group("enemies") and enemy.has_method("take_damage"):
+			# Mark enemy as killed by player so we get currency
+			enemy.killed_by_player = true
 			enemy.take_damage(damage)
 			print("Damaged enemy: ", enemy)
 

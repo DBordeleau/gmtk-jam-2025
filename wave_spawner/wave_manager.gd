@@ -70,6 +70,11 @@ func generate_wave(wave_number: int) -> Wave:
 		if wave_number > 40:
 			total_cost_budget = int(target_wave_40_cost + (wave_number - 40) * 10)  # Small linear growth after 40
 
+	# Apply wave-specific adjustments for better balance
+	if wave_number >= 10 and wave_number <= 20:
+		# Reduce enemy count by 10% for waves 10-20 for better balance
+		total_cost_budget = int(total_cost_budget * 0.9)
+
 	# Determine number of enemy sequences (1-3 based on wave number)
 	var num_sequences: int = 1 + int(wave_number / 3)  # Changed back from /4 to /3 for more sequences in early waves
 

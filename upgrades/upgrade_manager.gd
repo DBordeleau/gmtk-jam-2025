@@ -311,6 +311,12 @@ func get_global_upgrade_value(property_name: String) -> float:
 	return 0.0
 
 func _should_offer_upgrade(upgrade: Upgrade) -> bool:
+	# Prevent offering "Explosive Savings" if it's already been taken
+	if upgrade.name == "Explosive Savings":
+		for applied_upgrade in applied_upgrades:
+			if applied_upgrade.name == "Explosive Savings":
+				return false  # Explosive Savings has already been applied
+	
 	# Prevent Cannon Cooling Tech if applying it would make Gunship cooldown 0.2 or less
 	if upgrade.property_name == "attack_cooldown" and upgrade.target_structure_type == "Gunship":
 		var structure_scene = get_tree().get_root().get_node("GameManager/StructureManager").structure_map.get("Gunship")

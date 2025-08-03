@@ -31,14 +31,44 @@ func update(delta: float) -> void:
 
 func _find_target():
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
-	var closest_dist         = INF
-	var closest_enemy        = null
+	
+	if enemies.is_empty():
+		target_enemy = null
+		return
+	
+	var enemies_in_range: Array[Node] = []
+	
+	# Find all enemies within attack range
 	for enemy in enemies:
 		var dist: float = position.distance_to(enemy.position)
-		if dist < closest_dist:
-			closest_dist = dist
-			closest_enemy = enemy
-	target_enemy = closest_enemy
+		if dist <= attack_range:
+			enemies_in_range.append(enemy)
+	
+	# If we have enemies in range, prioritize the one closest to planet for attacking
+	if not enemies_in_range.is_empty():
+		var planet_position: Vector2 = Vector2.ZERO  # Planet is at world origin
+		var closest_to_planet_dist = INF
+		var best_target = null
+		
+		for enemy in enemies_in_range:
+			var dist_to_planet: float = planet_position.distance_to(enemy.position)
+			if dist_to_planet < closest_to_planet_dist:
+				closest_to_planet_dist = dist_to_planet
+				best_target = enemy
+		
+		target_enemy = best_target
+	else:
+		# No enemies in range, but still track the closest enemy for rotation
+		var closest_dist = INF
+		var closest_enemy = null
+		
+		for enemy in enemies:
+			var dist: float = position.distance_to(enemy.position)
+			if dist < closest_dist:
+				closest_dist = dist
+				closest_enemy = enemy
+		
+		target_enemy = closest_enemy
 
 
 func _track_target(delta):
