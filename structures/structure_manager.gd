@@ -5,6 +5,8 @@
 class_name StructureManager
 extends Node
 
+signal shield_deactivated
+
 @export var orbit_manager: OrbitManager
 
 var structures: Array = []
@@ -200,6 +202,9 @@ func _deactivate_shield():
 	for structure in structures:
 		if structure.is_orbital and structure.has_method("deactivate_shield"):
 			structure.deactivate_shield()
+	
+	# Emit signal to notify game manager that shield has ended
+	shield_deactivated.emit()
 
 
 func is_shield_active() -> bool:

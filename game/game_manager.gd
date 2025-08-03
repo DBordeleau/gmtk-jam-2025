@@ -19,6 +19,8 @@ var loading_screen_instance: Control = null
 @onready var planet: Planet = $Planet
 @onready var camera: Camera2D = $MainCamera
 @onready var shield_prompt_ui: Control = $UILayer/ShieldPromptUI
+@onready var shield_start_sfx: AudioStreamPlayer = $ShieldStartSFX
+@onready var shield_end_sfx: AudioStreamPlayer = $ShieldEndSFX
 
 @export var pause_menu: PackedScene
 
@@ -58,6 +60,7 @@ func _ready():
 		planet.planet_damaged.connect(_on_planet_damaged)
 	structure_menu.first_gunship_placed.connect(_on_first_gunship_placed)
 	structure_menu.structure_type_selected.connect(_on_structure_type_selected)
+	structure_manager.shield_deactivated.connect(_on_shield_deactivated)
 	upgrade_manager.upgrade_choice_started.connect(_on_upgrade_choice_started)
 	upgrade_manager.upgrade_choice_finished.connect(_on_upgrade_choice_finished)
 	_update_gunship_cost_label(structure_manager.get_structure_cost("Gunship"))
@@ -600,9 +603,19 @@ func _activate_shield():
 	update_currency_ui(-shield_cost)
 	structure_manager.activate_shield()
 	
+	# Play shield start sound effect
+	if shield_start_sfx:
+		shield_start_sfx.play()
+	
 	# Increase shield cost for next use
 	structure_manager.increase_shield_cost()
 	_update_shield_cost_ui()
+
+
+func _on_shield_deactivated():
+	# Play shield end sound effect
+	if shield_end_sfx:
+		shield_end_sfx.play()
 
 
 func _show_insufficient_currency_message(message: String):
@@ -907,6 +920,24 @@ func _warm_up_everything():
 		await get_tree().create_timer(0.05).timeout
 		music.stop()
 		music.volume_db = original_music_volume
+
+	# --- Warm up shield sound effects ---
+	print("WARMUP: Warming up shield sound effects")
+	if shield_start_sfx:
+		var original_shield_start_volume = shield_start_sfx.volume_db
+		shield_start_sfx.volume_db = -80.0  # Very quiet
+		shield_start_sfx.play()
+		await get_tree().create_timer(0.05).timeout
+		shield_start_sfx.stop()
+		shield_start_sfx.volume_db = original_shield_start_volume
+
+	if shield_end_sfx:
+		var original_shield_end_volume = shield_end_sfx.volume_db
+		shield_end_sfx.volume_db = -80.0  # Very quiet
+		shield_end_sfx.play()
+		await get_tree().create_timer(0.05).timeout
+		shield_end_sfx.stop()
+		shield_end_sfx.volume_db = original_shield_end_volume
 
 	print("WARMUP: Done")
 	
