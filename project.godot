@@ -13,7 +13,9 @@ config_version=5
 config/name="Orbital Defense"
 run/main_scene="uid://dykyaug6bg5bt"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://n78tn5wxuisl"
+config/macos_native_icon="res://mac_icon.icns"
+config/windows_native_icon="res://windows_icon.ico"
 
 [autoload]
 
@@ -23,6 +25,7 @@ Settings="*res://game/settings.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
 
 [input]
 

@@ -557,6 +557,25 @@ func _on_pause_menu_quit():
 
 
 func _quit_to_main_menu_with_fade():
+	# Disconnect all signals to prevent callbacks after scene destruction
+	if wave_manager:
+		if wave_manager.wave_completed.is_connected(_on_wave_completed):
+			wave_manager.wave_completed.disconnect(_on_wave_completed)
+		if wave_manager.enemy_killed.is_connected(_on_enemy_killed):
+			wave_manager.enemy_killed.disconnect(_on_enemy_killed)
+	
+	if planet and planet.planet_destroyed.is_connected(_on_planet_destroyed):
+		planet.planet_destroyed.disconnect(_on_planet_destroyed)
+	
+	if upgrade_manager:
+		if upgrade_manager.upgrade_choice_started.is_connected(_on_upgrade_choice_started):
+			upgrade_manager.upgrade_choice_started.disconnect(_on_upgrade_choice_started)
+		if upgrade_manager.upgrade_choice_finished.is_connected(_on_upgrade_choice_finished):
+			upgrade_manager.upgrade_choice_finished.disconnect(_on_upgrade_choice_finished)
+	
+	# UNPAUSE FIRST so the tween can run immediately
+	get_tree().paused = false
+	
 	# Create a black fade overlay
 	var quit_fade_overlay = ColorRect.new()
 	quit_fade_overlay.color = Color.BLACK
@@ -564,6 +583,7 @@ func _quit_to_main_menu_with_fade():
 	quit_fade_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	quit_fade_overlay.z_index = 2000  # Make sure it's on top of everything
 	quit_fade_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	quit_fade_overlay.process_mode = Node.PROCESS_MODE_ALWAYS  # Ensure it processes even if game gets paused again
 	
 	# Add to UILayer if it exists, otherwise to the main scene
 	if has_node("UILayer"):
@@ -571,17 +591,14 @@ func _quit_to_main_menu_with_fade():
 	else:
 		add_child(quit_fade_overlay)
 	
-	# Unpause the game so tweens can work
-	get_tree().paused = false
-	
-	# Fade to black
+	# Fade to black - no need for IDLE processing since we unpaused
 	var fade_tween: Tween = create_tween()
 	fade_tween.tween_property(quit_fade_overlay, "modulate:a", 1.0, 0.5)
 	await fade_tween.finished
 	
 	# Change to main menu scene
-	get_tree().change_scene_to_file("res://user_interface/parent_main_menu.tscn")
-
+	if get_tree():
+		get_tree().change_scene_to_file("res://user_interface/parent_main_menu.tscn")
 
 func _on_pause_menu_volume_changed(value: float) -> void:
 	Settings.master_volume = value
