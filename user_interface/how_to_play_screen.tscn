@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5ax7dx7ghiol" path="res://assets/ui_assets/main_menu/keyboard_shift.png" id="4_sthps"]
 
 [node name="HowToPlayScreen" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

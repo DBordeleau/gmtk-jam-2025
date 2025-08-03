@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dm65ue5ytbo7a"]
+[gd_scene load_steps=5 format=3 uid="uid://dm65ue5ytbo7a"]
 
 [ext_resource type="Script" uid="uid://bcaanqs6ofit6" path="res://user_interface/options_screen.gd" id="1_13r0u"]
+[ext_resource type="Texture2D" uid="uid://cg8obku4275bc" path="res://assets/ui_assets/redx.png" id="2_ejcyy"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_ejcyy"]
 thickness = 10
@@ -10,7 +11,6 @@ color = Color(0, 1, 0.8, 1)
 thickness = 10
 
 [node name="OptionsScreen" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,3 +67,13 @@ step = 0.01
 value = 1.0
 tick_count = 10
 ticks_on_borders = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1161.0
+offset_top = 120.0
+offset_right = 1261.0
+offset_bottom = 220.0
+rotation = 3.08586
+texture = ExtResource("2_ejcyy")
+expand_mode = 3
